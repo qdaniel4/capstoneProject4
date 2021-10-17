@@ -8,7 +8,7 @@ test_db_path = 'test_favorites.db'
 db_config.database_path = test_db_path 
 
 import favorites_db
-from favorites_db import Favorites
+from favorites_db import Favorite
 from favorites_db import FavoritesError
 
 class TestQuiz(TestCase):
@@ -23,13 +23,13 @@ class TestQuiz(TestCase):
     def setUp(self):
         '''Clear and remake favorites table for test database.'''
         self.db = SqliteDatabase(test_db_path)
-        self.db.drop_tables([Favorites])
-        self.db.create_tables([Favorites])
+        self.db.drop_tables([Favorite])
+        self.db.create_tables([Favorite])
 
     
     def test_get_list_of_favorites_from_db(self):
-        favorite_one = Favorites(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
-        favorite_two = Favorites(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
+        favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
+        favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
         favorite_two.save()
 
@@ -51,8 +51,8 @@ class TestQuiz(TestCase):
 
     
     def test_delete_favorite_from_db(self):
-        favorite_one = Favorites(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
-        favorite_two = Favorites(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
+        favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
+        favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
         favorite_two.save()
 
@@ -63,8 +63,8 @@ class TestQuiz(TestCase):
 
 
     def test_delete_valid_favorite_that_is_not_in_db(self):
-        favorite_one = Favorites(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
-        favorite_two = Favorites(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
+        favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
+        favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
         favorite_two.save()
         favorite_two.delete().execute()
@@ -76,8 +76,8 @@ class TestQuiz(TestCase):
 
 
     def test_delete_invalid_favorite_that_is_not_in_db_raises_favoriteserror(self):
-        favorite_one = Favorites(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
-        favorite_two = Favorites(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
+        favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
+        favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
         
         with self.assertRaises(FavoritesError):
@@ -96,7 +96,7 @@ class TestQuiz(TestCase):
 
         favorites_db.add_favorite(city, country, month, year, webcam, weather, holidays, nickname)
 
-        result = Favorites.get_or_none(city = 'city1')
+        result = Favorite.get_or_none(city = 'city1')
         
         self.assertIsNotNone(result)
 
@@ -112,7 +112,7 @@ class TestQuiz(TestCase):
 
         favorites_db.add_favorite(city, country, month, year, webcam, weather, holidays)
 
-        result = Favorites.get_or_none(city = 'city1')
+        result = Favorite.get_or_none(city = 'city1')
         
         self.assertIsNotNone(result)
 
@@ -128,7 +128,7 @@ class TestQuiz(TestCase):
 
         favorites_db.add_favorite(city, country, month, year, webcam, weather, holidays)
 
-        result = Favorites.get_or_none(city = 'city1')
+        result = Favorite.get_or_none(city = 'city1')
         
         self.assertIsNotNone(result)
 

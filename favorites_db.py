@@ -2,7 +2,7 @@ from peewee import *
 
 db = SqliteDatabase('favorites.db')
 
-class Favorites(Model):
+class Favorite(Model):
 
     city = CharField(null=False)
     country = CharField(null=False)
@@ -27,7 +27,7 @@ class FavoritesError(Exception):
 
 def create_table():
     """Create Favorites table."""
-    db.create_tables([Favorites])
+    db.create_tables([Favorite])
 
 
 def get_favorites():
@@ -36,7 +36,7 @@ def get_favorites():
     # TODO: handle an empty list elsewhere in the program
     # since we don't want there to be an error if the user has simply not added anything to faves yet.
     # want html to instead display something like 'nothing in favorites list, try adding something to favorites'
-    favorites = Favorites.select()
+    favorites = Favorite.select()
     favorites_list = []
     for favorite in favorites:
         favorites_list.append(favorite)
@@ -48,7 +48,7 @@ def add_favorite(city, country, month, year, webcam, weather, holidays, nickname
     """Expects parameters to successfully create a Favorites object
     Creates & saves this object to database.
     Default value of None for nickname, to make nickname optional parameter."""
-    favorite = Favorites(city=city, country=country, month=month, year=year, webcam=webcam, weather=weather, holidays=holidays, nickname=nickname)
+    favorite = Favorite(city=city, country=country, month=month, year=year, webcam=webcam, weather=weather, holidays=holidays, nickname=nickname)
     favorite.save()
 
 
@@ -60,7 +60,7 @@ def delete_favorite(favorite):
         raise FavoritesError('Favorite does not have ID.')
 
     id = favorite.id
-    rows_mod = Favorites.delete().where(Favorites.id == id).execute()
+    rows_mod = Favorite.delete().where(Favorite.id == id).execute()
 
     if rows_mod == 0:
         # TODO: in ui of program, tailor message based on return value
