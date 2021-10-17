@@ -17,7 +17,7 @@ class Favorites(Model):
         database = db
 
     def __str__(self):
-        return f'{self.city}, {self.country}, in {self.month}/{self.year}: Webcam: {self.webcam}, Weather: {self.weather}, Holidays: {self.holidays}, Nickname: {self.nickname}'
+        return f'ID {self.id}: {self.city}, {self.country}, in {self.month}/{self.year}: Webcam: {self.webcam}, Weather: {self.weather}, Holidays: {self.holidays}, Nickname: {self.nickname}'
 
 
 class FavoritesError(Exception):
@@ -42,5 +42,3 @@ def get_favorites():
         favorites_list.append(favorite)
 
     return favorites_list
-
-create_table()
