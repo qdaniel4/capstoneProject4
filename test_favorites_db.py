@@ -84,6 +84,54 @@ class TestQuiz(TestCase):
             result = favorites_db.delete_favorite(favorite_two)
 
 
+    def test_add_favorite(self):
+        city = 'city1'
+        country = 'country1'
+        month = 2
+        year = 2022
+        webcam = 'webcamlink'
+        weather = 'weatherdata'
+        holidays = 'holidays'
+        nickname = 'nickname'
+
+        favorites_db.add_favorite(city, country, month, year, webcam, weather, holidays, nickname)
+
+        result = Favorites.get_or_none(city = 'city1')
+        
+        self.assertIsNotNone(result)
+
+
+    def test_add_favorite_no_nickname(self):
+        city = 'city1'
+        country = 'country1'
+        month = 2
+        year = 2022
+        webcam = 'webcamlink'
+        weather = 'weatherdata'
+        holidays = 'holidays'
+
+        favorites_db.add_favorite(city, country, month, year, webcam, weather, holidays)
+
+        result = Favorites.get_or_none(city = 'city1')
+        
+        self.assertIsNotNone(result)
+
+
+    def test_add_favorite_no_nickname_null_values(self):
+        city = 'city1'
+        country = 'country1'
+        month = 2
+        year = 2022
+        webcam = None
+        weather = None
+        holidays = None
+
+        favorites_db.add_favorite(city, country, month, year, webcam, weather, holidays)
+
+        result = Favorites.get_or_none(city = 'city1')
+        
+        self.assertIsNotNone(result)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -8,10 +8,10 @@ class Favorites(Model):
     country = CharField(null=False)
     month = IntegerField(null=False, constraints=[Check('0 < month AND month < 13')])
     year = IntegerField(null=False)
-    webcam = CharField() # webcam URL(s)
-    weather = CharField()
-    holidays = CharField()
-    nickname = CharField() # in case we want to allow the user to give their favorite a nickname
+    webcam = CharField(null=True) # for now I allow null values - in case we got nothing from one of the APIs, but user still wants to save favorite with remaining info
+    weather = CharField(null=True) # however we could change this to a string that says 'no data found' instead if wanted?
+    holidays = CharField(null=True)
+    nickname = CharField(null=True) # in case we want to allow the user to give their favorite a nickname
 
     class Meta: 
         database = db
