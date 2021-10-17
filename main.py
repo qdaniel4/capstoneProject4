@@ -1,1 +1,1 @@
-from database import favorites_db
+import favorites_db
