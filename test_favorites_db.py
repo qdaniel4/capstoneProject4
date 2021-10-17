@@ -9,6 +9,7 @@ db_config.database_path = test_db_path
 
 import favorites_db
 from favorites_db import Favorites
+from favorites_db import FavoritesError
 
 class TestQuiz(TestCase):
 
@@ -47,6 +48,41 @@ class TestQuiz(TestCase):
         expected = []
 
         self.assertEqual(result, expected)
+
+    
+    def test_delete_favorite_from_db(self):
+        favorite_one = Favorites(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
+        favorite_two = Favorites(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
+        favorite_one.save()
+        favorite_two.save()
+
+        expected = True
+        result = favorites_db.delete_favorite(favorite_two)
+
+        self.assertEqual(result, expected)
+
+
+    def test_delete_valid_favorite_that_is_not_in_db(self):
+        favorite_one = Favorites(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
+        favorite_two = Favorites(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
+        favorite_one.save()
+        favorite_two.save()
+        favorite_two.delete().execute()
+        
+        expected = False
+        result = favorites_db.delete_favorite(favorite_two)
+
+        self.assertEqual(result, expected)
+
+
+    def test_delete_invalid_favorite_that_is_not_in_db_raises_favoriteserror(self):
+        favorite_one = Favorites(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
+        favorite_two = Favorites(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
+        favorite_one.save()
+        
+        with self.assertRaises(FavoritesError):
+            result = favorites_db.delete_favorite(favorite_two)
+
 
 
 if __name__ == '__main__':
