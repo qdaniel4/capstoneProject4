@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<h1>Travel Planning Catalogue</h1>
+
+<div id="instructions" class="content-box">
+    <h2>Instructions go here!</h2>
+</div>
+
+<div class="content-box">
+    <form action="/result" method="GET">
+        
+        <label for="city">City</label>
+        <input name="city" id="city" required>
+        <label for="country">Country</label>
+        <input name="country" id="country" required>
+        <label for="date">Estimated date of trip:</label>
+        <input type="date" name="date" required>
+    
+        <input type="submit" value="Search">
+    
+    </form>
+</div>
+
+{% endblock %}
