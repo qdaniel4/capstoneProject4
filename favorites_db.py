@@ -44,6 +44,14 @@ def get_favorites():
     return favorites_list
 
 
+def add_favorite(city, country, month, year, webcam, weather, holidays, nickname = None):
+    """Expects parameters to successfully create a Favorites object
+    Creates & saves this object to database.
+    Default value of None for nickname, to make nickname optional parameter."""
+    favorite = Favorites(city=city, country=country, month=month, year=year, webcam=webcam, weather=weather, holidays=holidays, nickname=nickname)
+    favorite.save()
+
+
 def delete_favorite(favorite):
     """Find favorite by ID, then delete that favorite.
     Return True is favorite was deleted.
