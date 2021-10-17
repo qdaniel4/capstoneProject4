@@ -1,1 +1,1 @@
-database_path = 'quiz.db'
+database_path = 'favorites.db'
