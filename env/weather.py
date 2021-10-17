@@ -61,7 +61,7 @@ def check_if_found(searched_city):
             countries_list.append(x)
         if not countries_list:
             check_if_found(capitolize_city(city_name()))
-    return countries_list
+    return countries_list  g
 
 
 
