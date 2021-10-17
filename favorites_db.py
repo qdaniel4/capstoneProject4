@@ -42,3 +42,23 @@ def get_favorites():
         favorites_list.append(favorite)
 
     return favorites_list
+
+
+def delete_favorite(favorite):
+    """Find favorite by ID, then delete that favorite.
+    Return True is favorite was deleted.
+    Return False if favorite was not deleted."""
+    if not favorite.id:
+        raise FavoritesError('Favorite does not have ID.')
+
+    id = favorite.id
+    rows_mod = Favorites.delete().where(Favorites.id == id).execute()
+
+    if rows_mod == 0:
+        # TODO: in ui of program, tailor message based on return value
+        # since we would like to notify the user that their deletion request was completed
+        return False
+    else:
+        return True
+
+
