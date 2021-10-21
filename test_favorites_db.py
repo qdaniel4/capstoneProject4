@@ -11,7 +11,7 @@ import favorites_db
 from favorites_db import Favorite
 from favorites_db import FavoritesError
 
-class TestQuiz(TestCase):
+class FavoritesTest(TestCase):
 
     test_db_url = 'test_quiz.db'
 
