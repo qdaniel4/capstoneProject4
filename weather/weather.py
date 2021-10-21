@@ -21,9 +21,10 @@ def main():
     capitolized = capitolize_city(city_input)
     list_of_countries = check_if_found(capitolized)
     correct_city = pick_correct(list_of_countries)
-    get_coordinates(correct_city)
+    latitude, longitude = get_coordinates(correct_city)
     month = get_month_name()
-    get_month_number(month)
+    month_to_check = get_month_number(month)
+    get_climate(latitude, longitude, month_to_check)
 
     
 
@@ -65,6 +66,7 @@ def capitolize_city(city):
         
         to_return = list_words[0]
         print(to_return)
+
     return to_return
 
 
@@ -130,8 +132,8 @@ def pick_correct(countries_list):
 def get_coordinates(correct_city):
     latitude = correct_city['latitude']
     longitude = correct_city['longitude']
-    print(latitude)
-    print(longitude)
+    
+    return latitude, longitude
     
      
              
@@ -187,7 +189,20 @@ def get_month_number(month):
         number == 10
     else:
         number == 11
-    print(number)
+    return number
+
+def get_climate(latitude, longitude, month):
+    url =  f'https://api.troposphere.io/climate/{latitude},{longitude}?token={key}'
+    url_data = requests.get(url).json()
+    pprint(url_data)
+    temp_max = url_data['data']['monthly'][month]['temperatureMax']
+    temp_min = url_data['data']['monthly'][month]['temperatureMin']
+    cloud_cover = url_data['data']['monthly'][month]['cloudCover']
+    sunshine_hours = url_data['data']['monthly'][month]['sunshineHours']
+    total_rain = url_data['data']['monthly'][month]['totalPrecipitation']
+
+
+    print(temp_max)
     
 
 
