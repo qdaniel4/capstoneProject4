@@ -37,9 +37,7 @@ def get_favorites():
     # since we don't want there to be an error if the user has simply not added anything to faves yet.
     # want html to instead display something like 'nothing in favorites list, try adding something to favorites'
     favorites = Favorite.select()
-    favorites_list = []
-    for favorite in favorites:
-        favorites_list.append(favorite)
+    favorites_list = list(favorites)
 
     return favorites_list
 
