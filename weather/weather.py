@@ -22,8 +22,8 @@ def main():
     list_of_countries = check_if_found(capitolized)
     correct_city = pick_correct(list_of_countries)
     get_coordinates(correct_city)
-    #month = get_month_name()
-    #get_month_number(month)
+    month = get_month_name()
+    get_month_number(month)
 
     
 
@@ -43,14 +43,38 @@ def city_name():
 
 def capitolize_city(city):
     city = city.lower()
-    listWords = []
+    to_return = ''
+    list_words = []
     split = city.split(' ')
     for word in split:
         length = len(word)
         x = word[0].upper()
-        listWords.append(x + word[1:length])
-    searched_city = "".join(listWords)
-    return searched_city
+        list_words.append(x + word[1:length])
+       
+    if len(list_words)  > 1:
+         # from https://www.geeksforgeeks.org/python-program-to-convert-a-list-to-string/
+        to_return = ' '.join([elem for elem in list_words])
+        
+
+
+    #####
+    #####
+    #####
+    # code is broken here
+    else:
+        
+        to_return = list_words[0]
+        print(to_return)
+    return to_return
+
+
+    # from https://www.geeksforgeeks.org/python-program-to-convert-a-list-to-string/
+    #else: 
+        
+    
+        # list_to_string = list_words
+        # print(list_to_string)
+        # return list_to_string
 
 def check_if_found(searched_city):
     url = f'https://api.troposphere.io/place/name/{searched_city}?token={key}'
