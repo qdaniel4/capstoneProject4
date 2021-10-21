@@ -6,7 +6,7 @@ class Favorite(Model):
 
     city = CharField(null=False)
     country = CharField(null=False)
-    month = IntegerField(null=False, constraints=[Check('0 < month AND month < 13')])
+    month = IntegerField(null=False, constraints=[Check('1 <= month AND month <= 12')])
     year = IntegerField(null=False)
     webcam = CharField(null=True) # for now I allow null values - in case we got nothing from one of the APIs, but user still wants to save favorite with remaining info
     weather = CharField(null=True) # however we could change this to a string that says 'no data found' instead if wanted?
