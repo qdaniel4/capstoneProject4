@@ -82,12 +82,13 @@ def check_if_found(searched_city):
     url = f'https://api.troposphere.io/place/name/{searched_city}?token={key}'
     countries_list = []
     url_data = requests.get(url).json()
+    if len(countries_list) == 0:
+        check_if_found(capitolize_city(city_name()))
     for x in url_data['data']:
         if searched_city == x['name']:
             countries_list.append(x)
         
-        if len(countries_list) == 0:
-            check_if_found(capitolize_city(city_name()))
+       
     return countries_list  
 
 
