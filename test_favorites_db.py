@@ -41,7 +41,6 @@ class FavoritesTest(TestCase):
 
     def test_get_empty_list_from_db_when_no_records_in_db(self):
         result = favorites_db.get_favorites()
-        
         expected = []
 
         self.assertEqual(result, expected)
@@ -53,10 +52,9 @@ class FavoritesTest(TestCase):
         favorite_one.save()
         favorite_two.save()
 
-        expected = True
         result = favorites_db.delete_favorite(favorite_two)
 
-        self.assertEqual(result, expected)
+        self.assertTrue(result)
 
 
     def test_delete_valid_favorite_that_is_not_in_db(self):
@@ -66,10 +64,9 @@ class FavoritesTest(TestCase):
         favorite_two.save()
         favorite_two.delete().execute()
         
-        expected = False
         result = favorites_db.delete_favorite(favorite_two)
 
-        self.assertEqual(result, expected)
+        self.assertFalse(result)
 
 
     def test_delete_invalid_favorite_that_is_not_in_db_raises_favoriteserror(self):
