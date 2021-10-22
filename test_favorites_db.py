@@ -52,6 +52,19 @@ class FavoritesTest(TestCase):
         favorite_one.save()
         favorite_two.save()
 
+        favorites_db.delete_favorite(favorite_two)
+
+        was_deleted = Favorite.get_or_none(id=2)
+
+        self.assertIsNone(was_deleted)
+
+
+    def test_delete_favorite_from_db_function_returns_True_when_deleted(self):
+        favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
+        favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
+        favorite_one.save()
+        favorite_two.save()
+
         was_deleted = favorites_db.delete_favorite(favorite_two)
 
         self.assertTrue(was_deleted)
