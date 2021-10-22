@@ -40,10 +40,10 @@ class FavoritesTest(TestCase):
 
 
     def test_get_empty_list_from_db_when_no_records_in_db(self):
-        result = favorites_db.get_favorites()
-        expected = []
+        empty_list = []
+        empty_list_of_favorites = favorites_db.get_favorites()
 
-        self.assertEqual(result, expected)
+        self.assertEqual(empty_list_of_favorites, empty_list)
 
     
     def test_delete_favorite_from_db(self):
@@ -52,9 +52,9 @@ class FavoritesTest(TestCase):
         favorite_one.save()
         favorite_two.save()
 
-        result = favorites_db.delete_favorite(favorite_two)
+        was_deleted = favorites_db.delete_favorite(favorite_two)
 
-        self.assertTrue(result)
+        self.assertTrue(was_deleted)
 
 
     def test_delete_valid_favorite_that_is_not_in_db(self):
@@ -64,9 +64,9 @@ class FavoritesTest(TestCase):
         favorite_two.save()
         favorite_two.delete().execute()
         
-        result = favorites_db.delete_favorite(favorite_two)
+        was_deleted = favorites_db.delete_favorite(favorite_two)
 
-        self.assertFalse(result)
+        self.assertFalse(was_deleted)
 
 
     def test_delete_invalid_favorite_that_is_not_in_db_raises_favoriteserror(self):
@@ -75,7 +75,7 @@ class FavoritesTest(TestCase):
         favorite_one.save()
         
         with self.assertRaises(FavoritesError):
-            result = favorites_db.delete_favorite(favorite_two)
+            was_deleted = favorites_db.delete_favorite(favorite_two)
 
 
     def test_add_favorite(self):
@@ -90,9 +90,9 @@ class FavoritesTest(TestCase):
 
         favorites_db.add_favorite(city, country, month, year, webcam, weather, holidays, nickname)
 
-        result = Favorite.get_or_none(city = 'city1')
+        added_favorite = Favorite.get_or_none(city = 'city1')
         
-        self.assertIsNotNone(result)
+        self.assertIsNotNone(added_favorite)
 
 
     def test_add_favorite_no_nickname(self):
@@ -106,9 +106,9 @@ class FavoritesTest(TestCase):
 
         favorites_db.add_favorite(city, country, month, year, webcam, weather, holidays)
 
-        result = Favorite.get_or_none(city = 'city1')
+        added_favorite_no_nickname = Favorite.get_or_none(city = 'city1')
         
-        self.assertIsNotNone(result)
+        self.assertIsNotNone(added_favorite_no_nickname)
 
 
     def test_add_favorite_no_nickname_null_values(self):
@@ -122,9 +122,9 @@ class FavoritesTest(TestCase):
 
         favorites_db.add_favorite(city, country, month, year, webcam, weather, holidays)
 
-        result = Favorite.get_or_none(city = 'city1')
+        added_favorite_no_nickname_null_values = Favorite.get_or_none(city = 'city1')
         
-        self.assertIsNotNone(result)
+        self.assertIsNotNone(added_favorite_no_nickname_null_values)
 
 
 if __name__ == '__main__':
