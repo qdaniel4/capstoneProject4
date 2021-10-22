@@ -27,7 +27,7 @@ class FavoritesTest(TestCase):
         self.db.create_tables([Favorite])
 
     
-    def test_get_list_of_favorites_from_db(self):
+    def test_get_favorites_returns_list_of_favorites_from_db(self):
         favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
         favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
@@ -39,7 +39,7 @@ class FavoritesTest(TestCase):
         self.assertNotEqual(empty_list, list_of_favorites)
 
 
-    def test_get_empty_list_from_db_when_no_records_in_db(self):
+    def test_get_favorites_returns_empty_list_when_no_records_in_db(self):
         empty_list = []
         empty_list_of_favorites = favorites_db.get_favorites()
 
@@ -59,7 +59,7 @@ class FavoritesTest(TestCase):
         self.assertIsNone(was_deleted)
 
 
-    def test_delete_favorite_from_db_function_returns_True_when_deleted(self):
+    def test_delete_favorite_returns_True_when_deleted(self):
         favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
         favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
@@ -70,7 +70,7 @@ class FavoritesTest(TestCase):
         self.assertTrue(was_deleted)
 
 
-    def test_delete_valid_favorite_that_is_not_in_db(self):
+    def test_delete_favorite_returns_False_when_valid_favorite_object_not_in_db(self):
         favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
         favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
@@ -82,7 +82,7 @@ class FavoritesTest(TestCase):
         self.assertFalse(was_deleted)
 
 
-    def test_delete_invalid_favorite_that_is_not_in_db_raises_favoriteserror(self):
+    def test_delete_favorite_with_invalid_favorite_object_raises_favoriteserror(self):
         favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
         favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
@@ -124,7 +124,7 @@ class FavoritesTest(TestCase):
         self.assertIsNotNone(added_favorite_no_nickname)
 
 
-    def test_add_favorite_no_nickname_null_values(self):
+    def test_add_favorite_no_nickname_and_null_values(self):
         city = 'city1'
         country = 'country1'
         month = 2
