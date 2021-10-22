@@ -85,7 +85,8 @@ def check_if_found(searched_city):
     for x in url_data['data']:
         if searched_city == x['name']:
             countries_list.append(x)
-        if not countries_list:
+        
+        if len(countries_list) == 0:
             check_if_found(capitolize_city(city_name()))
     return countries_list  
 
