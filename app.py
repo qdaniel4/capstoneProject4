@@ -42,5 +42,18 @@ def get_favorites():
     return render_template('favorites.html', favorites=favorites)
 
 
+@app.route('/favorite/<id>')
+def get_favorite(id):
+    favorite = favorites_db.get_favorite_by_id(id)
+    city = favorite.city
+    country = favorite.country
+    month = favorite.month
+    year = favorite.year
+
+    webcam_urls = favorite.webcam
+    weather = favorite.weather
+    holidays = favorite.holidays
+
+    return render_template('result.html', city=city, country=country, month=month, year=year, webcam_urls=webcam_urls, weather=weather, holidays=holidays)
 # so far what we get from index is:
 # result?city=user_input&country=user_input&date=2021-12-23
