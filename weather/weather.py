@@ -45,14 +45,9 @@ def capitolize_city(city):
     if len(list_words)  > 1:
          # from https://www.geeksforgeeks.org/python-program-to-convert-a-list-to-string/
         to_return = ' '.join([elem for elem in list_words])
-        
     else:
-        
         to_return = list_words[0]
-        print(to_return)
-
     return to_return
-
 
 def check_if_found(searched_city):
     url = f'https://api.troposphere.io/place/name/{searched_city}?token={key}'
@@ -63,7 +58,6 @@ def check_if_found(searched_city):
     for x in url_data['data']:
         if searched_city == x['name']:
             countries_list.append(x)
-        
     return countries_list  
 
 def pick_correct(countries_list):
@@ -77,13 +71,10 @@ def pick_correct(countries_list):
         num = input('enter the number of correct city ')
         if  not num.isnumeric():
             print('you must enter a number')
-
-       
         elif num == '':
             print('you must enter a number')
         else:
             num = int(num)
-            
             if num > int(len(countries_list)) :
                 print('you must enter a lower number')
             elif  num < 0:
@@ -93,14 +84,9 @@ def pick_correct(countries_list):
                 not_match = False
                 return correct_city
     
-
-        
-        
-            
 def get_coordinates(correct_city):
     latitude = correct_city['latitude']
     longitude = correct_city['longitude']
-    
     return latitude, longitude
     
 def get_month_name():
@@ -154,9 +140,14 @@ def get_climate(latitude, longitude, month):
     sunshine_hours = url_data['data']['monthly'][month]['sunshineHours']
     total_rain = url_data['data']['monthly'][month]['totalPrecipitation']
     high = (temp_max * 1.8) + 32
-    low = (temp_min * 1.8) +32
+    low = (temp_min * 1.8) + 32
     rain = (total_rain * 2) / 25.4
-    print(f'{rain:.2f}') 
+    print(f'The average high is {high:.2f}F')
+    print(f'The average low is {low:.2f}F')
+    print(f'The average rainfall is {rain:.2f} inches per month')
+    print(f'The average hours of sunshine per day is {sunshine_hours:.2f}')
+
+
 
 
 
