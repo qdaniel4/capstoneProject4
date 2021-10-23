@@ -50,15 +50,11 @@ def add_favorite(city, country, month, year, webcam, weather, holidays, nickname
     favorite.save()
 
 
-def delete_favorite(favorite):
+def delete_favorite(favorite_id):
     """Find favorite by ID, then delete that favorite.
     Return True is favorite was deleted.
-    Return False if favorite was not deleted."""
-    if not favorite.id:
-        raise FavoritesError('Favorite does not have ID.')
-
-    id = favorite.id
-    rows_mod = Favorite.delete().where(Favorite.id == id).execute()
+    Return False if favorite was not deleted.""" 
+    rows_mod = Favorite.delete().where(Favorite.id == favorite_id).execute()
 
     if rows_mod == 0:
         # TODO: in ui of program, tailor message based on return value

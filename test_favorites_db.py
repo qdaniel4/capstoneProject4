@@ -52,7 +52,7 @@ class FavoritesTest(TestCase):
         favorite_one.save()
         favorite_two.save()
 
-        favorites_db.delete_favorite(favorite_two)
+        favorites_db.delete_favorite(2)
 
         was_deleted = Favorite.get_or_none(id=2)
 
@@ -65,30 +65,31 @@ class FavoritesTest(TestCase):
         favorite_one.save()
         favorite_two.save()
 
-        was_deleted = favorites_db.delete_favorite(favorite_two)
+        was_deleted = favorites_db.delete_favorite(2)
 
         self.assertTrue(was_deleted)
 
 
-    def test_delete_favorite_returns_False_when_valid_favorite_object_not_in_db(self):
+    def test_delete_favorite_returns_False_when_valid_id_not_in_database(self):
         favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
         favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
         favorite_two.save()
         favorite_two.delete().execute()
         
-        was_deleted = favorites_db.delete_favorite(favorite_two)
+        was_deleted = favorites_db.delete_favorite(2)
 
         self.assertFalse(was_deleted)
 
 
-    def test_delete_favorite_with_invalid_favorite_object_raises_favoriteserror(self):
+    def test_delete_favorite_returns_False_when_invalid_id_type(self):
         favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
         favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
         
-        with self.assertRaises(FavoritesError):
-            was_deleted = favorites_db.delete_favorite(favorite_two)
+        was_deleted = favorites_db.delete_favorite('asdf')
+
+        self.assertFalse(was_deleted) 
 
 
     def test_add_favorite(self):
