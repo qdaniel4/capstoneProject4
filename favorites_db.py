@@ -43,6 +43,9 @@ def get_favorites():
 
 
 def get_favorite_by_id(favorite_id):
+    """Gets a favorite by its id, or gets None.
+    Raises an error if None.
+    Returns favorite if not None."""
     favorite = Favorite.get_or_none(id=favorite_id)
 
     if not favorite:
