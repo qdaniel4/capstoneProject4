@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="content-box">
+    <h3>{{deleted_confirmation}}</h3>
+    <br>
+    <a href="{{ url_for('get_favorites') }">Return to Favorites</a>
+
+</div>
+
+{% endblock %}

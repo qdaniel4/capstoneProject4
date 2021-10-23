@@ -55,5 +55,21 @@ def get_favorite(id):
     holidays = favorite.holidays
 
     return render_template('result.html', city=city, country=country, month=month, year=year, webcam_urls=webcam_urls, weather=weather, holidays=holidays)
+
+
+@app.route('/favorite/delete/<id>')
+def delete_favorite(id):
+    #TODO: would be nice to ask the user if they are sure they want to delete the favorite...
+    was_favorite_deleted = favorites_db.delete_favorite_by_id(id)
+    deleted_confirmation = f'Unable to delete favorite. Please check if ID: {id} is a valid favorite.'
+    if was_favorite_deleted == True:
+        deleted_confirmation = 'Favorite was deleted.'
+    
+    return render_template('deleted.html', deleted_confirmation=deleted_confirmation)
+
+
+
+
+
 # so far what we get from index is:
 # result?city=user_input&country=user_input&date=2021-12-23
