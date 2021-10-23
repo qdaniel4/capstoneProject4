@@ -46,13 +46,44 @@ class FavoritesTest(TestCase):
         self.assertEqual(empty_list_of_favorites, empty_list)
 
     
+    def test_get_favorite_by_id(self):
+        favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
+        favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
+        favorite_one.save()
+        favorite_two.save()
+
+        favorite = favorites_db.get_favorite_by_id(1)
+
+        self.assertIsNotNone(favorite) 
+
+
+    def test_get_favorite_by_id_not_in_database_raises_favoriteserror(self):
+        favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
+        favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
+        favorite_one.save()
+        favorite_two.save()
+
+        with self.assertRaises(FavoritesError):
+            favorite = favorites_db.get_favorite_by_id(5)
+
+
+    def test_get_favorite_by_id_invalid_id_raises_favoriteserror(self):
+        favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
+        favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
+        favorite_one.save()
+        favorite_two.save()
+        
+        with self.assertRaises(FavoritesError):
+            favorite = favorites_db.get_favorite_by_id('this is not a valid id')
+
+    
     def test_delete_favorite_from_db(self):
         favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
         favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
         favorite_two.save()
 
-        favorites_db.delete_favorite(2)
+        favorites_db.delete_favorite_by_id(2)
 
         was_deleted = Favorite.get_or_none(id=2)
 
@@ -65,7 +96,7 @@ class FavoritesTest(TestCase):
         favorite_one.save()
         favorite_two.save()
 
-        was_deleted = favorites_db.delete_favorite(2)
+        was_deleted = favorites_db.delete_favorite_by_id(2)
 
         self.assertTrue(was_deleted)
 
@@ -77,7 +108,7 @@ class FavoritesTest(TestCase):
         favorite_two.save()
         favorite_two.delete().execute()
         
-        was_deleted = favorites_db.delete_favorite(2)
+        was_deleted = favorites_db.delete_favorite_by_id(2)
 
         self.assertFalse(was_deleted)
 
@@ -87,7 +118,7 @@ class FavoritesTest(TestCase):
         favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
         
-        was_deleted = favorites_db.delete_favorite('asdf')
+        was_deleted = favorites_db.delete_favorite_by_id('asdf')
 
         self.assertFalse(was_deleted) 
 
