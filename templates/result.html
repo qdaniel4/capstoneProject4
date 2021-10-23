@@ -4,16 +4,6 @@
 
 <h2>Results for {{city}}, {{country}} on {{date}}.</h2>
 
-<div id="webcam" class="content-box">
-
-    <!-- for webcam functionality 
-    <img url="{{webcam_url}}" />
-        optional:
-    <p>{{webcam_description}}</p>
-    -->
-
-</div>
-
 <div id="weather" class="content-box">
 
     <!--
@@ -31,12 +21,24 @@
 
 <div id="holidays" class="content-box">
 
-    <!--
-        <ul>
-        for holiday in holidays
-            <li>{{holiday}}</li>
-        </ul>
-        -will have to figure out best way to do this in flask/python
+    <h1>Holidays in {{country}} during {{month}}</h1>
+    <ul>
+    {% for holiday in holidays %}
+        <li>{{holiday}}</li>
+    {% endfor %}
+    </ul>
+
+
+</div>
+
+<div id="webcam" class="content-box">
+
+    <!-- for webcam functionality -->
+    {% for webcam_url in webcam_urls %}
+    <img url="{{webcam_url}}" /><br>
+    {% endfor %}
+    <!--    optional:
+    <p>{{webcam_description}}</p>
     -->
 
 </div>

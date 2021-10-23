@@ -13,6 +13,14 @@ def get_result():
     country = request.args.get('country')
     date = request.args.get('date')
 
+    month = 'sample month'
+    year = 'sample year'
+
+    webcam_urls = ['url1', 'url2']
+
+    holidays = ['holiday1', 'holiday2']
+
+
     # TODO: webcam_url = webcam_api.get_webcam(city, country, date)
     # or similar based on what the API modules end up looking like
     # will need one for each API
@@ -21,7 +29,7 @@ def get_result():
     # this might be handled on an individual basis within the APIs
     # or could be in a separate module, or function within this module...
 
-    return render_template('result.html', city=city, country=country, date=date)
+    return render_template('result.html', city=city, country=country, date=date, month=month, year=year, webcam_urls=webcam_urls, holidays=holidays)
 
 
 # so far what we get from index is:
