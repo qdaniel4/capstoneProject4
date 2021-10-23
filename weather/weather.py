@@ -148,7 +148,6 @@ def get_month_number(month):
 def get_climate(latitude, longitude, month):
     url =  f'https://api.troposphere.io/climate/{latitude},{longitude}?token={key}'
     url_data = requests.get(url).json()
-    pprint(url_data)
     temp_max = url_data['data']['monthly'][month]['temperatureMax']
     temp_min = url_data['data']['monthly'][month]['temperatureMin']
     cloud_cover = url_data['data']['monthly'][month]['cloudCover']
@@ -156,19 +155,8 @@ def get_climate(latitude, longitude, month):
     total_rain = url_data['data']['monthly'][month]['totalPrecipitation']
     high = (temp_max * 1.8) + 32
     low = (temp_min * 1.8) +32
-
-    print(high)
-    print(low)
-    
-
-
-                
-
-
-
-
-
-
+    rain = (total_rain * 2) / 25.4
+    print(f'{rain:.2f}') 
 
 
 
