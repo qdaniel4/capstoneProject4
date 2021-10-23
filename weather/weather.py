@@ -3,16 +3,6 @@ import os
 import re
 from pprint import pprint
 
-# location
-# https://api.troposphere.io/place/name/[Search-String]?token=[API-KEY]
-
-# weather 
-# https://api.troposphere.io/forecast/[Latitude],[Longitude]?token=[API-KEY]
-
-# climate
-# https://api.troposphere.io/climate/[Latitude],[Longitude]?token=[API-KEY]
-# https://api.troposphere.io/climate/48.5,11.123?token=[API-KEY]
-
 key = os.environ.get('TROPOSPHERE_KEY')
 
 
@@ -56,12 +46,6 @@ def capitolize_city(city):
          # from https://www.geeksforgeeks.org/python-program-to-convert-a-list-to-string/
         to_return = ' '.join([elem for elem in list_words])
         
-
-
-    #####
-    #####
-    #####
-    # code is broken here
     else:
         
         to_return = list_words[0]
@@ -70,35 +54,17 @@ def capitolize_city(city):
     return to_return
 
 
-    # from https://www.geeksforgeeks.org/python-program-to-convert-a-list-to-string/
-    #else: 
-        
-    
-        # list_to_string = list_words
-        # print(list_to_string)
-        # return list_to_string
-
 def check_if_found(searched_city):
     url = f'https://api.troposphere.io/place/name/{searched_city}?token={key}'
     countries_list = []
     url_data = requests.get(url).json()
-    if len(countries_list) == 0:
+    if len(url_data['data']) == 0:
         check_if_found(capitolize_city(city_name()))
     for x in url_data['data']:
         if searched_city == x['name']:
             countries_list.append(x)
         
-       
     return countries_list  
-
-
-
-    
-
-
-
-
-
 
 def pick_correct(countries_list):
     not_match = True
@@ -137,20 +103,6 @@ def get_coordinates(correct_city):
     
     return latitude, longitude
     
-     
-             
-
-
-    
-        
-        
-    
-        #print(url_data["data"][x]['name'])
-    #latitude = url_data["data"][0]["latitude"]
-    #longitude = url_data["data"][0]["longitude"]
-    
-    #return latitude, longitude 
-
 def get_month_name():
     not_match = True
     while not_match:
@@ -202,9 +154,11 @@ def get_climate(latitude, longitude, month):
     cloud_cover = url_data['data']['monthly'][month]['cloudCover']
     sunshine_hours = url_data['data']['monthly'][month]['sunshineHours']
     total_rain = url_data['data']['monthly'][month]['totalPrecipitation']
+    high = (temp_max * 1.8) + 32
+    low = (temp_min * 1.8) +32
 
-
-    print(temp_max)
+    print(high)
+    print(low)
     
 
 
