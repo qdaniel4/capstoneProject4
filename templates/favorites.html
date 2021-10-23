@@ -3,8 +3,22 @@
 {% block content %}
 <div id="favorites" class="content-box">
     <h1>Your Favorites:</h1>
-
-    
+    <table>
+        <tr>
+            <th>Place</th>
+            <th>Time</th>
+            <th>Get Results</th>
+            <th>Delete</th>
+        </tr>
+    {% for favorite in favorites %}
+        <tr>
+            <th>{{favorite.city}}, {{favorite.country}}</th>
+            <th>{{favorite.month}}/{{favorite.year}}</th>
+            <th></th>
+            <th></th>
+        </tr>
+    {% endfor %}
+    </table>
 </div>
 
 {% endblock %}

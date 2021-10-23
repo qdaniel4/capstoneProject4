@@ -1,5 +1,7 @@
 from flask import Flask, request, render_template, redirect
 
+import favorites_db
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -35,8 +37,9 @@ def get_result():
 
 @app.route('/favorites')
 def get_favorites():
+    favorites = favorites_db.get_favorites()
 
-    return render_template('favorites.html')
+    return render_template('favorites.html', favorites=favorites)
 
 
 # so far what we get from index is:
