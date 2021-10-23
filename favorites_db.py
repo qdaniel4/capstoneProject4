@@ -42,6 +42,15 @@ def get_favorites():
     return favorites_list
 
 
+def get_favorite_by_id(favorite_id):
+    favorite = Favorite.get_or_none(id=favorite_id)
+
+    if not favorite:
+        raise FavoritesError(f'Error: No favorite with id {favorite_id} found.')
+
+    return favorite
+
+
 def add_favorite(city, country, month, year, webcam, weather, holidays, nickname = None):
     """Expects parameters to successfully create a Favorites object
     Creates & saves this object to database.
