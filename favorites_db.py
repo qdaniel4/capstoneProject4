@@ -50,7 +50,7 @@ def add_favorite(city, country, month, year, webcam, weather, holidays, nickname
     favorite.save()
 
 
-def delete_favorite(favorite_id):
+def delete_favorite_by_id(favorite_id):
     """Find favorite by ID, then delete that favorite.
     Return True is favorite was deleted.
     Return False if favorite was not deleted.""" 

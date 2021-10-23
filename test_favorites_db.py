@@ -59,7 +59,7 @@ class FavoritesTest(TestCase):
         self.assertIsNone(was_deleted)
 
 
-    def test_delete_favorite_returns_True_when_deleted(self):
+    def test_delete_favorite_by_id_returns_True_when_deleted(self):
         favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
         favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
@@ -70,7 +70,7 @@ class FavoritesTest(TestCase):
         self.assertTrue(was_deleted)
 
 
-    def test_delete_favorite_returns_False_when_valid_id_not_in_database(self):
+    def test_delete_favorite_by_id_returns_False_when_valid_id_not_in_database(self):
         favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
         favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
@@ -82,7 +82,7 @@ class FavoritesTest(TestCase):
         self.assertFalse(was_deleted)
 
 
-    def test_delete_favorite_returns_False_when_invalid_id_type(self):
+    def test_delete_favorite_by_id_returns_False_when_invalid_id_type(self):
         favorite_one = Favorite(city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
         favorite_two = Favorite(city="City2", country="Country2", month=7, year=2020, webcam="http://url3.com/", weather="weather", holidays="holiday1", nickname="nickname")
         favorite_one.save()
