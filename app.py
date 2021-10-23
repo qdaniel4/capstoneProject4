@@ -18,7 +18,8 @@ def get_result():
 
     webcam_urls = ['url1', 'url2']
 
-    holidays = ['holiday1', 'holiday2']
+    holidays = [{'name': 'holday1', 'description': 'this is a description','date': 'December 22nd'}, 
+    {'name': 'holday2', 'description': 'this is another description','date': 'March 5th'}]
 
 
     # TODO: webcam_url = webcam_api.get_webcam(city, country, date)
