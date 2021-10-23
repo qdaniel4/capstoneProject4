@@ -33,5 +33,11 @@ def get_result():
     return render_template('result.html', city=city, country=country, date=date, month=month, year=year, webcam_urls=webcam_urls, holidays=holidays)
 
 
+@app.route('/favorites')
+def get_favorites():
+
+    return render_template('favorites.html')
+
+
 # so far what we get from index is:
 # result?city=user_input&country=user_input&date=2021-12-23
