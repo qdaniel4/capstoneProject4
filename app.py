@@ -5,7 +5,7 @@ import favorites_db
 app = Flask(__name__)
 
 @app.route('/')
-def home_page():
+def index():
     return render_template('index.html')
 
 
