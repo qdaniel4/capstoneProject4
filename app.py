@@ -15,6 +15,7 @@ def get_result():
     country = request.args.get('country')
     date = request.args.get('date')
 
+    #TODO get month and year from date
     month = 'sample month'
     year = 'sample year'
 
@@ -32,7 +33,7 @@ def get_result():
     # this might be handled on an individual basis within the APIs
     # or could be in a separate module, or function within this module...
 
-    return render_template('result.html', city=city, country=country, date=date, month=month, year=year, webcam_urls=webcam_urls, holidays=holidays)
+    return render_template('result.html', city=city, country=country, month=month, year=year, webcam_urls=webcam_urls, holidays=holidays)
 
 
 @app.route('/favorites')
