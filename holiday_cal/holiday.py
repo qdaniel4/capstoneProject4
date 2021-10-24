@@ -6,8 +6,8 @@ import ui
 import valid
 
 #TODO fix validation/exception issue
-#TODO refactor code
-#TODO testing cont..
+#TODO testing cont.. fix reqhttp res
+
 
 def main():
     country_location = get_country()
@@ -16,6 +16,7 @@ def main():
     t1 = time.perf_counter()
     holiday = get_holiday(country_location,travel_year,travel_month )
     
+
     if holiday is None:
         print ('There is no national holiday for this month')
     else:
@@ -23,7 +24,7 @@ def main():
         t2 = time.perf_counter()
         print(f'Finished in {t2-t1} seconds')
 
-        
+
 def get_country():
     """ ask user the country's country_code,validate the input and pass it to api req country_code handler
     :returns: the country_code (ISO format)"""
@@ -53,7 +54,7 @@ def get_holiday(country,year,month):
     
 def display_holiday(holiday):
     """ display the holiday data. """
-    ui.display_holiday_data(holiday)
+    ui.display_holiday(holiday)
       
 
 if __name__ == '__main__':

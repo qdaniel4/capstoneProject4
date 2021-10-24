@@ -12,28 +12,35 @@ class TestUI(TestCase):
             actual = ui.req_countries()
             self.assertEqual(actual.status_code, 200)
             self.assertEqual(actual.json(), sample_json)
-    
-   
-    @patch('requests.Response.json')
-    def test_holiday_value(self,mock_req_json):
-        mock_country = 'us'
-        mock_year = '2021'
-        mock_month = '1'
-        mock_api_response = {
-                'country': mock_country,
-                'year': mock_year, 
-                'month': mock_month, 
-                'type':'national',
-                'api_key':'api_key'
-                }
-        mock_req_json.return_value = mock_api_response
-        
-        holiday = ui.req_holiday({ 'country': mock_country,
-                'year': mock_year, 
-                'month': mock_month,'type':'national','api_key':'api_key'})
-        
-        expected = {'country': 'us',
-                'year': '2021', 
-                'month': '1', 'type':'national','api_key':'api_key'}
-        self.assertEqual(expected,holiday)
             
+    def test_req_countries_http_failed_response(self):
+        """ testing an Http error exception is called . """
+        with patch('requests.Response.json'):
+            pass
+   
+   
+   
+#    holiday end points
+    def test_holiday_value(self):
+            with patch('requests.Response.json') as mock_req_json:
+                mock_country = 'us'
+                mock_year = '2021'
+                mock_month = '1'
+                mock_api_response = {
+                        'country': mock_country,
+                        'year': mock_year, 
+                        'month': mock_month, 
+                        'type':'national',
+                        'api_key':'api_key'
+                        }
+                mock_req_json.return_value = mock_api_response
+                
+                holiday = ui.req_holiday({ 'country': mock_country,
+                        'year': mock_year, 
+                        'month': mock_month,'type':'national','api_key':'api_key'})
+                
+                expected = {'country': 'us',
+                        'year': '2021', 
+                        'month': '1', 'type':'national','api_key':'api_key'}
+                self.assertEqual(expected,holiday)
+                

@@ -1,6 +1,6 @@
-# Credentials/url
+""" apis and urls"""
 import os
-api_key = ['YOUR API KEY HERE'] #else crash
+api_key = ['YOUR API KEY HERE']
 
 
 # url

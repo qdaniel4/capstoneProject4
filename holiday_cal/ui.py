@@ -6,19 +6,22 @@ import requests
 import json
 import logging as log
 from exceptions import NoStateRegion
-import time 
-# log config
-log.basicConfig(filename='country.log', level=log.DEBUG,format='%(funcName)s')
+import time
+from datetime import datetime
+ 
 
+#countries end point
 def country_code_handler(country_code):
     """  verifies if the provided country_code matches to any of the countries supported by the API.
     :param:  The country code to verify.
     :returns: True if a country exists with the provided country_code, else raises NoStateRegion. """
     try:
         res = req_countries()
-        for c in res['response']['countries']: 
+        countries = extract_countries(res)
+        for c in countries:
             if c['iso-3166'] == country_code:
                 return country_code
+            
         raise NoStateRegion
     except NoStateRegion:
         print('error, No country matches the provided country code,try again!\n')
@@ -27,15 +30,25 @@ def country_code_handler(country_code):
 
 def req_countries():
     """ Call countries API """
+    query = {'api_key': api_key}
+    res = requests.get(url_countries,params=query)
     try:
-        query = {'api_key': api_key}
-        res = requests.get(url_countries,params=query).json()
-        return res
-    except requests.RequestException as e:
         res.raise_for_status()
-        print(e)
-            
+    except requests.exceptions.RequestException as err:
+        print(err)
+        return None
+    return res.json()
 
+
+def extract_countries(res):
+    countries = res['response']['countries']
+    if countries != None:
+        lis_of_countries(countries)
+        return countries
+        
+    
+            
+ #holiday endpoint           
 def get_holiday_data(country,year,month):
     """ call holiday api with the provided data.
     :params:  user data to request holiday.
@@ -67,47 +80,57 @@ def check_holiday_data_not_null(res):
     return None if holiday_json == [] else holiday_json 
 
     
-def extract_holiday(holiday):
-    """ extract holiday data and add it to a list.
+def extract_holiday(holiday_data):
+    """ extract holiday data.
     :param: holiday api response
-    :returns: list of holiday data to render to the user.  """
-    user_data = []
-    for hol in holiday:
+    :returns: dictionary of the holiday data to render to the user.  """
+    for hol in holiday_data:
         print()
-        holiday_datetime = hol['date']['datetime']        
-        holiday_dict={
-            'name':hol['name'],
-            'description':hol['description'],
-            'country':hol['country']['name'],
-            'datetime':{
-                'year':holiday_datetime['year'],
-                'month':holiday_datetime['month'],
-                'day': holiday_datetime['day']
-            }
+        holiday_name = hol['name']
+        description = hol['description']
+        country_name = hol['country']['name']
+        holiday_date = hol['date']['iso']
+        print(f'Holiday name: {holiday_name}\ndescription: {description}\ncountry: {country_name}\ndate: {holiday_date}')
+        
+        holiday_dict = {
+            'holiday_name':holiday_name,
+            'description':description,
+            'country':country_name,
+            'date':holiday_date
         }
-        user_data.append(holiday_dict)
-        send_json(user_data)
-    return user_data
+        send_json(holiday_dict)
+    return holiday_dict
 
-
-def display_holiday_data(holiday):
-    """ displays all holidays with the provided data """
+def display_holiday(holiday):
+    """ displays all holidays with the provided data.
+    :returns: holiday_data dictionary to display in the template.  """
     try:
-        user_list = extract_holiday(holiday)
-        if user_list is None:
-            return None
-        for item in user_list:
-            print(f'Holiday Name:',item['name'])
-            print(f'Description:',item['description'])
-            print(f'Country Name:',item['country'])
-            print(f"Date:{item['datetime']['month']}/{item['datetime']['day']}/{item['datetime']['year']}") #TODO fix date format
-            print()
-    except Exception:
+        holiday_data = extract_holiday(holiday)
+        return holiday_data
+    except Exception as e:
+        print(e)
         print('This data is not in the format expected')
-        return 'Unknown'       
+        return 'Unknown'
+
 
 def send_json(user_data):
-    """ To check the type of data holiday api returns. """
+    """ To check the data types holiday api returns. """
     # NOTE verifying purposes 
     with open("scratch.json", "w") as f:
         json.dump(user_data,f, indent=2)
+
+#USE FOR DROP DOWN
+def lis_of_countries(countries):
+    """ returns all of the countries and countr code (ISO) supported by api """
+    #NOTE this function for testing, using countries_scratch.json file instead of api calls
+    results = []
+    for c in countries:
+        country_name = c['country_name']
+        country_code = c['iso-3166']
+        name_code = {
+            'country_name':country_name,
+            'country_code':country_code
+        }
+        results.append(name_code)
+    with open("countries_scratch.json", "w") as f:
+        json.dump(results,f, indent=2)
