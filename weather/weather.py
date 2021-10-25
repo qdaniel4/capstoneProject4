@@ -145,10 +145,13 @@ def get_climate(latitude, longitude, month):
     high = (temp_max * 1.8) + 32
     low = (temp_min * 1.8) + 32
     rain = (total_rain * 2) / 25.4
-    rain_return =f' {high:.2f}F'
+    high_return =f' {high:.2f}F'
     low_return = f' {low:.2f}F'
     rain_return = f'{rain:.2f} inches per month'
-    high_return = f'{sunshine_hours:.2f}'
+    sunshine_return = f'{sunshine_hours:.2f}'
+    temp_return = f'{high_return}F to {low_return}F'
+    
+    return rain_return, sunshine_return, temp_return
 
 
 
