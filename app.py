@@ -79,6 +79,17 @@ def get_favorite(id):
     return render_template('result.html', city=city, country=country, month=month, year=year, webcam_urls=webcam_urls, weather=weather, holidays=holidays)
 
 
+@app.route('/favorite/add/<id>')
+def add_favorite(favorite):
+    #TODO: would be nice to ask the user if they are sure they want to delete the favorite...
+    was_favorite_deleted = favorites_db.delete_favorite_by_id(id)
+    deleted_confirmation = f'Unable to delete favorite. Please check if ID: {id} is a valid favorite.'
+    if was_favorite_deleted == True:
+        deleted_confirmation = 'Favorite was deleted.'
+    
+    return render_template('deleted.html', deleted_confirmation=deleted_confirmation)
+
+
 @app.route('/favorite/delete/<id>')
 def delete_favorite(id):
     #TODO: would be nice to ask the user if they are sure they want to delete the favorite...
