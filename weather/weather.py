@@ -7,7 +7,7 @@ key = os.environ.get('TROPOSPHERE_KEY')
 
 
 
-    
+ ### I left in validation in case we need it   
 
 # def city_name():
 #     not_match = True
@@ -23,21 +23,27 @@ key = os.environ.get('TROPOSPHERE_KEY')
 #                 not_match = False
 #                 return city
 
-def capitolize_city(city):
+def capitalize_city(city):
+    # capitalizing first letter of each word put in to search for it
     city = city.lower()
     to_return = ''
     list_words = []
+    # splitting by word
     split = city.split(' ')
     for word in split:
         length = len(word)
+        # upper casing first letter
         x = word[0].upper()
+        # putting capital letter and rest of word together in a list
         list_words.append(x + word[1:length])
        
     if len(list_words)  > 1:
+        # if more than 1 word it makes a string out of all the words
          # from https://www.geeksforgeeks.org/python-program-to-convert-a-list-to-string/
         to_return = ' '.join([elem for elem in list_words])
     else:
         to_return = list_words[0]
+    # for a return value of 1 word
     return to_return
 
 def check_if_found(searched_city):
@@ -48,21 +54,26 @@ def check_if_found(searched_city):
        return None
     else:
         for x in url_data['data']:
+            # if city put in is the same as city in list
             if searched_city == x['name']:
                 countries_list.append(x)
-        
+        #returns the data of all cities with same name
         return countries_list  
 
 def pick_correct(countries_list, country):
     cities_in_country = []
+    #loops through list put in from check_if_found
     for correct_country in countries_list:
+        # selects items with same country name as put in
         if country == correct_country['country']:
             cities_in_country.append(correct_country)
         if len(cities_in_country) == 0:
             return None
         else:
-            print(cities_in_country[0])
+            # returns first item in list 
             return cities_in_country[0]
+       
+       
        # if country == correct_country[]
     # not_match = True
     # x = 0
@@ -88,6 +99,7 @@ def pick_correct(countries_list, country):
     #             return correct_city
     
 def get_coordinates(correct_city):
+    # gets latitude and longitude from pick_country
     latitude = correct_city['latitude']
     longitude = correct_city['longitude']
     return latitude, longitude
@@ -107,54 +119,60 @@ def get_coordinates(correct_city):
 #                     return month
 
 def get_month_number(month):
-    number = 0
-    if month == 1:
-        number = 0
-    elif month == 2:
-        number = 1
-    elif month == 3:
-        number = 2
-    elif month == 4:
-        number = 3
-    elif month == 5:
-        number = 4
-    elif month == 6:
-        number = 5
-    elif month == 7:
-        number = 6
-    elif month == 8:
-        number = 7
-    elif month == 9:
-        number = 8
-    elif month == 10:
-        number = 9
-    elif month == 11:
-        number == 10
+    # changes month to correct format for search
+    return_month = 0
+    if month == '01':
+        return_month = 0
+    if month == '02':
+        return_month = 1
+    if month == '03':
+        return_month = 2
+    if month == '04':
+        return_month = 3
+    if month == '05':
+        return_month = 4
+    if month == '06':
+        return_month = 5
+    if month == '07':
+        return_month = 6
+    if month == '08':
+        return_month = 7
+    if month == '09':
+        return_month = 8
+    if month == '10':
+        return_month = 9
+    if month == '11':
+        return_month = 10
     else:
-        number == 11
-    return number
+        return_month =11
+    return return_month
+    
 
 def get_climate(latitude, longitude, month):
+    # new api request
     url =  f'https://api.troposphere.io/climate/{latitude},{longitude}?token={key}'
     url_data = requests.get(url).json()
+    # gets temp data from latitude and longitude of city originally searched for thr month put in
     temp_max = url_data['data']['monthly'][month]['temperatureMax']
     temp_min = url_data['data']['monthly'][month]['temperatureMin']
     cloud_cover = url_data['data']['monthly'][month]['cloudCover']
     sunshine_hours = url_data['data']['monthly'][month]['sunshineHours']
     total_rain = url_data['data']['monthly'][month]['totalPrecipitation']
+    # changing celsius to farenhight
     high = (temp_max * 1.8) + 32
     low = (temp_min * 1.8) + 32
+    # changing metric to imperial
     rain = (total_rain * 2) / 25.4
+    # puts results in a string to display
     high_for_dict =f' {high:.2f}F'
     low_for_dict = f' {low:.2f}F'
     rain_for_dict = f'{rain:.2f} inches per month'
     sunshine_for_dict = f'{sunshine_hours:.2f}'
+    # a string of high and low
     temp_for_dict = f'{high_for_dict}F to {low_for_dict}F'
-    rain_return = {'rain': rain_for_dict}
-    sunshine_return = {'sunshine': sunshine_for_dict}
-    temp_return = {'temp': temp_for_dict}
-
-    return rain_return, sunshine_return, temp_return
+    # all weather info
+    temp_dict = {'rain': rain_for_dict, 'sunshine': sunshine_for_dict, 'temp': temp_for_dict}
+    return temp_dict
 
 
 
