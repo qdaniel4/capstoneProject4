@@ -1,8 +1,27 @@
 from flask import Flask, request, render_template, redirect
 
-import favorites_db
+
+# TODO: change to import the actual modules needed
+# scratch_module is an empty file
+# am using mocking for unit tests for the functions that need to be imported
+# but I didn't know what to do about the invalid import statements
+# & did not want to use placeholder functions in app.py because I didn't think I'd remember to update them all later...
+import scratch_module as favorites_db
+import scratch_module as holiday_api
+import scratch_module as webcam_api
+import scratch_module as weather_api
 
 app = Flask(__name__)
+
+def get_month_and_year_from_date(date):
+    """Takes a date in the HTML datepicker format as param.
+    Returns just the month and year from that date as tuple."""
+    # TODO: Refactor this out of app.py + modify test file ?
+    date_list = date.split('/')
+    month = date_list[0]
+    year = date_list[2]
+
+    return month, year
 
 @app.route('/')
 def index():
@@ -15,16 +34,18 @@ def get_result():
     country = request.args.get('country')
     date = request.args.get('date')
 
-    #TODO get month and year from date
-    month = 'sample month'
-    year = 'sample year'
+    month, year = get_month_and_year_from_date(date)
+
+    webcam_urls = webcam_api.get_webcam_urls(city, country)
+    weather = weather_api.get_weather(city, country, month, year)
+
 
     webcam_urls = ['url1', 'url2']
 
     holidays = [{'name': 'holday1', 'description': 'this is a description','date': 'December 22nd'}, 
     {'name': 'holday2', 'description': 'this is another description','date': 'March 5th'}]
 
-
+ 
     # TODO: webcam_url = webcam_api.get_webcam(city, country, date)
     # or similar based on what the API modules end up looking like
     # will need one for each API
