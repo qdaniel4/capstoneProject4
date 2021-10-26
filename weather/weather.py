@@ -5,7 +5,7 @@ from pprint import pprint
 
 key = os.environ.get('TROPOSPHERE_KEY')
 
-
+cache = {}
 
  ### I left in validation in case we need it   
 
@@ -58,7 +58,16 @@ def check_if_found(searched_city):
             if searched_city == x['name']:
                 countries_list.append(x)
         #returns the data of all cities with same name
-        return countries_list  
+        return countries_list
+
+# from https://towardsdatascience.com/how-to-speed-up-your-python-code-with-caching-c1ea979d0276
+def check_if_in_cache(searched_city):
+    if searched_city not in cache:
+        city = check_if_found(searched_city)
+        cache[searched_city] = city
+    return cache[searched_city]
+
+
 
 def pick_correct(countries_list, country):
     cities_in_country = []
@@ -144,7 +153,7 @@ def get_month_number(month):
     if month == '11':
         return_month = 10
     else:
-        return_month =11
+        return_month = 11
     return return_month
     
 
