@@ -4,9 +4,13 @@ import re
 from pprint import pprint
 
 key = os.environ.get('TROPOSPHERE_KEY')
+cache ={}
 
-cache = {}
-
+def main():
+    x = check_if_found('Munich')
+    
+    y = check_if_in_cache(x)
+    print(y)
  ### I left in validation in case we need it   
 
 # def city_name():
@@ -58,24 +62,35 @@ def check_if_found(searched_city):
             if searched_city == x['name']:
                 countries_list.append(x)
         #returns the data of all cities with same name
+        
         return countries_list
 
 # from https://towardsdatascience.com/how-to-speed-up-your-python-code-with-caching-c1ea979d0276
 def check_if_in_cache(searched_city):
-    if searched_city not in cache:
-        city = check_if_found(searched_city)
-        cache[searched_city] = city
-    return cache[searched_city]
+    
+    for x in searched_city:
+        
+        if x['country'] not in cache:
+            city = check_if_found(x['name'])
+            print(city)
+            cache[searched_city] = city
+        return cache[searched_city]
 
+    
 
 
 def pick_correct(countries_list, country):
     cities_in_country = []
     #loops through list put in from check_if_found
-    for correct_country in countries_list:
+    #for correct_country in countries_List:
         # selects items with same country name as put in
-        if country == correct_country['country']:
-            cities_in_country.append(correct_country)
+    for k, v in countries_list.items():
+       # if country == correct_country['country']:
+        
+        for x in v['data']:
+            if x['country'] == country:
+                cities_in_country.append(x)
+          #  cities_in_country.append(correct_country)
         if len(cities_in_country) == 0:
             return None
         else:
@@ -183,8 +198,9 @@ def get_climate(latitude, longitude, month):
     temp_dict = {'rain': rain_for_dict, 'sunshine': sunshine_for_dict, 'temp': temp_for_dict}
     return temp_dict
 
+cache = {}
 
 
 
-
-
+if __name__ == '__main__':
+    main()
