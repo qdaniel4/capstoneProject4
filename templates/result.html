@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Results for {{city}}, {{country}} in {{month}}/{{year}}.</h2>
+
+<div id="weather" class="content-box">
+
+    <!--
+        Commented out until I check in more with Jason about what his module returns.
+        <div>{{weather}}</div>
+        or
+        <ul>
+            <li>Rainfall: {{weather['rainfall']}}</li>
+            <li>Average Temp: {{weather['temp']}}</li>
+            <li>Daylight Hours: {{weather['daylight']}}</li>
+        </ul>
+    -->
+
+</div>
+
+<div id="holidays" class="content-box">
+
+    <!-- Display a list of holiday names, date of holiday, holiday descriptions. -->
+    <h3>Holidays in {{country}} during {{month}}:</h3>
+    {% for holiday in holidays %}
+    <p>{{holiday['name']}}</p>
+    <ul>
+        <li>{{holiday['date']}}</li>
+        <li>{{holiday['description']}}</li>
+    </ul>
+    <br>
+    {% endfor %}
+
+
+</div>
+
+<div id="webcam" class="content-box">
+
+    <!-- show a list of webcam images -->
+    {% for webcam_url in webcam_urls %}
+    <img url="{{webcam_url}}" />
+    <br>
+    {% endfor %}
+    <!--    optional:
+    <p>{{webcam_description}}</p>
+    -->
+
+</div>
+
+<div id="add-to-faves" class="content=box">
+
+
+    
+</div>
+
+{% endblock %}

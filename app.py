@@ -11,6 +11,7 @@ import scratch_module as holiday_api
 import scratch_module as webcam_api
 import scratch_module as weather_api
 
+
 app = Flask(__name__)
 
 def get_month_and_year_from_date(date):
@@ -62,6 +63,7 @@ def get_favorites():
     favorites = favorites_db.get_favorites()
 
     return render_template('favorites.html', favorites=favorites)
+    # unit test - put data in db, call route handler, examine response, assert example data on page, assert example data on page, etc
 
 
 @app.route('/favorite/<id>')
@@ -83,11 +85,11 @@ def get_favorite(id):
 def add_favorite(favorite):
     #TODO: would be nice to ask the user if they are sure they want to delete the favorite...
     was_favorite_deleted = favorites_db.delete_favorite_by_id(id)
-    deleted_confirmation = f'Unable to delete favorite. Please check if ID: {id} is a valid favorite.'
+    added = f'Unable to delete favorite. Please check if ID: {id} is a valid favorite.'
     if was_favorite_deleted == True:
-        deleted_confirmation = 'Favorite was deleted.'
+        added = 'Favorite was deleted.'
     
-    return render_template('deleted.html', deleted_confirmation=deleted_confirmation)
+    return render_template('added.html', added=added)
 
 
 @app.route('/favorite/delete/<id>')
