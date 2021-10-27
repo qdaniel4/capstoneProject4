@@ -68,3 +68,18 @@ def save_images(daylight_links, current_links):
         image = Image.open(BytesIO(r.content))
         current_images.append(image)
     return daylight_images, current_images
+
+def get_video_link(nearby, category, orderby, limit):
+    url = f'https://api.windy.com/api/webcams/v2/list/{nearby}/{category}/{orderby}/{limit}?show=webcams:location,player'
+    month_video = []
+    live_video = []
+    data = requests.get(url, headers=header).json()
+
+    webcams = data.get('result').get('webcams')
+    for link in webcams:
+        month_video.append(link.get('player').get('month').get('embed'))
+        live_video.append(link.get('image').get('current').get('preview'))
+    if len(live_video) == 0:
+        return month_video
+    else:
+        return month_video, live_video
