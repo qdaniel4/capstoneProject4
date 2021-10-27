@@ -67,8 +67,8 @@ def save_images(daylight_links, current_links):
         current_images.append(image)
     return daylight_images, current_images
 
-def get_video_link(nearby, category, orderby, limit):
-    url = f'https://api.windy.com/api/webcams/v2/list/{nearby}/{category}/{orderby}/{limit}?show=webcams:location,player'
+def get_video_link(nearby, category):
+    url = f'https://api.windy.com/api/webcams/v2/list/{nearby}/{category}/orderby=distance/limit=1?show=webcams:location,player'
     month_video = []
     live_video = []
     data = requests.get(url, headers=header).json()
