@@ -31,18 +31,16 @@ def show_categories():
     return categories
 
 """formats parameters/path before getting a response from the api"""
-def format_params(coordinates, radius, category_choice, order, amount):
+def format_params(coordinates, radius, category_choice):
     coordinates = coordinates.replace(' ', '')
     nearby = f'nearby={coordinates},{radius}'
     category = f'category={category_choice}'
-    orderby = f'orderby={order}'
-    limit = f'limit={amount}'
-    return nearby, category, orderby, limit
+    return nearby, category
 
 """gets a list of daylight and current time image links from the api, list depends on the users preferences (location, category, sorted, how many they want to see)"""
-def get_image_list(nearby, category, orderby, limit):
+def get_image_list(nearby, category):
 
-    url = f'https://api.windy.com/api/webcams/v2/list/{nearby}/{category}/{orderby}/{limit}?show=webcams:location,image'
+    url = f'https://api.windy.com/api/webcams/v2/list/{nearby}/{category}/orderby=distance/limit=5?show=webcams:location,image'
     daylight_links = []
     current_links = []
     data = requests.get(url, headers=header).json()
