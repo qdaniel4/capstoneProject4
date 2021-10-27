@@ -1,1 +1,0 @@
-database_path = 'favorites.db'
