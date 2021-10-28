@@ -112,14 +112,11 @@ def get_favorite(id):
     return render_template('result.html', city=city, country=country, month=month, year=year, webcam_urls=webcam_urls, weather=weather, holidays=holidays)
 
 
-@app.route('/favorite/add/<id>')
-def add_favorite(favorite):
-    was_favorite_deleted = favorites_db.delete_favorite_by_id(id)
-    added = f'Unable to delete favorite. Please check if ID: {id} is a valid favorite.'
-    if was_favorite_deleted == True:
-        added = 'Favorite was deleted.'
+@app.route('/favorite/add/<city>/<country>')
+def add_favorite(city, country, month, year, webcam_urls, weather, holidays):
+    favorites_db.add_favorite(city, country, month, year, webcam_urls, weather, holidays)
     
-    return render_template('added.html', added=added)
+    return redirect('favorites.html')
 
 
 @app.route('/favorite/delete/<id>')
