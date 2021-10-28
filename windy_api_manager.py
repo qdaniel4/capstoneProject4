@@ -6,6 +6,7 @@ from pprint import pprint
 from functools import lru_cache
 from io import BytesIO
 from PIL import Image, ImageShow
+import time
 
 key = os.environ.get('WINDY_KEY')
 header = {'x-windy-key': key}
@@ -38,18 +39,21 @@ def format_params(coordinates, radius, category_choice):
     return nearby, category
 
 """gets a list of daylight and current time image links from the api, list depends on the users preferences (location, category, sorted, how many they want to see)"""
-def get_image_list(nearby, category):
+def get_image_list(coordinates, category):
 
-    url = f'https://api.windy.com/api/webcams/v2/list/{nearby}/{category}/orderby=distance/limit=5?show=webcams:location,image'
+    url = f'https://api.windy.com/api/webcams/v2/list/{coordinates},300/{category}/orderby=distance/limit=5?show=webcams:location,image'
     daylight_links = []
     current_links = []
     data = requests.get(url, headers=header).json()
 
-    webcams = data.get('result').get('webcams')
-    for link in webcams:
-        daylight_links.append(link.get('image').get('daylight').get('preview'))
-        current_links.append(link.get('image').get('current').get('preview'))
-    return daylight_links, current_links
+    if len(data.get('result').get('webcams')):
+        return None
+    else:
+        webcams = data.get('result').get('webcams')
+        for link in webcams:
+            daylight_links.append(link.get('image').get('daylight').get('preview'))
+            current_links.append(link.get('image').get('current').get('preview'))
+        return daylight_links, current_links
 
 """saves a list of daylight and current time images"""
 def save_images(daylight_links, current_links):
