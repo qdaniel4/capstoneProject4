@@ -8,19 +8,23 @@
 </div>
 
 <div class="content-box">
+    <!--Get user input, send to result.html-->
     <form id="search-for-vacation" action="/result" method="GET">
         
         <label for="city">City</label>
         <input name="city" id="city" required>
+
         <label for="country">Country</label>
         <select name="country" id="country" required>
             {% for country in countries %}
             <option value="{{country}}">{{country}}</option>
             {% endfor %}
         </select>
+
         <label for="date">Estimated date of trip:</label>
         <input type="date" name="date" required>
-        <label for="category">Category of images from place:</label>
+
+        <label for="category">Webcam category:</label>
         <select name="category" id="category" required>
             {% for category in webcam_api_categories %}
             <option value="{{category}}">{{category}}</option>

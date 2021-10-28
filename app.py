@@ -6,7 +6,7 @@ from favorites_database import favorites_db
 #TODO: change import statements as merges are made
 
 # from holiday_cal import country_api
-from scratch_module import country_api
+import scratch_module as country_api
 
 # from holiday_cal import holiday as holiday_api
 import scratch_module as holiday_api
@@ -42,7 +42,6 @@ def get_list_of_countries():
 def get_month_and_year_from_date(date):
     """Takes a date in the HTML datepicker format as param.
     Returns just the month and year from that date as tuple."""
-    # TODO: Refactor this out of app.py + modify test file ?
     date_list = date.split('/')
     month = date_list[0]
     year = date_list[2]

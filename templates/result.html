@@ -16,7 +16,7 @@
         }
 -->
 
-<h2>Results for {{ result['city'] }}, {{ result['country'] }} in {{ result['month'] }}/{{ result['year'] }}.</h2>
+<h2 id="result-title">Results for {{ result['city'] }}, {{ result['country'] }} in {{ result['month'] }}/{{ result['year'] }}.</h2>
 
 <div id="add-to-faves" class="content=box">
     <a id="add-to-faves-link" href="{{ url_for( 'add_favorite', result=result )}}">Add this Result to Favorites</a>    

@@ -14,6 +14,7 @@
             <th>Delete</th>
         </tr>
     {% for favorite in favorites %}
+    <!--display 1 favorite per row of table, from favorites database-->
         <tr>
             <th>{{ favorite.city }}, {{ favorite.country }}</th>
             <th>{{ favorite.month }}/{{ favorite.year }}</th>
@@ -27,7 +28,7 @@
 {% else %}
 
 <div class="content-box">
-    <h3>No favorites yet!</h3>
+    <h3>There are no favorites to display. Try searching for a location and adding it to your favorites!</h3>
 </div>
 
 {% endif %}
