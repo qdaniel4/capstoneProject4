@@ -1,23 +1,6 @@
-[
-  {
-    "name": "Presidents' Day",
-    "description": "Washington's Birthday, or Presidents' Day, honors the life and work of the first president of the United States, George Washington.",
-    "country": {
-      "id": "us",
-      "name": "United States"
-    },
-    "date": {
-      "iso": "2039-02-21",
-      "datetime": {
-        "year": 2039,
-        "month": 2,
-        "day": 21
-      }
-    },
-    "type": [
-      "National holiday"
-    ],
-    "locations": "All",
-    "states": "All"
-  }
-]
+{
+  "holiday_name": "Independence Day",
+  "description": "On Independence Day, Americans celebrate the anniversary of publication of the Declaration of Independence from Great Britain in 1776.",
+  "country": "United States",
+  "date": "2039-07-04"
+}

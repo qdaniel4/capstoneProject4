@@ -67,7 +67,7 @@ def extract_holiday(holiday_data):
             'country':country_name,
             'date':holiday_date
         }
-        send_json(holiday_data)
+        send_json(holiday_dict)
     return holiday_dict
 
 
