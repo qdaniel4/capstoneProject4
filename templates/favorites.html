@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% if favorites %}
+
 <div id="favorites" class="content-box">
     <h1>Your Favorites:</h1>
-    <table>
+    <table id="favorites-table">
         <tr>
             <th>Place</th>
             <th>Time</th>
@@ -12,13 +15,21 @@
         </tr>
     {% for favorite in favorites %}
         <tr>
-            <th>{{favorite.city}}, {{favorite.country}}</th>
-            <th>{{favorite.month}}/{{favorite.year}}</th>
-            <th><a href="{{ url_for( 'get_favorite', id=favorite.id ) }}">Show Results</a></th>
-            <th><a href="{{ url_for( 'delete_favorite', id=favorite.id )}}">Delete</a></th>
+            <th>{{ favorite.city }}, {{ favorite.country }}</th>
+            <th>{{ favorite.month }}/{{ favorite.year }}</th>
+            <th><a class="show-results" href="{{ url_for( 'get_favorite', id=favorite.id ) }}">Show Results</a></th>
+            <th><a class="delete-favorite" href="{{ url_for( 'delete_favorite', id=favorite.id )}}">Delete</a></th>
         </tr>
     {% endfor %}
     </table>
 </div>
+
+{% else %}
+
+<div class="content-box">
+    <h3>No favorites yet!</h3>
+</div>
+
+{% endif %}
 
 {% endblock %}

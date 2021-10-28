@@ -2,18 +2,38 @@
 
 {% block content %}
 
-<h2>Results for {{city}}, {{country}} in {{month}}/{{year}}.</h2>
+<!--
+    Result dictionary passed to this template:
+        result = {
+        'city': city,
+        'country': country,
+        'month': month,
+        'month_name': month_name,
+        'year': year,
+        'holidays': holidays_list,
+        'weather': weather_data,
+        'webcams': webcam_urls_daylight
+        }
+-->
+
+<h2>Results for {{ result['city'] }}, {{ result['country'] }} in {{ result['month'] }}/{{ result['year'] }}.</h2>
+
+<div id="add-to-faves" class="content=box">
+    <a id="add-to-faves-link" href="{{ url_for( 'add_favorite', result=result )}}">Add this Result to Favorites</a>    
+</div>
 
 <div id="weather" class="content-box">
 
+    <h3>Weather</h3>
+    <p><i>Based on historic climate data in {{ result['month_name'] }} from previous years.</i></p>
     <!--
         Commented out until I check in more with Jason about what his module returns.
-        <div>{{weather}}</div>
+        <div>{{ result['weather'] }}</div>
         or
         <ul>
-            <li>Rainfall: {{weather['rainfall']}}</li>
-            <li>Average Temp: {{weather['temp']}}</li>
-            <li>Daylight Hours: {{weather['daylight']}}</li>
+            <li>Rainfall: {{ result['weather']['rainfall'] }}</li>
+            <li>Average Temp: {{ result['weather']['temp'] }}</li>
+            <li>Daylight Hours: {{ result['weather']['daylight'] }}</li>
         </ul>
     -->
 
@@ -21,13 +41,14 @@
 
 <div id="holidays" class="content-box">
 
+    
     <!-- Display a list of holiday names, date of holiday, holiday descriptions. -->
-    <h3>Holidays in {{country}} during {{month}}:</h3>
-    {% for holiday in holidays %}
-    <p>{{holiday['name']}}</p>
+    <h3>Holidays in {{ result['country'] }} during {{ result['month_name'] }}:</h3>
+    {% for holiday in result['holidays'] %}
+    <p>{{ holiday['name'] }}</p>
     <ul>
-        <li>{{holiday['date']}}</li>
-        <li>{{holiday['description']}}</li>
+        <li>{{ holiday['date'] }}</li>
+        <li>{{ holiday['description'] }}</li>
     </ul>
     <br>
     {% endfor %}
@@ -38,20 +59,14 @@
 <div id="webcam" class="content-box">
 
     <!-- show a list of webcam images -->
-    {% for webcam_url in webcam_urls %}
-    <img url="{{webcam_url}}" />
+    {% for webcam_url in result['webcams'] %}
+    <img url="{{ webcam_url }}" />
     <br>
     {% endfor %}
     <!--    optional:
     <p>{{webcam_description}}</p>
     -->
 
-</div>
-
-<div id="add-to-faves" class="content=box">
-
-
-    
 </div>
 
 {% endblock %}
