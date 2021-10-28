@@ -4,6 +4,8 @@
 
 <div class="content-box">
     <h3>{{ error_message }}</h3>
+    <a class="nav-link" href="{{ url_for('get_favorites') }">Return to Favorites</a>
+    <a class="nav-link" href="{{ url_for('index') }}">Return to Search</a>
 </div>
 
 {% endblock %}

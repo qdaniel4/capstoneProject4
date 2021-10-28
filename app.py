@@ -95,7 +95,6 @@ def get_result():
     # convert some user input into useful API parameters
     month, year = get_month_and_year_from_date(date)
     coordinates = get_coordinates_string(city)
-
     month_name = get_name_of_month_from_number(month)
 
     # get a list of holidays from holiday API

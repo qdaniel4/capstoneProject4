@@ -7,10 +7,10 @@
 
 <body>
 
-    <h1>Travel Planning Catalogue</h1>
+    <h1 id="app-title">Travel Planning Catalogue</h1>
 
     <div id="navigation" class="content-box">
-      <a href="{{ url_for('index') }}">Search For Destination</a> | <a href="{{ url_for('get_favorites') }}">View Saved Destinations</a>
+      <a class="nav-link" href="{{ url_for('index') }}">Search For Destination</a><a class="nav-link" href="{{ url_for('get_favorites') }}">View Saved Destinations</a>
     </div>
 
   {% block content %}   <!-- A block that the child template will fill in -->
