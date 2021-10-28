@@ -3,20 +3,23 @@ import os
 import re
 from pprint import pprint
 import collections
+from functools import lru_cache
 
 key = os.environ.get('TROPOSPHERE_KEY')
 
 
 
-# def main():
-#      x = check_if_found('Munich')
-# #     print(x)
-#      y = pick_correct(x, 'Germany')
-#      print(y)
+def main():
+      #x = check_if_found('Munich')
+#     print(x)
+      y = check_if_in_cache('Munich')
+     # x = pick_correct(y, 'Germany')
+      
+  
 
 
 
- 
+ # from https://www.quickprogrammingtips.com/python/how-to-create-lru-cache-in-python.html
 class SimpleLRUCache:
   def __init__(self, size):
     self.size = size
@@ -41,23 +44,23 @@ class SimpleLRUCache:
   def show_entries(self):
     print(self.lru_cache)
 
-#cache = SimpleLRUCache(999)
+cache = SimpleLRUCache(999)
 
- ### I left in validation in case we need it   
+ ## I left in validation in case we need it   
 
-# def city_name():
-#     not_match = True
-#     while not_match:
-#         city = input('enter a city ')
-#         if city == '':
-#             print('you must enter a city')
-#         else:
-#         # from automate the boring stuff book
-#         # and from # from https://www.guru99.com/python-regular-expressions-complete-tutorial.html
-#             check = re.match(r'[\d\W]', city)
-#             if not check:
-#                 not_match = False
-#                 return city
+def city_name():
+    not_match = True
+    while not_match:
+        city = input('enter a city ')
+        if city == '':
+            print('you must enter a city')
+        else:
+        # from automate the boring stuff book
+        # and from # from https://www.guru99.com/python-regular-expressions-complete-tutorial.html
+            check = re.match(r'[\d\W]', city)
+            if not check:
+                not_match = False
+                return city
 
 def capitalize_city(city):
     # capitalizing first letter of each word put in to search for it
@@ -86,7 +89,7 @@ def check_if_found(searched_city):
     url = f'https://api.troposphere.io/place/name/{searched_city}?token={key}'
     countries_list = []
     url_data = requests.get(url).json()
-    if len(url_data['data']) == 0:
+    if url_data['data'] == None:
        return None
     else:
         for x in url_data['data']:
@@ -96,14 +99,37 @@ def check_if_found(searched_city):
         #returns the data of all cities with same name
         
         return countries_list
+@lru_cache(maxsize=999)
+#from https://towardsdatascience.com/how-to-speed-up-your-python-code-with-caching-c1ea979d0276
+def check_if_in_cache(searched_city):
+    #url = f'https://api.troposphere.io/place/name/{searched_city}?token={key}'
+    #url_data = requests.get(url).json()
+    in_cache = cache.get(searched_city)
+    if in_cache == -1:
+        content = check_if_found(searched_city)
+        
+        # else:
+        #     for x in url_data['data']:
+        #     # if city put in is the same as city in list
+        #     if searched_city == x['name']:
+        cache.put(searched_city, content)
+        z = cache.get(searched_city)
+        print(z)
+    
+        return content
+    print(cache.get(searched_city))
+    return cache.get(searched_city)
+        
 
-# from https://towardsdatascience.com/how-to-speed-up-your-python-code-with-caching-c1ea979d0276
-# def check_if_in_cache(searched_city):
-#     if  cache.get(searched_city) == None:
-#         city = check_if_found(searched_city)
-#         print(city)
-#         cache.put(city['name'], city)
-#     return 
+    
+
+    #     print(cache.get(x['name']))
+    #         if  cache.get(x['name']) == -1:
+    #             print(x['name'])
+    #             city = check_if_found(searched_city)
+    #             print(city)
+    #         cache.put(x['name'], city)
+    # return 
 
 
 
@@ -226,8 +252,8 @@ def get_climate(coordinates, month):
     temp_dict = {'rain': rain_for_dict, 'sunshine': sunshine_for_dict, 'temp': temp_for_dict}
     return temp_dict
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+     main()
 
 
 
