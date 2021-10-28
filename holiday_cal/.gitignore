@@ -18,6 +18,7 @@ env.bak/
 venv.bak/
 
 # Distribution / packaging
+.vscode/
 .Python
 build/
 develop-eggs/
