@@ -2,15 +2,47 @@ import requests
 import os
 import re
 from pprint import pprint
+import collections
 
 key = os.environ.get('TROPOSPHERE_KEY')
-cache ={}
+
+
 
 def main():
     x = check_if_found('Munich')
-    
+    print(x)
     y = check_if_in_cache(x)
     print(y)
+
+
+
+ 
+class SimpleLRUCache:
+  def __init__(self, size):
+    self.size = size
+    self.lru_cache = collections.OrderedDict()
+ 
+  def get(self, key):
+    try:
+      value = self.lru_cache.pop(key)
+      self.lru_cache[key] = value
+      return value
+    except KeyError:
+      return -1
+ 
+  def put(self, key, value):
+    try:
+      self.lru_cache.pop(key)
+    except KeyError:
+      if len(self.lru_cache) >= self.size:
+        self.lru_cache.popitem(last=False)
+    self.lru_cache[key] = value
+ 
+  def show_entries(self):
+    print(self.lru_cache)
+
+cache = SimpleLRUCache(999)
+
  ### I left in validation in case we need it   
 
 # def city_name():
@@ -62,21 +94,16 @@ def check_if_found(searched_city):
             if searched_city == x['name']:
                 countries_list.append(x)
         #returns the data of all cities with same name
-        
         return countries_list
 
 # from https://towardsdatascience.com/how-to-speed-up-your-python-code-with-caching-c1ea979d0276
 def check_if_in_cache(searched_city):
-    
-    for x in searched_city:
-        
-        if x['country'] not in cache:
-            city = check_if_found(x['name'])
-            print(city)
-            cache[searched_city] = city
-        return cache[searched_city]
+    if  cache.get(searched_city) == None:
+        city = check_if_found(searched_city)
+        print(city)
+        cache.put(city['name'], city)
+    return 
 
-    
 
 
 def pick_correct(countries_list, country):
@@ -172,9 +199,9 @@ def get_month_number(month):
     return return_month
     
 
-def get_climate(latitude, longitude, month):
+def get_climate(coordinates, month):
     # new api request
-    url =  f'https://api.troposphere.io/climate/{latitude},{longitude}?token={key}'
+    url =  f'https://api.troposphere.io/climate/{coordinates}?token={key}'
     url_data = requests.get(url).json()
     # gets temp data from latitude and longitude of city originally searched for thr month put in
     temp_max = url_data['data']['monthly'][month]['temperatureMax']
@@ -198,9 +225,8 @@ def get_climate(latitude, longitude, month):
     temp_dict = {'rain': rain_for_dict, 'sunshine': sunshine_for_dict, 'temp': temp_for_dict}
     return temp_dict
 
-cache = {}
-
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
+
+
+
