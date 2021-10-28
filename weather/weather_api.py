@@ -9,10 +9,10 @@ key = os.environ.get('TROPOSPHERE_KEY')
 
 
 def main():
-    x = check_if_found('Munich')
-    print(x)
-    y = check_if_in_cache(x)
-    print(y)
+     x = check_if_found('Munich')
+#     print(x)
+     y = pick_correct(x, 'Germany')
+     print(y)
 
 
 
@@ -41,7 +41,7 @@ class SimpleLRUCache:
   def show_entries(self):
     print(self.lru_cache)
 
-cache = SimpleLRUCache(999)
+#cache = SimpleLRUCache(999)
 
  ### I left in validation in case we need it   
 
@@ -94,30 +94,31 @@ def check_if_found(searched_city):
             if searched_city == x['name']:
                 countries_list.append(x)
         #returns the data of all cities with same name
+        
         return countries_list
 
 # from https://towardsdatascience.com/how-to-speed-up-your-python-code-with-caching-c1ea979d0276
-def check_if_in_cache(searched_city):
-    if  cache.get(searched_city) == None:
-        city = check_if_found(searched_city)
-        print(city)
-        cache.put(city['name'], city)
-    return 
+# def check_if_in_cache(searched_city):
+#     if  cache.get(searched_city) == None:
+#         city = check_if_found(searched_city)
+#         print(city)
+#         cache.put(city['name'], city)
+#     return 
 
 
 
 def pick_correct(countries_list, country):
     cities_in_country = []
     #loops through list put in from check_if_found
-    #for correct_country in countries_List:
+    for correct_country in countries_list:
         # selects items with same country name as put in
-    for k, v in countries_list.items():
-       # if country == correct_country['country']:
+    #for k, v in countries_list.items():
+        if country == correct_country['country']:
         
-        for x in v['data']:
-            if x['country'] == country:
-                cities_in_country.append(x)
-          #  cities_in_country.append(correct_country)
+        #for x in v['data']:
+            #if x['country'] == country:
+            #cities_in_country.append(x)
+            cities_in_country.append(correct_country)
         if len(cities_in_country) == 0:
             return None
         else:
