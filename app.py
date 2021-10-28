@@ -156,15 +156,10 @@ def add_favorite(result):
 def delete_favorite(id):
     #TODO: would be nice to ask the user if they are sure they want to delete the favorite...
     was_favorite_deleted = favorites_db.delete_favorite_by_id(id)
-    deleted_confirmation = f'Unable to delete favorite. Please check if ID: {id} is a valid favorite.'
-    if was_favorite_deleted == True:
-        deleted_confirmation = 'Favorite was deleted.'
+
+    if was_favorite_deleted == False:
+        # show error message on error page if favorite not deleted
+        error_message = f'Unable to delete favorite. Please check if ID: {id} is a valid favorite.'
+        return render_template('error.html', error_message=error_message)
     
-    return render_template('deleted.html', deleted_confirmation=deleted_confirmation)
-
-
-
-
-
-# so far what we get from index is:
-# result?city=user_input&country=user_input&date=2021-12-23
+    return redirect('favorites.html')
