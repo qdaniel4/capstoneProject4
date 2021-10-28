@@ -4,7 +4,7 @@ from credentials import api_key,url_holiday
 import requests
 from exceptions import NoStateRegion
 import country_api
- 
+import json
 #countries endpoint
 def get_country_code(country_code):
     """ Verifies country is supported by the api using country code. """
@@ -67,7 +67,7 @@ def extract_holiday(holiday_data):
             'country':country_name,
             'date':holiday_date
         }
-        print(holiday_dict)
+        send_json(holiday_data)
     return holiday_dict
 
 
@@ -83,3 +83,9 @@ def display_holiday(holiday):
         return 'Unknown'
 
 
+def send_json(user_data):
+    """checking that return is correct. """
+    #NOTE this is for testing purposes but could also be useful
+    # when rendering climate from troposphere api.
+    with open("scratch.json", "w") as f:
+        json.dump(user_data,f, indent=2)
