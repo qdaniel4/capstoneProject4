@@ -3,21 +3,16 @@ import os
 import re
 from pprint import pprint
 import collections
-from functools import lru_cache
 
-key = os.environ.get('TROPOSPHERE_KEY')
-
+key = '9048347e96d25c489043de49f6b92476b2184a595c86683051'  #'https://github.com/qdaniel4/capstoneProject4/tree/weather/weather' os.environ.get('TROPOSPHERE_KEY')
 
 
 def main():
       #x = check_if_found('Munich')
 #     print(x)
-      y = check_if_in_cache('Munich')
+      y = check_if_in_cache('London')
      # x = pick_correct(y, 'Germany')
       
-  
-
-
 
  # from https://www.quickprogrammingtips.com/python/how-to-create-lru-cache-in-python.html
 class SimpleLRUCache:
@@ -44,92 +39,71 @@ class SimpleLRUCache:
   def show_entries(self):
     print(self.lru_cache)
 
-cache = SimpleLRUCache(999)
+cache_city_to_lat_long = SimpleLRUCache(999)
+climate_for_month_cache = SimpleLRUCache(999)
 
  ## I left in validation in case we need it   
 
-def city_name():
-    not_match = True
-    while not_match:
-        city = input('enter a city ')
-        if city == '':
-            print('you must enter a city')
-        else:
-        # from automate the boring stuff book
-        # and from # from https://www.guru99.com/python-regular-expressions-complete-tutorial.html
-            check = re.match(r'[\d\W]', city)
-            if not check:
-                not_match = False
-                return city
+# def city_name():
+#     not_match = True
+#     while not_match:
+#         city = input('enter a city ')
+#         if city == '':
+#             print('you must enter a city')
+#         else:
+#         # from automate the boring stuff book
+#         # and from # from https://www.guru99.com/python-regular-expressions-complete-tutorial.html
+#             check = re.match(r'[\d\W]', city)
+#             if not check:
+#                 not_match = False
+#                 return city
 
 def capitalize_city(city):
-    # capitalizing first letter of each word put in to search for it
-    city = city.lower()
-    to_return = ''
-    list_words = []
-    # splitting by word
-    split = city.split(' ')
-    for word in split:
-        length = len(word)
-        # upper casing first letter
-        x = word[0].upper()
-        # putting capital letter and rest of word together in a list
-        list_words.append(x + word[1:length])
-       
-    if len(list_words)  > 1:
-        # if more than 1 word it makes a string out of all the words
-         # from https://www.geeksforgeeks.org/python-program-to-convert-a-list-to-string/
-        to_return = ' '.join([elem for elem in list_words])
-    else:
-        to_return = list_words[0]
-    # for a return value of 1 word
-    return to_return
+    return city.title()
 
+    
 def check_if_found(searched_city):
     url = f'https://api.troposphere.io/place/name/{searched_city}?token={key}'
     countries_list = []
     url_data = requests.get(url).json()
+    pprint( url_data)
     if url_data['data'] == None:
-       return None
+        print('There were no results')
+        return None
     else:
         for x in url_data['data']:
             # if city put in is the same as city in list
             if searched_city == x['name']:
                 countries_list.append(x)
         #returns the data of all cities with same name
-        
+        print(countries_list)
         return countries_list
-@lru_cache(maxsize=999)
+
+
+# @lru_cache(maxsize=999)
 #from https://towardsdatascience.com/how-to-speed-up-your-python-code-with-caching-c1ea979d0276
-def check_if_in_cache(searched_city):
-    #url = f'https://api.troposphere.io/place/name/{searched_city}?token={key}'
-    #url_data = requests.get(url).json()
-    in_cache = cache.get(searched_city)
-    if in_cache == -1:
-        content = check_if_found(searched_city)
-        
-        # else:
-        #     for x in url_data['data']:
-        #     # if city put in is the same as city in list
-        #     if searched_city == x['name']:
-        cache.put(searched_city, content)
-        z = cache.get(searched_city)
-        print(z)
-    
-        return content
-    print(cache.get(searched_city))
-    return cache.get(searched_city)
-        
+
+# one function for flask to call 
+def get_climate_data_for_city(city, country, month):
+
+
+    # convert city and county into lat-long
+    # check if the lat-long for city  in the cache 1 ?
+    # if it is, use that
+    # if not, make API request to get lat-long, store in cache for next time 
+
+
+    # now we have the lat-long
+
+    # is climate for city for month in cache 2? 
+    # if it is, return data from cache 
+    # if it not 
+        # make the request for climate for lat long (for month)?
 
     
+    # return climate 
 
-    #     print(cache.get(x['name']))
-    #         if  cache.get(x['name']) == -1:
-    #             print(x['name'])
-    #             city = check_if_found(searched_city)
-    #             print(city)
-    #         cache.put(x['name'], city)
-    # return 
+
 
 
 
@@ -196,34 +170,14 @@ def get_coordinates(correct_city):
 #                     not_match = False
 #                     return month
 
-def get_month_number(month):
-    # changes month to correct format for search
-    return_month = 0
-    if month == '01':
-        return_month = 0
-    if month == '02':
-        return_month = 1
-    if month == '03':
-        return_month = 2
-    if month == '04':
-        return_month = 3
-    if month == '05':
-        return_month = 4
-    if month == '06':
-        return_month = 5
-    if month == '07':
-        return_month = 6
-    if month == '08':
-        return_month = 7
-    if month == '09':
-        return_month = 8
-    if month == '10':
-        return_month = 9
-    if month == '11':
-        return_month = 10
-    else:
-        return_month = 11
-    return return_month
+
+def convert_month_string_to_month_number(month):
+    """ convert a month such as "06" for June to 5 (0-based months for API) """
+    # EXCELLENT candidate for a test 
+    if month.starts_with('0'):
+        month = month[1:]   # remove leading 0
+    return int(month) - 1
+
     
 
 def get_climate(coordinates, month):
@@ -242,8 +196,8 @@ def get_climate(coordinates, month):
     # changing metric to imperial
     rain = (total_rain * 2) / 25.4
     # puts results in a string to display
-    high_for_dict =f' {high:.2f}F'
-    low_for_dict = f' {low:.2f}F'
+    high_for_dict =f'{high:.2f}F'
+    low_for_dict = f'{low:.2f}F'
     rain_for_dict = f'{rain:.2f} inches per month'
     sunshine_for_dict = f'{sunshine_hours:.2f}'
     # a string of high and low
