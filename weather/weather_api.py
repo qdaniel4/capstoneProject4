@@ -8,11 +8,11 @@ key = os.environ.get('TROPOSPHERE_KEY')
 
 
 
-def main():
-     x = check_if_found('Munich')
-#     print(x)
-     y = pick_correct(x, 'Germany')
-     print(y)
+# def main():
+#      x = check_if_found('Munich')
+# #     print(x)
+#      y = pick_correct(x, 'Germany')
+#      print(y)
 
 
 
@@ -226,8 +226,8 @@ def get_climate(coordinates, month):
     temp_dict = {'rain': rain_for_dict, 'sunshine': sunshine_for_dict, 'temp': temp_for_dict}
     return temp_dict
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
 
 
 
