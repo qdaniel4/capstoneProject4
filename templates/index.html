@@ -4,7 +4,7 @@
 
 <div id="instructions" class="content-box">
     <h2>Enter the city and country you would like to travel to, and an estimated date for your vacation.</h2>
-    <h2>You will see an interesting webcam from the location, local holidays, and what the weather might be like during your trip.</h2>
+    <h2>You will see an interesting webcam from the location based on the category you select, local holidays, and what the weather might be like during your trip.</h2>
 </div>
 
 <div class="content-box">
@@ -13,9 +13,19 @@
         <label for="city">City</label>
         <input name="city" id="city" required>
         <label for="country">Country</label>
-        <input name="country" id="country" required>
+        <select name="country" id="country" required>
+            {% for country in countries %}
+            <option value="{{country}}">{{country}}</option>
+            {% endfor %}
+        </select>
         <label for="date">Estimated date of trip:</label>
         <input type="date" name="date" required>
+        <label for="category">Category of images from place:</label>
+        <select name="category" id="category" required>
+            {% for category in webcam_api_categories %}
+            <option value="{{category}}">{{category}}</option>
+            {% endfor %}            
+        </select>
     
         <input type="submit" value="Search">
     
