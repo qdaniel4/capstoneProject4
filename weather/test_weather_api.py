@@ -97,3 +97,31 @@ class TestWeather(TestCase):
         self.assertEqual(found_city, return_respponse)
 
 
+    @patch('weather_api.get_coordinates')
+    def test_get_coordinates_works(self, mock_city, mock_country):
+        city = "Munich"
+        country = "Germany"
+        example_respponse= {
+"error": None,
+"data": [
+{
+"id": 2867714,
+"name": city,
+"latitude": 48.13743,
+"longitude": 11.57549,
+"continent": "EU",
+"country": country,
+"countryEmoji": "🇩🇪",
+"admin1": "Bavaria",
+"admin2": "Upper Bavaria",
+"admin3": "Munich, Urban District",
+"admin4": "Munich",
+"type": "place"
+}
+        
+]
+}
+        mock_city.side_effect = [ example_respponse]
+        mock_country.side_effect = [ example_respponse]
+        coordinates = weather_api.get_coordinates(city, country)
+        lat_long = f'{coordinates.l},{coordinates.'

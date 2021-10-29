@@ -12,9 +12,13 @@ key = os.environ.get('TROPOSPHERE_KEY')
 ##
 ##
     # call get like this
-   # x = get_coordinates('city', 'Country')
+# def main():
+#     lat,lon = get_coordinates('munich', 'Germany')
+    
 
-   # z = get_climate(x, 'date')
+
+#     temp = get_climate(lat,lon, '02')
+#     print(temp)
    # returns something like {'rain': '4.61 inches per month', 'sunshine': '9.90 hours', 'temp': ' 56.63F to  41.42F'} 
       
   # from https://www.quickprogrammingtips.com/python/how-to-create-lru-cache-in-python.html
@@ -115,10 +119,14 @@ def get_coordinates(city, country):
     city = capitalize_city(city)
     country = capitalize_city(country)
     correct_city = pick_country(city, country)
+    if correct_city == None:
+        return None
     # gets latitude and longitude from pick_country
-    latitude = correct_city[0]['latitude']
-    longitude = correct_city[0]['longitude']
-    return f'{latitude},{longitude}'
+    lat = correct_city[0]['latitude']
+    lon = correct_city[0]['longitude']
+    latitude, longitude = lat, lon
+    return lat, lon
+
     
 
 def get_month_number(month):
@@ -151,10 +159,10 @@ def get_month_number(month):
     return return_month
     
 
-def get_climate(coordinates, month):
+def get_climate(lat, lon, month):
     month = get_month_number(month)
     # new api request
-    url =  f'https://api.troposphere.io/climate/{coordinates}?token={key}'
+    url =  f'https://api.troposphere.io/climate/{lat},{lon}?token={key}'
     url_data = requests.get(url).json()
     # gets temp data from latitude and longitude of city originally searched for thr month put in
     temp_max = url_data['data']['monthly'][month]['temperatureMax']
@@ -170,13 +178,15 @@ def get_climate(coordinates, month):
     # puts results in a string to display
     high_for_dict =f' {high:.2f}F'
     low_for_dict = f' {low:.2f}F'
-    rain_for_dict = f'{rain:.2f} inches per month'
+    rain_for_dict = f'{rain:.2f} inches'
     sunshine_for_dict = f'{sunshine_hours:.2f} hours'
     # a string of high and low
-    temp_for_dict = f'{high_for_dict} to {low_for_dict}'
+    temp_for_dict = f'high_temp {high_for_dict}, low_temp{low_for_dict}'
     # all weather info
     temp_dict = {'rain': rain_for_dict, 'sunshine': sunshine_for_dict, 'temp': temp_for_dict}
+    
     return temp_dict
+    
 
 def check_if_in_lat_long_cache(cooridinants, month):
     in_cache = cache.get(cooridinants)
@@ -187,3 +197,5 @@ def check_if_in_lat_long_cache(cooridinants, month):
     return cache.get(cooridinants)
 
 
+# if __name__ == '__main__':
+#     main()
