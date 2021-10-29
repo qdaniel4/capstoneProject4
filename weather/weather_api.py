@@ -112,6 +112,8 @@ def pick_country(city, country):
     
     
 def get_coordinates(city, country):
+    city = capitalize_city(city)
+    country = capitalize_city(country)
     correct_city = pick_country(city, country)
     # gets latitude and longitude from pick_country
     latitude = correct_city[0]['latitude']
@@ -183,6 +185,5 @@ def check_if_in_lat_long_cache(cooridinants, month):
         cache.put(cooridinants, content)
         return content
     return cache.get(cooridinants)
-
 
 
