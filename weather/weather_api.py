@@ -8,13 +8,13 @@ key = os.environ.get('TROPOSPHERE_KEY')
 
 
 
-## 
-##
-##
-    # call get like this
+ 
+
+#     # call get like this
 # def main():
 #     lat,lon = get_coordinates('munich', 'Germany')
-    
+#     temp = get_climate('munch', 'germany', '02')
+#     print(temp)
 
 
 #     temp = get_climate(lat,lon, '02')
@@ -159,7 +159,11 @@ def get_month_number(month):
     return return_month
     
 
-def get_climate(lat, lon, month):
+def get_climate(city, country,  month):
+    if get_coordinates(city, country) == None:
+        return None
+    lat, lon = get_coordinates(city, country)
+
     month = get_month_number(month)
     # new api request
     url =  f'https://api.troposphere.io/climate/{lat},{lon}?token={key}'
@@ -181,7 +185,7 @@ def get_climate(lat, lon, month):
     rain_for_dict = f'{rain:.2f} inches'
     sunshine_for_dict = f'{sunshine_hours:.2f} hours'
     # a string of high and low
-    temp_for_dict = f'high_temp {high_for_dict}, low_temp{low_for_dict}'
+    temp_for_dict = f'high_temp {high_for_dict}, low_temp {low_for_dict}'
     # all weather info
     temp_dict = {'rain': rain_for_dict, 'sunshine': sunshine_for_dict, 'temp': temp_for_dict}
     
@@ -195,7 +199,6 @@ def check_if_in_lat_long_cache(cooridinants, month):
         cache.put(cooridinants, content)
         return content
     return cache.get(cooridinants)
-
 
 # if __name__ == '__main__':
 #     main()
