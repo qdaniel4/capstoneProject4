@@ -2,10 +2,9 @@ from unittest import TestCase
 from unittest.mock import patch
 import requests
 from requests.exceptions import HTTPError
-import exceptions
-from exceptions import ValueTooLarge,NoStateRegion
-import ui
-import country_api as country
+from custom_exceptions import NoStateRegion,ValueTooLarge
+
+import extract_holiday
 
 class TestUI(TestCase):
         
@@ -15,7 +14,7 @@ class TestUI(TestCase):
         with patch('requests.Response.json') as mock_res:
             sample_response = {'country_name': 'eSwatini', 'iso-3166': 'SZ', 'total_holidays': 17, 'supported_languages': 2, 'uuid': '7dabf5c198b0bab2eaa42bb03a113e55'}
             mock_res.return_value.json.return_value = sample_response
-            actual = country.req_countries()
+            actual = extract_holiday.req_countries()
         self.assertDictEqual(actual.json(), sample_response)
         
             
@@ -27,7 +26,7 @@ class TestUI(TestCase):
             mock_url = 'http://fakeCalendar.com/api/v2/countries?'
             mock_get.raise_for_status.side_effect = http_error
             mock_get.return_value.json.return_value  = mock_url
-            response = country.req_countries()
+            response = extract_holiday.req_countries()
         self.assertTrue(response,mock_url)
         self.assertNotEqual(response,mock_url)
     
@@ -51,9 +50,7 @@ class TestUI(TestCase):
                         }
                 mock_req_json.return_value = mock_api_response
                 
-                holiday = ui.req_holiday({ 'country': mock_country,
-                        'year': mock_year, 
-                        'month': mock_month,'type':'national','api_key':'api_key'})
+                holiday = extract_holiday.get_holiday_data(mock_country, mock_year, mock_month)
                 
                 expected = {'country': 'us',
                         'year': '2021', 
