@@ -8,11 +8,11 @@ key = os.environ.get('TROPOSPHERE_KEY')
 
  
 
-#     # call get like this
-def main():
-    coordinates = get_coordinates('munich', 'Germany')
-    temp = get_climate(coordinates, '02')
-    print(temp)
+# # #     # call get like this
+# def main():
+#      coordinates = get_coordinates('munich', 'Germany')
+# #     temp = get_climate(coordinates, '02')
+#     print(temp)
 
 
 #     temp = get_climate(lat,lon, '02')
@@ -20,6 +20,8 @@ def main():
    # returns something like {'rain': '4.61 inches per month', 'sunshine': '9.90 hours', 'temp': ' 56.63F to  41.42F'} 
       
   # from https://www.quickprogrammingtips.com/python/how-to-create-lru-cache-in-python.html
+""" creates a cache when instantiated"""
+
 class SimpleLRUCache:
   def __init__(self, size):
     self.size = size
@@ -49,9 +51,8 @@ lat_long_cache = SimpleLRUCache
   
 
 def capitalize_city(city):
-    # capitalizing first letter of each word put in to search for it
+    """capitalizing first letter of each word put in to search for it"""
     if city:
-
         city = city.lower()
         to_return = ''
         list_words = []
@@ -76,6 +77,7 @@ def capitalize_city(city):
 
 
 def check_if_found(city):
+    """ checks api json for all dictionaries with the city in the dictionary being the same as the one put in and returning dictionaries"""
     if city:
         searched_city = capitalize_city(city)
         url = f'https://api.troposphere.io/place/name/{searched_city}?token={key}'
@@ -94,6 +96,8 @@ def check_if_found(city):
         return None
 
 #from https://towardsdatascience.com/how-to-speed-up-your-python-code-with-caching-c1ea979d0276
+
+""" checks cache for the searched for city for a key """
 def check_if_in_cache(searched_city):
     if searched_city:
         in_cache = cache.get(searched_city)
@@ -107,6 +111,7 @@ def check_if_in_cache(searched_city):
         return None    
 
 def pick_country(city, country):
+    """checks list of dictionaies for the ones that have the same country as the one put in"""
     if city and country:
         countries_list = check_if_in_cache(city)
         cities_in_country = []
@@ -118,7 +123,9 @@ def pick_country(city, country):
             if len(cities_in_country) == 0:
                 return None
             else:
-                # returns first item in list 
+                # returns first item in list
+                print(cities_in_country, 0)
+                print(country)
                 return cities_in_country[0], country
     else:
         return None    
@@ -127,7 +134,7 @@ def pick_country(city, country):
     
     
 def get_coordinates(city, country):
-    
+    """ gets coordinates from city and country put in"""
     if city and country:
         city = capitalize_city(city)
         country = capitalize_city(country)
@@ -144,6 +151,7 @@ def get_coordinates(city, country):
     
 
 def get_month_number(month):
+    """ turns month string put in to the correct number for searching a list"""
     if month:
     
         # changes month to correct format for search
@@ -178,6 +186,7 @@ def get_month_number(month):
     
 
 def get_climate(coordinates, month):
+    """ gets a list of climate data for the coordinates put in and searches list for data with the correct month"""
     if coordinates and month:
         month = get_month_number(month)
         # new api request
@@ -207,6 +216,7 @@ def get_climate(coordinates, month):
     
 
 def check_if_in_lat_long_cache(cooridinates, month):
+    """ checks if the data from api is in cache"""
     if cooridinates and month :
     
         in_cache = cache.get(cooridinates)
@@ -218,5 +228,5 @@ def check_if_in_lat_long_cache(cooridinates, month):
     else:
         return None
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#      main()

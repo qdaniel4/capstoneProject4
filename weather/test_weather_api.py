@@ -22,9 +22,18 @@ class TestWeather(TestCase):
     def test_capitalized_city_with_2_words(self):
         self.assertEqual('New York', capitalize_city('new york'))
     
-    # test sting value is returned with coored number
+    # tests sting value is returned with coored number
     def test_get_month_number_works(self):
         self.assertEqual(1, get_month_number('02'))
+
+    # tests pick country returns correct dictionary from many dictionaries, the Munich with Germany as it's country
+    def test_pick_country(self):
+        country = "Germany"
+       
+        check_call = weather_api.pick_country("Munich", country)
+        self.assertEqual(country, check_call[0]['country'])
+
+    
 
     # tests check if found will find will find the right data from api
     @patch('weather_api.check_if_found')
