@@ -2,6 +2,7 @@ import unittest
 from unittest import TestCase
 from unittest import mock
 from unittest.mock import patch, call
+from weather_api import get_month_number
 from weather_api import capitalize_city
 
 import weather_api
@@ -9,16 +10,23 @@ from weather_api import capitalize_city
 
 class TestWeather(TestCase):
 
-    def test_capitolized_city_capitolizes_first_letter(self):
+    # tests if first letter of each word is entered is capitalized
+    def test_capitolized_city_capitalizes_first_letter(self):
         self.assertEqual('Miami', capitalize_city('miami'))
 
-    def test_capitolized_city_capitolizes_lower_cases_all_but_last_letter(self):
+    # test if only first letter is capitalized
+    def test_capitolized_city_capitalizes_lower_cases_all_but_last_letter(self):
         self.assertEqual('Miami', capitalize_city('MIAMI'))
 
-    def test_capitolized_city_with_2_words(self):
+    # tests if function works with more than 1 word
+    def test_capitalized_city_with_2_words(self):
         self.assertEqual('New York', capitalize_city('new york'))
+    
+    # test sting value is returned with coored number
+    def test_get_month_number_works(self):
+        self.assertEqual(1, get_month_number('02'))
 
-
+    # tests check if found will find will find the right data from api
     @patch('weather_api.check_if_found')
     def test_check_if_found_finds_city(self, mock_city):
         city = "Munich"
@@ -48,6 +56,7 @@ class TestWeather(TestCase):
         expected = 'Munich'
         self.assertEqual(expected, the_city)
 
+    # tests if check_if_found returns the correct data
     @patch('weather_api.check_if_found')
     def test_check_if_found_returns_data(self, mock_city):
         city = "Munich"
@@ -72,7 +81,7 @@ class TestWeather(TestCase):
 ]
 }
 
-        return_respponse= {
+        return_response= {
 "error": None,
 "data": [
 {
@@ -94,34 +103,7 @@ class TestWeather(TestCase):
 }
         mock_city.side_effect = [ example_api_response ]
         found_city = weather_api.check_if_found(city)
-        self.assertEqual(found_city, return_respponse)
+        self.assertEqual(found_city, return_response)
 
 
-    @patch('weather_api.get_coordinates')
-    def test_get_coordinates_works(self, mock_city, mock_country):
-        city = "Munich"
-        country = "Germany"
-        example_respponse= {
-"error": None,
-"data": [
-{
-"id": 2867714,
-"name": city,
-"latitude": 48.13743,
-"longitude": 11.57549,
-"continent": "EU",
-"country": country,
-"countryEmoji": "🇩🇪",
-"admin1": "Bavaria",
-"admin2": "Upper Bavaria",
-"admin3": "Munich, Urban District",
-"admin4": "Munich",
-"type": "place"
-}
-        
-]
-}
-        mock_city.side_effect = [ example_respponse]
-        mock_country.side_effect = [ example_respponse]
-        coordinates = weather_api.get_coordinates(city, country)
-        lat_long = f'{coordinates.l},{coordinates.'
+  
