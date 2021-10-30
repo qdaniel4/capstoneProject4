@@ -10,11 +10,11 @@ key = os.environ.get('TROPOSPHERE_KEY')
 
  
 
-#     # call get like this
-# def main():
-#     lat,lon = get_coordinates('munich', 'Germany')
-#     temp = get_climate('munch', 'germany', '02')
-#     print(temp)
+    # call get like this
+def main():
+    coordinates = get_coordinates('munich', 'Germany')
+    temp = get_climate(coordinates, '02')
+    print(temp)
 
 
 #     temp = get_climate(lat,lon, '02')
@@ -124,8 +124,8 @@ def get_coordinates(city, country):
     # gets latitude and longitude from pick_country
     lat = correct_city[0]['latitude']
     lon = correct_city[0]['longitude']
-    latitude, longitude = lat, lon
-    return lat, lon
+    cootdinates = lat, lon
+    return cootdinates
 
     
 
@@ -159,10 +159,12 @@ def get_month_number(month):
     return return_month
     
 
-def get_climate(city, country,  month):
-    if get_coordinates(city, country) == None:
-        return None
-    lat, lon = get_coordinates(city, country)
+def get_climate(coordinates, month):
+    # seperating because I need a comma between them
+    lat, lon = coordinates
+    #if get_coordinates(city, country) == None:
+    #    return None
+    #lat, lon =c 
 
     month = get_month_number(month)
     # new api request
@@ -200,5 +202,5 @@ def check_if_in_lat_long_cache(cooridinants, month):
         return content
     return cache.get(cooridinants)
 
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()
