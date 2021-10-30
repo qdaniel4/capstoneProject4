@@ -5,6 +5,7 @@ import requests
 from exceptions import NoStateRegion
 import country_api
 import json
+from functools import lru_cache,cache
 #countries endpoint
 def get_country_code(country_code):
     """ Verifies country is supported by the api using country code. """
@@ -19,7 +20,8 @@ def get_country_code(country_code):
         return None
         
     
- #holiday endpoint           
+ #holiday endpoint         
+@lru_cache(maxsize=1)  #TODO Fix unhashable type error
 def get_holiday_data(country,year,month):
     """ call holiday api with the provided data.
     :params:  user data to request holiday.
@@ -27,17 +29,16 @@ def get_holiday_data(country,year,month):
     try:
         query = {'country': country, 'year': year, 'month': month, 'type':'national','api_key':api_key}
         req = req_holiday(query)
-        response = check_holiday_data_not_null(req)
-        return response
+        return req
     except requests.exceptions.HTTPError as err:
-        response.raise_for_status()
+        req.raise_for_status()
         print(err.response.text)
-        
         
 def req_holiday(query):
     try:
         req = requests.get(url_holiday,params=query).json()
-        return req
+        res = check_holiday_data_not_null(req)
+        return res
     except requests.RequestException as e:
         req.raise_for_status()
         print(e.response.text)

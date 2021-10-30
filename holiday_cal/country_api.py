@@ -3,16 +3,34 @@ import requests
 import json
 from exceptions import NoStateRegion
 from credentials import api_key,url_countries
+import redis
+from functools import lru_cache
+import time
+
+redi = redis.Redis(host='localhost', port=6379, db=0)
 
 """ Returns all the supported countries and country_code. """
 
 def country_code_handler():
     """ request and return countries supported by API. """
-    res = req_countries()
-    countries = extract_countries(res)
-    lis_of_countries(countries)
-    return countries
+    country_list = req_res_country()
+    return country_list
 
+
+def req_res_country():
+    country_res = redi.get('countries')
+    if country_res is None: #if list of countries not in cache get it from api
+        print('Could not find country codes in cache, retrieving from the API')
+        req = req_countries()
+        res = extract_countries(req)
+        results = lis_of_countries(res)
+        return results
+    else:
+        print('Found country codes in cache, retrieving from redis')
+        return country_res
+    
+
+@lru_cache(maxsize=50) # start clearing the least recently used items after 50 entries 
 def req_countries():
     """ Call countries API """
     query = {'api_key': api_key}
@@ -31,8 +49,7 @@ def extract_countries(res):
     if country_list != None:
         return country_list
 
-#TODO cache
-#USE FOR DROP DOWN
+
 def lis_of_countries(countries):
     """ dump all of the countries and countr code (ISO) in json"""
     results = []
@@ -44,5 +61,17 @@ def lis_of_countries(countries):
             'country_code':country_code
         }
         results.append(name_code)
-    with open("countries_scratch.json", "w") as f:
-        json.dump(results,f, indent=2)
+        redi.set('countries',json.dumps(results)) #timedelta(seconds=3600)
+    return results
+from datetime import timedelta
+
+
+
+# t1 = time.time()
+# print(country_code_handler())
+# t2 = time.time()
+# print(t2-t1)
+# info = req_countries.cache_info()
+#0.002855062484741211 when retrieved from cache
+#0.2691211700439453 when retrieved from api
+# total= 0.0021638870239257812

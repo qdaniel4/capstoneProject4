@@ -10,7 +10,7 @@ import country_api as country
 class TestUI(TestCase):
         
     #  Test countries endpoint
-    def test_country_code_returns_ok_response(self):
+    def test_country_code_returns_country_list(self):
         """ testing expected dict is returned. """
         with patch('requests.Response.json') as mock_res:
             sample_response = {'country_name': 'eSwatini', 'iso-3166': 'SZ', 'total_holidays': 17, 'supported_languages': 2, 'uuid': '7dabf5c198b0bab2eaa42bb03a113e55'}
