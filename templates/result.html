@@ -60,6 +60,7 @@
 
     <!-- show a list of webcam images -->
     {% for webcam_url in result['webcams'] %}
+    <span id="windy-credits">Webcams provided by <a href="https://www.windy.com/" target="_blank">windy.com</a> &mdash; <a href="https://www.windy.com/webcams/add" target="_blank">add a webcam</a></span>
     <img url="{{ webcam_url }}" />
     <br>
     {% endfor %}
