@@ -2,6 +2,7 @@ import unittest
 from unittest import TestCase
 from unittest import mock
 from unittest.mock import patch, call
+from weather_api import get_coordinates
 from weather_api import get_month_number
 from weather_api import capitalize_city
 
@@ -31,7 +32,8 @@ class TestWeather(TestCase):
         country = "Germany"
        
         check_call = weather_api.pick_country("Munich", country)
-        self.assertEqual(country, check_call[0]['country'])
+        in_dictionary = check_call[0].values()
+        self.assertIn(country, in_dictionary)
 
     
 
@@ -69,7 +71,7 @@ class TestWeather(TestCase):
     @patch('weather_api.check_if_found')
     def test_check_if_found_returns_data(self, mock_city):
         city = "Munich"
-        example_api_response = {
+        another_example_api_response = {
 "error": None,
 "data": [
 {
@@ -110,9 +112,37 @@ class TestWeather(TestCase):
         
 ]
 }
-        mock_city.side_effect = [ example_api_response ]
+        mock_city.side_effect = [ another_example_api_response ]
         found_city = weather_api.check_if_found(city)
         self.assertEqual(found_city, return_response)
 
-
-  
+#     #tests get_coordinates returns correct formatted coordinates of city
+#     @patch('weather_api.get_coordinates')
+#     def test_check_get_coordinates_works(self, mock_place):
+#         lat = 48.13743
+#         lon = 11.57549
+#         country = "Germany"
+#         city = "Munich"
+#         api_response = {
+# "error": None,
+# "data": [
+# {
+# "id": 2867714,
+# "name": city,
+# "latitude": lat,
+# "longitude": lon,
+# "continent": "EU",
+# "country": country,
+# "countryEmoji": "🇩🇪",
+# "admin1": "Bavaria",
+# "admin2": "Upper Bavaria",
+# "admin3": "Munich, Urban District",
+# "admin4": "Munich",
+# "type": "place"
+# }
+# ]
+# }
+#         mock_place.side_effect = [  api_response ]
+#         coordinates = weather_api.get_coordinates("Munich", "Germany")
+#         formatted_return = f'{lat},{lon}'
+#         self.assertEqual(coordinates, formatted_return)          
