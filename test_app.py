@@ -129,17 +129,17 @@ class TestResult(TestCase):
     # TODO: this is very messy and it would be nice to clean it up a little
     @patch('scratch_module.get_coordinates', side_effect=['30.069128947931752,31.22197273660886'])
     @patch('scratch_module.get_holiday_data', side_effect=[[{
-            'name': 'Holiday in Egypt',
+            'holiday_name': 'Holiday in Egypt',
             'description': 'Ed just made this up.',
             'date': 'Jan 20 2022'
         }]])
     @patch('scratch_module.get_climate', side_effect=[{
-            'rainfall': '22 inches',
-            'daylight': '22 hours',
-            'hightemp': '89 F',
-            'lowtemp': '45 F'
+            'rain': '22 inches',
+            'sunshine': '22 hours',
+            'high_temp': '89 F',
+            'low_temp': '45 F'
         }])
-    @patch('scratch_module.get_image_list', side_effect=[['link-01', 'link02', 'link03']])
+    @patch('scratch_module.get_image_list', side_effect=[(['link-01', 'link02', 'link03'], None)])
     def test_get_valid_result(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # TODO: change so this uses get_response_result
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
@@ -148,37 +148,29 @@ class TestResult(TestCase):
         html = response.data.decode()
 
         # expected data
-        weather_info = '''<h3>Weather</h3>
-    <p><i>Based on historic climate data in January from previous years.</i></p>
-
-        <ul>
-            <li>Rainfall: 22 inches</li>
-            <li>Daylight Hours: 22 hours</li>
-            <li>High Temp: 89 F</li>
-            <li>Low Temp: 45 F</li>
-        </ul>'''
-
-        holiday_heading = '<h3>Holidays in Egypt during January:</h3>'
-        holiday_info  = '''<p>Holiday in Egypt</p>
-    <ul>
-        <li>Jan 20 2022</li>
-        <li>Ed just made this up.</li>
-    </ul>
-    <br>'''
-
-        webcams = ['<img url="link-01" />',
+        weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
+        '<li>Rainfall: 22 inches per month.</li>',
+        '<li>Daylight Hours: 22 hours per day.</li>',
+        '<li>High Temp: 89 F</li>',
+        '<li>Low Temp: 45 F</li>']
+        holiday_values  = ['<h3>Holidays in Egypt during January:</h3>', 
+        '<p>Holiday in Egypt</p>', 
+        '<li>Jan 20 2022</li>', 
+        '<li>Ed just made this up.</li>']
+        webcam_values = ['<img url="link-01" />',
         '<img url="link02" />',
         '<img url="link03" />']
-
         result_header = '<h2 id="result-title">Results for Cairo, Egypt in 01/2022.</h2>'
 
-
-        self.assertIn(weather_info, html)
-        self.assertIn(holiday_heading, html)
-        self.assertIn(holiday_info, html)
-        for webcam in webcams:
-            self.assertIn(webcam, html)
         self.assertIn(result_header, html)
+        for weather_value in weather_values:
+            self.assertIn(weather_value, html)
+        for holiday_value in holiday_values:
+            self.assertIn(holiday_value, html)
+        for webcam_value in webcam_values:
+            self.assertIn(webcam_value, html)
+
+
 
         
 if __name__ == '__main__':

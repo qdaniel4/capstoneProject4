@@ -51,7 +51,7 @@ def get_result():
 
     # convert some user input into useful API parameters
     month, year = ui_support.get_month_and_year_from_date(date)
-    coordinates = weather_api.get_coordinates(city)
+    coordinates = weather_api.get_coordinates(city, country)
     month_name, error = ui_support.get_name_of_month_from_number(month)
 
     # get a list of holidays from holiday API
@@ -65,7 +65,7 @@ def get_result():
     # Get two lists of webcam urls based on the user's selected category
     # and the coordinates of the city from troposphere
     # we are just using webcam_urls_daylight for now, but could use current in extended functionality
-    webcam_urls = webcam_api.get_image_list(coordinates, category)
+    webcam_urls, webcam_urls_error = webcam_api.get_image_list(coordinates, category)
 
     # create a dictionary to pass to template - to make creation of favorite easier later on
     result = ui_support.create_result_dictionary(city, country, month, month_name, year, webcam_urls, holidays_list, weather_data)

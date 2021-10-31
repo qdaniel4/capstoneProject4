@@ -28,10 +28,10 @@
     <p><i>Based on historic climate data in {{ result['month_name'] }} from previous years.</i></p>
 
         <ul>
-            <li>Rainfall: {{ result['weather']['rainfall'] }}</li>
-            <li>Daylight Hours: {{ result['weather']['daylight'] }}</li>
-            <li>High Temp: {{ result['weather']['hightemp'] }}</li>
-            <li>Low Temp: {{ result['weather']['lowtemp'] }}</li>
+            <li>Rainfall: {{ result['weather']['rain'] }} per month.</li>
+            <li>Daylight Hours: {{ result['weather']['sunshine'] }} per day.</li>
+            <li>High Temp: {{ result['weather']['high_temp'] }}</li>
+            <li>Low Temp: {{ result['weather']['low_temp'] }}</li>
         </ul>
 
 
@@ -43,7 +43,7 @@
     <!-- Display a list of holiday names, date of holiday, holiday descriptions. -->
     <h3>Holidays in {{ result['country'] }} during {{ result['month_name'] }}:</h3>
     {% for holiday in result['holidays'] %}
-    <p>{{ holiday['name'] }}</p>
+    <p>{{ holiday['holiday_name'] }}</p>
     <ul>
         <li>{{ holiday['date'] }}</li>
         <li>{{ holiday['description'] }}</li>
@@ -62,9 +62,6 @@
     <span id="windy-credits">Webcams provided by <a href="https://www.windy.com/" target="_blank">windy.com</a> &mdash; <a href="https://www.windy.com/webcams/add" target="_blank">add a webcam</a></span>
     <br>
     {% endfor %}
-    <!--    optional:
-    <p>{{webcam_description}}</p>
-    -->
 
 </div>
 
