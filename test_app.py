@@ -111,17 +111,7 @@ class TestIndexWithNoAPIData(TestCase):
         self.show_categories_patch.stop()
 
 
-class TestResult(TestCase):
-
-    def get_response_result(self, param_string):
-        # get a response with test_client version of Flask app
-        url = f'/result{param_string}'
-        with app.app.test_client() as client:
-            response = client.get(url)
-        # get html from the response
-        html = response.data.decode()
-        return response, html
-
+class TestResultWithData(TestCase):
 
     # TODO: this is very messy and it would be nice to clean it up a little
     @patch('weather.weather_api.get_coordinates', side_effect=['30.069128947931752,31.22197273660886'])
@@ -136,9 +126,8 @@ class TestResult(TestCase):
             'high_temp': '89 F',
             'low_temp': '45 F'
         }])
-    @patch('windy_module.windy_api_manager.get_image_list', side_effect=[(['link-01', 'link02', 'link03'], None)])
+    @patch('windy_module.windy_api_manager.get_image_list', side_effect=[['link-01', 'link02', 'link03']])
     def test_get_valid_result(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
-        # TODO: change so this uses get_response_result
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
             response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
@@ -168,6 +157,29 @@ class TestResult(TestCase):
             self.assertIn(webcam_value, html)
 
 
+class TestResultWithNoneCoordinates(TestCase):
+
+    @patch('weather.weather_api.get_coordinates', side_effect=[None])
+    @patch('scratch_module.get_holiday_data', side_effect=[[{
+            'holiday_name': 'Holiday in Egypt',
+            'description': 'Ed just made this up.',
+            'date': 'Jan 20 2022'
+        }]])
+    @patch('weather.weather_api.get_climate', side_effect=[{
+            'rain': '22 inches',
+            'sunshine': '22 hours',
+            'high_temp': '89 F',
+            'low_temp': '45 F'
+        }])
+    @patch('windy_module.windy_api_manager.get_image_list', side_effect=[['link-01', 'link02', 'link03']])
+    def test_get_valid_result(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
+        # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
+        with app.app.test_client() as client:
+            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+        html = response.data.decode()
+        expected_error_html = '<li>Error getting location information from API. Please double check city name and country and try again.</li>'
+        
+        self.assertIn(expected_error_html, html)
 
         
 if __name__ == '__main__':
