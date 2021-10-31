@@ -77,7 +77,7 @@ def lis_of_countries(countries):
         
            
  #holiday endpoint         
-@lru_cache(maxsize=1)  #TODO Fix unhashable type error
+@lru_cache(maxsize=1) 
 def get_holiday_data(country,year,month):
     """ call holiday api with the provided data.
     :params:  user data to request holiday.
