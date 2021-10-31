@@ -7,7 +7,7 @@ import redis
 from datetime import timedelta
 from functools import lru_cache,cache
 
-api_key = os.environ.get('CALENDER_KEY')
+api_key = os.environ.get('CALENDAR_KEY')
 redi = redis.Redis(host='localhost', port=6379, db=0)
 
 #countries endpoint
