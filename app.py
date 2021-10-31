@@ -1,12 +1,9 @@
 from flask import Flask, request, render_template, redirect
 
-from ui_support import ui
+from ui_support import ui_support
 from favorites_database import favorites_db
 
 #TODO: change import statements as merges are made
-
-# from holiday_cal import country_api
-from scratch_module import country_code_handler as get_countries_from_API
 
 # from holiday_cal import holiday as holiday_api
 import scratch_module as holiday_api
@@ -24,11 +21,17 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     # get list of countries to populate options for select element
-    country_api_response = get_countries_from_API()
-    all_countries = ui.get_list_of_countries(country_api_response)
+    country_api_response = holiday_api.list_of_countries()
+    all_countries, error = ui_support.get_list_of_countries(country_api_response)
 
     # get list of web api categories to populate options for select element
-    webcam_api_categories = webcam_api.show_categories()
+    webcam_api_response = webcam_api.show_categories()
+    webcam_api_categories, error = ui_support.get_list_of_webcam_categories(webcam_api_response)
+
+    if error:
+        # TODO: discuss this with team. this essentially renders the app unusable
+        # if we can't reach the APIs that fill in the country and category select elements
+        return render_template('error.html', error_message=error)
 
     return render_template('index.html', all_countries=all_countries, webcam_api_categories=webcam_api_categories)
 
@@ -42,9 +45,9 @@ def get_result():
     category = request.args.get('category')
 
     # convert some user input into useful API parameters
-    month, year = ui.get_month_and_year_from_date(date)
+    month, year = ui_support.get_month_and_year_from_date(date)
     coordinates = weather_api.get_coordinates(city)
-    month_name = ui.get_name_of_month_from_number(month)
+    month_name, error = ui_support.get_name_of_month_from_number(month)
 
     # get a list of holidays from holiday API
     # each holiday is a dictionary that contains name, description and date of holiday
@@ -60,7 +63,7 @@ def get_result():
     webcam_urls_daylight, webcam_urls_current = webcam_api.get_image_list(coordinates, category)
 
     # create a dictionary to pass to template - to make creation of favorite easier later on
-    result = ui.create_result_dictionary(city, country, month, month_name, year, webcam_urls_daylight, holidays_list, weather_data)
+    result = ui_support.create_result_dictionary(city, country, month, month_name, year, webcam_urls_daylight, holidays_list, weather_data)
 
     return render_template('result.html', result=result)
 
@@ -86,8 +89,8 @@ def get_favorite(id):
         return render_template('error.html', error_message=error_message)
 
     # create expected dictionary for result.html template from retrieved favorite object
-    month_name = ui.get_name_of_month_from_number(favorite.month)
-    result = ui.create_result_dictionary(favorite.city, favorite.country, favorite.month, month_name, favorite.year, favorite.webcam, favorite.holidays, favorite.weather)
+    month_name = ui_support.get_name_of_month_from_number(favorite.month)
+    result = ui_support.create_result_dictionary(favorite.city, favorite.country, favorite.month, month_name, favorite.year, favorite.webcam, favorite.holidays, favorite.weather)
 
     return render_template('result.html', result=result)
 

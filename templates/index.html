@@ -16,8 +16,8 @@
 
         <label for="country">Country</label>
         <select name="country" id="country" required>
-            {% for country in countries %}
-            <option value="{{country}}">{{country}}</option>
+            {% for country in all_countries %}
+            <option value="{{ country }}">{{ country }}</option>
             {% endfor %}
         </select>
 
@@ -27,7 +27,7 @@
         <label for="category">Webcam category:</label>
         <select name="category" id="category" required>
             {% for category in webcam_api_categories %}
-            <option value="{{category}}">{{category}}</option>
+            <option value="{{ category }}">{{ category }}</option>
             {% endfor %}            
         </select>
     
