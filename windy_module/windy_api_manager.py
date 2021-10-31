@@ -40,7 +40,7 @@ def get_image_list(coordinates, category):
     current_links = []
     data = requests.get(url, headers=header).json()
 
-    if len(data.get('result').get('webcams')):
+    if len(data.get('result').get('webcams')) == 0:
         return None
     else:
         webcams = data.get('result').get('webcams')
