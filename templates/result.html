@@ -64,7 +64,7 @@
 <div id="webcam" class="content-box">
 
     <span class="section-title">Images</span>
-    {% if result['webcams']}
+    {% if result['webcams'] %}
         <!-- Display webcam images using webcam image urls. -->
         {% for webcam_url in result['webcams'] %}
         <img url="{{ webcam_url }}" />
