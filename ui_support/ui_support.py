@@ -34,11 +34,14 @@ def get_list_of_webcam_categories(webcam_api_response):
 def get_month_and_year_from_date(date):
     """Takes a date in the HTML datepicker format as param.
     Returns just the month and year from that date as tuple."""
+    if not date:
+        return None, 'Error: No date was selected.'
     date_list = date.split('/')
     month = date_list[0]
     year = date_list[2]
 
     return month, year
+
 
 
 def get_name_of_month_from_number(month):

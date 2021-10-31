@@ -12,7 +12,7 @@
         'year': year,
         'holidays': holidays_list,
         'weather': weather_data,
-        'webcams': webcam_urls_daylight
+        'webcams': webcam_urls
         }
 -->
 
@@ -26,16 +26,14 @@
 
     <h3>Weather</h3>
     <p><i>Based on historic climate data in {{ result['month_name'] }} from previous years.</i></p>
-    <!--
-        Commented out until I check in more with Jason about what his module returns.
-        <div>{{ result['weather'] }}</div>
-        or
+
         <ul>
             <li>Rainfall: {{ result['weather']['rainfall'] }}</li>
-            <li>Average Temp: {{ result['weather']['temp'] }}</li>
             <li>Daylight Hours: {{ result['weather']['daylight'] }}</li>
+            <li>High Temp: {{ result['weather']['hightemp'] }}</li>
+            <li>Low Temp: {{ result['weather']['lowtemp'] }}</li>
         </ul>
-    -->
+
 
 </div>
 
