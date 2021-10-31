@@ -4,38 +4,43 @@ import requests
 from custom_exceptions import NoStateRegion
 import json
 import redis
+from datetime import timedelta
 from functools import lru_cache,cache
 
 api_key = os.environ.get('MY_KEY')
 redi = redis.Redis(host='localhost', port=6379, db=0)
 
 #countries endpoint
-def is_country_supported(country_code):
+def is_country_supported(country_name):
     """ Verifies country is supported by the api using country code. """
     country_list = req_res_country()
     try:
         for c in country_list:
-            if c['country_code'] == country_code.upper():
-                return True   
+           if c['country_name'] == country_name.title():
+               country_code = c['country_code']
+               return country_code, True
         raise NoStateRegion
     except NoStateRegion:
         print('error, No country matches the provided country code,try again!\n')
         return False
         
 def req_res_country():
+    """ check for cached entries, if list of countries in cache, if not get from the API. """
+    
     country_res = redi.get('countries')
-    if country_res is None: #if list of countries not in cache get it from api
+    
+    if country_res is None: 
         print('Could not find country list in cache, retrieving from the API.')
         req = req_countries()
         res = extract_countries(req)
         results = lis_of_countries(res)
         return results
-    else:
+    else:  # if cache hit
         print('Found country codes in cache, retrieving from the redis server.')
         return json.loads(country_res)        
 
 
-@lru_cache(maxsize=50) # start clearing the least recently used items after 50 entries 
+@lru_cache(maxsize=1) # start clearing the least recently used items after 50 entries 
 def req_countries():
     """ Call countries API """
     url_countries = 'https://calendarific.com/api/v2/countries'
@@ -67,7 +72,7 @@ def lis_of_countries(countries):
             'country_code':c['iso-3166']
         }
         results.append(name_code)
-        redi.set('countries',json.dumps(results))
+        redi.set('countries',json.dumps(results), timedelta(seconds=360)) #prevent cache staleness
     return results    
         
            

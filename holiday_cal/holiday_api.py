@@ -3,13 +3,18 @@ the app will display holidays observed in that country during that month. """
 
 import extract_holiday
 
+# method call for dropdown 
+def list_of_countries():
+    country = extract_holiday.req_res_country()
+    return country
 
-def get_holiday(country,year,month):
+def get_holiday(country_name,year,month):
     """ :params: the country_code(upperCase),year and month of travel.
     :returns holday name,description,date """
-    check_country_code = country_code_handler(country)
-    if check_country_code:
-        holiday = get_travel_data(country,year,month ) #str 
+    country_code = country_code_handler(country_name)
+    
+    holiday = get_travel_data(country_code,year,month ) #str 
+    
     #if the api response returns holiday[] 
     if holiday is None:
         print ('There is no national holiday for this month')
@@ -17,12 +22,16 @@ def get_holiday(country,year,month):
         return show_holiday(holiday)
 
 
-def country_code_handler(country_code):
-    """  verifies if the provided country_code matches to any of the countries supported by the API.
-    :param:  The country code to verify.
+def country_code_handler(country_name):
+    """  verifies if the provided country_name matches to any of the countries supported by the API.
+    :param:  The country_name to verify.
     :returns: True if a country exists with the provided country_code, else raises NoStateRegion. """
-    country_list = extract_holiday.is_country_supported(country_code)
-    return country_list
+    country_code, is_valid = extract_holiday.is_country_supported(country_name)
+    print(country_code)
+    if is_valid:
+        return country_code
+    else:
+        return 'Looks like this country is not supported as of yet.'
              
 def get_travel_data(country,year,month):
     """ request holiday data from calendarificAPI.
@@ -39,14 +48,9 @@ def show_holiday(holiday):
 
 
 
-get_holiday('us','2025','2')
+get_holiday('united states','2022','12')
 
 
-# t1 = time.time()
-# print(country_code_handler())
-# t2 = time.time()
-# print(t2-t1)
-# info = req_countries.cache_info()
 #0.002855062484741211 when retrieved from cache
 #0.2691211700439453 when retrieved from api
 # total= 0.0021638870239257812
