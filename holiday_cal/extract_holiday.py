@@ -40,7 +40,7 @@ def req_res_country():
         return json.loads(country_res)        
 
 
-@lru_cache(maxsize=1) # start clearing the least recently used items after 50 entries 
+
 def req_countries():
     """ Call countries API """
     url_countries = 'https://calendarific.com/api/v2/countries'

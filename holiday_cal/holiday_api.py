@@ -14,10 +14,10 @@ def get_holiday(country_name,year,month):
     country_code = country_code_handler(country_name)
     
     holiday = get_travel_data(country_code,year,month ) #str 
-    
+
     #if the api response returns holiday[] 
     if holiday is None:
-        print ('There is no national holiday for this month')
+        return 
     else:
         return show_holiday(holiday)
 
@@ -27,11 +27,13 @@ def country_code_handler(country_name):
     :param:  The country_name to verify.
     :returns: True if a country exists with the provided country_code, else raises NoStateRegion. """
     country_code, is_valid = extract_holiday.is_country_supported(country_name)
-    print(country_code)
+    error_message = ''
     if is_valid:
-        return country_code
+        error_message = 'Valid country'
+        return country_code, error_message
     else:
-        return 'Looks like this country is not supported as of yet.'
+        error_message = 'No country matches the provided country code'
+        return None, error_message
              
 def get_travel_data(country,year,month):
     """ request holiday data from calendarificAPI.
