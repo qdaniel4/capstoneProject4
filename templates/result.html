@@ -24,7 +24,8 @@
 
 <div id="weather" class="content-box">
 
-    <h3>Weather</h3>
+    <span class="section-title">Weather</span>
+    <h3>Weather for {{ result['country'] }} during {{ result['month_name'] }}:</h3>
     <p><i>Based on historic climate data in {{ result['month_name'] }} from previous years.</i></p>
 
         <ul>
@@ -36,33 +37,45 @@
 
 
 </div>
-
+ 
 <div id="holidays" class="content-box">
 
-    
-    <!-- Display a list of holiday names, date of holiday, holiday descriptions. -->
-    <h3>Holidays in {{ result['country'] }} during {{ result['month_name'] }}:</h3>
-    {% for holiday in result['holidays'] %}
-    <p>{{ holiday['holiday_name'] }}</p>
-    <ul>
-        <li>{{ holiday['date'] }}</li>
-        <li>{{ holiday['description'] }}</li>
-    </ul>
-    <br>
-    {% endfor %}
+    <span class="section-title">Holidays</span>
+    {% if result['holidays'] %}
+        <!-- Display a list of holiday names, date of holiday, holiday descriptions. -->
+        <h3>Holidays in {{ result['country'] }} during {{ result['month_name'] }}:</h3>
+        {% for holiday in result['holidays'] %}
+        <p>{{ holiday['holiday_name'] }}</p>
+        <ul>
+            <li>{{ holiday['date'] }}</li>
+            <li>{{ holiday['description'] }}</li>
+        </ul>
+        <br>
+        {% endfor %}
 
+    {% else %}
+        <!-- Display a message indicating no holidays were found from the API -->
+        <h3>No holidays found for {{ result['country'] }} during {{ result['month_name'] }}.</h3>
+
+    {% endif %}
 
 </div>
 
 <div id="webcam" class="content-box">
 
-    <!-- show a list of webcam images -->
-    {% for webcam_url in result['webcams'] %}
-    <img url="{{ webcam_url }}" />
-    <span id="windy-credits">Webcams provided by <a href="https://www.windy.com/" target="_blank">windy.com</a> &mdash; <a href="https://www.windy.com/webcams/add" target="_blank">add a webcam</a></span>
-    <br>
-    {% endfor %}
+    <span class="section-title">Images</span>
+    {% if result['webcams']}
+        <!-- Display webcam images using webcam image urls. -->
+        {% for webcam_url in result['webcams'] %}
+        <img url="{{ webcam_url }}" />
+        <span id="windy-credits">Webcams provided by <a href="https://www.windy.com/" target="_blank">windy.com</a> &mdash; <a href="https://www.windy.com/webcams/add" target="_blank">add a webcam</a></span>
+        <br>
+        {% endfor %}
 
+    {% else %}
+        <!-- Display a message indicating no webcams were found from the API -->
+        <h3>No webcams were found for {{ result['country'] }}. Try selecting a different category.</h3>
+    {% endif %}
 </div>
 
 {% endblock %}

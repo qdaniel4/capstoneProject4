@@ -65,7 +65,7 @@ def get_result():
     # create a dictionary to pass to template - to make creation of favorite easier later on
     result = ui_support.create_result_dictionary(city, country, month, month_name, year, webcam_urls, holidays_list, weather_data)
 
-    return render_template('result.html', result=result)
+    return render_template('result.html', result=result, webcam_category=category)
 
 
 @app.route('/favorites')

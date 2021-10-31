@@ -9,7 +9,6 @@ import app
 
 
 class TestIndexWithAPIData(TestCase):
-
         # resources I used to figure this out...
         # https://stanford-code-the-change-guides.readthedocs.io/en/latest/guide_flask_unit_testing.html
         # https://stackoverflow.com/questions/31710064/testing-flask-routes-do-and-dont-exist
@@ -77,7 +76,6 @@ class TestIndexWithNoAPIData(TestCase):
         self.list_of_countries = self.list_of_countries_patch.start()
         self.list_of_countries.return_value = None
 
-        # TODO: replace scratch_module with correct modules after merge
         self.show_categories_patch = patch('windy_module.windy_api_manager.show_categories')
         self.show_categories = self.show_categories_patch.start()
         self.show_categories.return_value = None
@@ -114,7 +112,6 @@ class TestIndexWithNoAPIData(TestCase):
 
 
 class TestResult(TestCase):
-
 
     def get_response_result(self, param_string):
         # get a response with test_client version of Flask app
