@@ -20,24 +20,29 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
+    error_list = []
     # get list of countries to populate options for select element
     country_api_response = holiday_api.list_of_countries()
-    all_countries, error = ui_support.get_list_of_countries(country_api_response)
+    all_countries, country_api_error = ui_support.get_list_of_countries(country_api_response)
 
     # get list of web api categories to populate options for select element
     webcam_api_response = webcam_api.show_categories()
-    webcam_api_categories, error = ui_support.get_list_of_webcam_categories(webcam_api_response)
+    webcam_api_categories, webcam_api_error = ui_support.get_list_of_webcam_categories(webcam_api_response)
 
-    if error:
+    # add any errors received during program to error_list
+    ui_support.add_error_to_error_list(country_api_error, error_list)
+    ui_support.add_error_to_error_list(webcam_api_error, error_list)
+    if len(error_list):
         # TODO: discuss this with team. this essentially renders the app unusable
         # if we can't reach the APIs that fill in the country and category select elements
-        return render_template('error.html', error_message=error)
+        return render_template('error.html', error_list=error_list)
 
     return render_template('index.html', all_countries=all_countries, webcam_api_categories=webcam_api_categories)
 
 
 @app.route('/result')
 def get_result():
+    error_list = []
     # get all user input required for API calls
     city = request.args.get('city')
     country = request.args.get('country')
@@ -80,17 +85,22 @@ def get_favorites():
 
 @app.route('/favorite/<id>')
 def get_favorite(id):
+    error_list = []
     # get favorites from the database by id or get None
     favorite = favorites_db.get_favorite_by_id(id)
 
     if not favorite:
-        # show error message on error page if None
-        error_message = 'Sorry, could not retrieve favorite.'
-        return render_template('error.html', error_message=error_message)
+        # show error message on error page if None and do not continue function
+        error_message = ['Sorry, could not retrieve favorite.']
+        return render_template('error.html', error_list=error_message)
 
     # create expected dictionary for result.html template from retrieved favorite object
     month_name = ui_support.get_name_of_month_from_number(favorite.month)
     result = ui_support.create_result_dictionary(favorite.city, favorite.country, favorite.month, month_name, favorite.year, favorite.webcam, favorite.holidays, favorite.weather)
+    
+    if len(error_list):
+        # for errors that may occur after attempt to retrieve favorite
+        return render_template('error.html', error_list=error_list)
 
     return render_template('result.html', result=result)
 
@@ -105,12 +115,17 @@ def add_favorite(result):
 
 @app.route('/favorite/delete/<id>')
 def delete_favorite(id):
+    error_list = []
+    
     #TODO: would be nice to ask the user if they are sure they want to delete the favorite...
     was_favorite_deleted = favorites_db.delete_favorite_by_id(id)
 
     if was_favorite_deleted == False:
         # show error message on error page if favorite not deleted
         error_message = f'Unable to delete favorite. Please check if ID: {id} is a valid favorite.'
-        return render_template('error.html', error_message=error_message)
+        ui_support.add_error_to_error_list(error_message, error_list)
+    
+    if len(error_list):
+        return render_template('error.html', error_list=error_list)
     
     return redirect('favorites.html')

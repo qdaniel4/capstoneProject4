@@ -3,9 +3,14 @@
 {% block content %}
 
 <div class="content-box">
-    <!--general template for errors the user can recover from-->
-    <h3>{{ error_message }}</h3>
-    <a class="nav-link" href="{{ url_for('get_favorites') }">Return to Favorites</a>
+    <!--general template for errors the user can potentially recover from-->
+    <h3>The following errors occurred:</h3>
+    <ul>
+        {% for error in error_list %}
+        <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    <a class="nav-link" href="{{ url_for('get_favorites') }}">Return to Favorites</a>
     <a class="nav-link" href="{{ url_for('index') }}">Return to Search</a>
 </div>
 

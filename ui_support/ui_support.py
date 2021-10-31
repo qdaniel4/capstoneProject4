@@ -1,5 +1,15 @@
 import calendar
 
+
+def add_error_to_error_list(error, error_list):
+    """Takes an error and error_list
+    Appends error to error_list if it is not None
+    Returns modified error list."""
+    if error:
+        error_list.append(error)
+    return error_list
+
+
 def get_list_of_countries(country_api_response):
     """Gets list of countries and country codes from the country_api in holiday_cal
     Pulls just the country names out, puts them in a list, then returns that list."""

@@ -7,6 +7,64 @@ import json
 class TestUI(TestCase):
 
 
+    def test_add_error_to_error_list_valid_error(self):
+        error = 'This is an error.'
+        error_list = []
+
+        ui_support.add_error_to_error_list(error, error_list)
+
+        self.assertIn(error, error_list)
+
+
+    def test_add_error_to_error_list_multiple_valid_errors(self):
+        error_one = 'This is an error.'
+        error_two = 'This is another error'
+        error_list = []
+
+        ui_support.add_error_to_error_list(error_one, error_list)
+        ui_support.add_error_to_error_list(error_two, error_list)
+
+        self.assertIn(error_one, error_list)
+        self.assertIn(error_two, error_list)
+
+
+    def test_add_error_to_error_list_does_not_add_None(self):
+        error = None
+        error_list = []
+        error_list_expected_length = 0
+
+        ui_support.add_error_to_error_list(error, error_list)
+
+        self.assertNotIn(error, error_list)
+        self.assertEqual(error_list_expected_length, len(error_list))
+
+
+    def test_add_some_errors_to_error_list_and_does_not_add_None(self):
+        error_one = 'This is an error.'
+        error_two = 'This is another error'
+        error_three = None
+        error_four = 'Another error'
+        error_five = None
+        error_list = []
+
+        error_list_expected_length = 3
+
+        ui_support.add_error_to_error_list(error_one, error_list)
+        ui_support.add_error_to_error_list(error_two, error_list)
+        ui_support.add_error_to_error_list(error_three, error_list)
+        ui_support.add_error_to_error_list(error_four, error_list)
+        ui_support.add_error_to_error_list(error_five, error_list)
+
+        self.assertIn(error_one, error_list)
+        self.assertIn(error_two, error_list)
+        self.assertNotIn(error_three, error_list)
+        self.assertIn(error_four, error_list)
+        self.assertNotIn(error_five, error_list)
+
+        self.assertEqual(error_list_expected_length, len(error_list))
+
+
+
     def test_get_list_of_countries_valid(self):
         with open('all_countries_from_holiday_api.json') as countries_file:
             countries_from_API = json.load(countries_file)
@@ -28,7 +86,7 @@ class TestUI(TestCase):
 
     def test_get_list_of_countries_no_response_from_API_returns_None(self):
         countries_from_API = None 
-        expected_error_message = 'No response from Calendarific API for country names. Please try again later.'
+        expected_error_message = 'No response from Calendarific API for country names.'
         returned_countries_list, returned_error_message = ui_support.get_list_of_countries(countries_from_API)
 
         self.assertIsNone(returned_countries_list) 
