@@ -6,24 +6,30 @@
 </head>
 
 <body>
-
+  <div id="header">
     <h1 id="app-title">Travel Planning Catalogue</h1>
 
-    <div id="navigation" class="content-box">
+    <div id="navigation">
       <!--navigation links-->
       <a class="nav-link" href="{{ url_for('index') }}">Search For Destination</a><a class="nav-link" href="{{ url_for('get_favorites') }}">View Saved Destinations</a>
     </div>
+  </div>
 
-  {% block content %}
+  <div id="content">
+    {% block content %}
 
-  {% endblock %}
+    {% endblock %}
+  </div>
 
-    <div class="content-box">
+  <div id="footer">
+    <div id="credits">
       <!--API credits-->
       <p>Data provided from the following APIs:</p>
       <span class="api-credit">Country names, country holiday data: <a href="https://calendarific.com/">Calendarific</a></span>
       <span class="api-credit">Climate data, location coordinates: <a href="https://www.troposphere.io/developer">Troposphere</a></span>
       <span class="api-credit">Webcam images: <a href="https://api.windy.com/">Windy</a></span>
     </div>
+  </div>
+
 </body>
 </html>
