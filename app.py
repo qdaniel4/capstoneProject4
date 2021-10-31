@@ -1,12 +1,12 @@
 from flask import Flask, request, render_template, redirect
-import calendar
 
+from ui_support import ui
 from favorites_database import favorites_db
 
 #TODO: change import statements as merges are made
 
 # from holiday_cal import country_api
-import scratch_module as country_api
+from scratch_module import country_code_handler as get_countries_from_API
 
 # from holiday_cal import holiday as holiday_api
 import scratch_module as holiday_api
@@ -21,61 +21,11 @@ import scratch_module as webcam_api
 app = Flask(__name__)
 
 
-def get_coordinates_string(city):
-    """Gets latitude and longitude for param city from weather_api.
-    Returns it as a formatted string for use in future API calls."""
-    lat, lon = weather_api.get_coordinates(city)
-    coordinates_string = f'{lat},{lon}'
-    return coordinates_string
-
-
-def get_list_of_countries():
-    """Gets list of countries and country codes from the country_api in holiday_cal
-    Pulls just the country names out, puts them in a list, then returns that list."""
-    country_api_response = country_api.country_code_handler()
-    country_name_list = []
-    for country_name_and_code in country_api_response:
-        country_name_list.append(country_name_and_code['country_name'])
-    return country_name_list
-
-
-def get_month_and_year_from_date(date):
-    """Takes a date in the HTML datepicker format as param.
-    Returns just the month and year from that date as tuple."""
-    date_list = date.split('/')
-    month = date_list[0]
-    year = date_list[2]
-
-    return month, year
-
-
-def get_name_of_month_from_number(month):
-    """Take number string month as param.
-    Return name of month using calendar."""
-    month_int = int(month)
-    month_name = calendar.month[month_int]
-    return month_name
-
-
-def create_result_dictionary(city, country, month, month_name, year, webcams, holidays, weather):
-    """Return a dictionary from params."""
-    result = {
-        'city': city,
-        'country': country,
-        'month': month,
-        'month_name': month_name,
-        'year': year,
-        'webcams': webcams,
-        'holidays': holidays,
-        'weather': weather
-    }
-    return result
-
-
 @app.route('/')
 def index():
     # get list of countries to populate options for select element
-    all_countries = get_list_of_countries()
+    country_api_response = get_countries_from_API()
+    all_countries = ui.get_list_of_countries(country_api_response)
 
     # get list of web api categories to populate options for select element
     webcam_api_categories = webcam_api.show_categories()
@@ -92,9 +42,9 @@ def get_result():
     category = request.args.get('category')
 
     # convert some user input into useful API parameters
-    month, year = get_month_and_year_from_date(date)
-    coordinates = get_coordinates_string(city)
-    month_name = get_name_of_month_from_number(month)
+    month, year = ui.get_month_and_year_from_date(date)
+    coordinates = weather_api.get_coordinates(city)
+    month_name = ui.get_name_of_month_from_number(month)
 
     # get a list of holidays from holiday API
     # each holiday is a dictionary that contains name, description and date of holiday
@@ -110,7 +60,7 @@ def get_result():
     webcam_urls_daylight, webcam_urls_current = webcam_api.get_image_list(coordinates, category)
 
     # create a dictionary to pass to template - to make creation of favorite easier later on
-    result = create_result_dictionary(city, country, month, month_name, year, webcam_urls_daylight, holidays_list, weather_data)
+    result = ui.create_result_dictionary(city, country, month, month_name, year, webcam_urls_daylight, holidays_list, weather_data)
 
     return render_template('result.html', result=result)
 
@@ -136,8 +86,8 @@ def get_favorite(id):
         return render_template('error.html', error_message=error_message)
 
     # create expected dictionary for result.html template from retrieved favorite object
-    month_name = get_name_of_month_from_number(favorite.month)
-    result = create_result_dictionary(favorite.city, favorite.country, favorite.month, month_name, favorite.year, favorite.webcam, favorite.holidays, favorite.weather)
+    month_name = ui.get_name_of_month_from_number(favorite.month)
+    result = ui.create_result_dictionary(favorite.city, favorite.country, favorite.month, month_name, favorite.year, favorite.webcam, favorite.holidays, favorite.weather)
 
     return render_template('result.html', result=result)
 

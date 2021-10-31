@@ -25,7 +25,7 @@ def get_month_and_year_from_date(date):
 def get_name_of_month_from_number(month):
     """Take number string month as param.
     Return name of month using calendar."""
-    error = (None, 'Error: Month needs to be a number 1-12')
+    error = (None, 'Error: Month needs to be a whole number 1-12.')
     if month.isnumeric() == False:
         return error
 
