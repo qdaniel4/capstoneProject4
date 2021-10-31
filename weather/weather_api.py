@@ -6,19 +6,7 @@ from functools import lru_cache
 key = os.environ.get('TROPOSPHERE_KEY')
 
 
-
  
-
-# # #     # call get like this
-# def main():
-#      coordinates = get_coordinates('munich', 'Germany')
-#      temp = get_climate(coordinates, '02')
-#      print(temp)
-
-
-#     temp = get_climate(lat,lon, '02')
-#     print(temp)
-   # returns something like {'rain': '4.61 inches per month', 'sunshine': '9.90 hours', 'temp': ' 56.63F to  41.42F'} 
       
   # from https://www.quickprogrammingtips.com/python/how-to-create-lru-cache-in-python.html
 """ creates a cache when instantiated"""
@@ -55,25 +43,8 @@ def capitalize_city(city):
     """capitalizing first letter of each word put in to search for it"""
     if city:
         return city.title()
-        # city = city.lower()
-        # to_return = ''
-        # list_words = []
-        # # splitting by word
-        # split = city.split(' ')
-        # for word in split:
-        #     length = len(word)
-        #     # upper casing first letter
-        #     x = word[0].upper()
-        #     # putting capital letter and rest of word together in a list
-        #     list_words.append(x + word[1:length])
-        # if len(list_words)  > 1:
-        #     # if more than 1 word it makes a string out of all the words
-        #     # from https://www.geeksforgeeks.org/python-program-to-convert-a-list-to-string/
-        #     to_return = ' '.join([elem for elem in list_words])
-        # else:
-        #     to_return = list_words[0]
-        # # for a return value of 1 word
-        # return to_return
+       
+
     else:
         return None
 
@@ -231,6 +202,11 @@ def check_if_in_lat_long_cache(cooridinates, month):
         return cache.get(cooridinates)
     else:
         return None
+
+# def main():
+#      coordinates = get_coordinates('munich', 'Germany')
+#      temp = get_climate(coordinates, '02')
+#      print(temp)
 
 # if __name__ == '__main__':
 #      main()
