@@ -22,7 +22,7 @@ class TestIndexWithAPIData(TestCase):
         self.list_of_countries = self.list_of_countries_patch.start()
         self.list_of_countries.return_value = [{"country_name": "Afghanistan","country_code": "AF"},{"country_name": "Albania","country_code": "AL"}]
 
-        self.show_categories_patch = patch('scratch_module.show_categories')
+        self.show_categories_patch = patch('windy_module.windy_api_manager.show_categories')
         self.show_categories = self.show_categories_patch.start()
         self.show_categories.return_value = ['Beach', 'Harbor', 'Traffic']
 
@@ -78,7 +78,7 @@ class TestIndexWithNoAPIData(TestCase):
         self.list_of_countries.return_value = None
 
         # TODO: replace scratch_module with correct modules after merge
-        self.show_categories_patch = patch('scratch_module.show_categories')
+        self.show_categories_patch = patch('windy_module.windy_api_manager.show_categories')
         self.show_categories = self.show_categories_patch.start()
         self.show_categories.return_value = None
 
@@ -127,19 +127,19 @@ class TestResult(TestCase):
 
 
     # TODO: this is very messy and it would be nice to clean it up a little
-    @patch('scratch_module.get_coordinates', side_effect=['30.069128947931752,31.22197273660886'])
+    @patch('weather.weather_api.get_coordinates', side_effect=['30.069128947931752,31.22197273660886'])
     @patch('scratch_module.get_holiday_data', side_effect=[[{
             'holiday_name': 'Holiday in Egypt',
             'description': 'Ed just made this up.',
             'date': 'Jan 20 2022'
         }]])
-    @patch('scratch_module.get_climate', side_effect=[{
+    @patch('weather.weather_api.get_climate', side_effect=[{
             'rain': '22 inches',
             'sunshine': '22 hours',
             'high_temp': '89 F',
             'low_temp': '45 F'
         }])
-    @patch('scratch_module.get_image_list', side_effect=[(['link-01', 'link02', 'link03'], None)])
+    @patch('windy_module.windy_api_manager.get_image_list', side_effect=[(['link-01', 'link02', 'link03'], None)])
     def test_get_valid_result(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # TODO: change so this uses get_response_result
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams

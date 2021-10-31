@@ -4,16 +4,11 @@ from ui_support import ui_support
 from favorites_database import favorites_db
 
 #TODO: change import statements as merges are made
-
 # from holiday_cal import holiday as holiday_api
 import scratch_module as holiday_api
 
-# from weather import weather_api
-import scratch_module as weather_api
-
-# import windy_api_manager as webcam_api
-import scratch_module as webcam_api
-
+from weather import weather_api
+from windy_module import windy_api_manager as webcam_api
 
 app = Flask(__name__)
 
