@@ -10,6 +10,14 @@ def add_error_to_error_list(error, error_list):
     return error_list
 
 
+def check_if_coordinates(coordinates):
+    """Return an error message if coordinates were not retrieved from the API."""
+    if coordinates == None:
+        return None, 'Error getting location information from API. Please double check city name and country and try again.'
+    else:
+        return coordinates, None
+
+
 def get_list_of_countries(country_api_response):
     """Gets list of countries and country codes from the country_api in holiday_cal
     Pulls just the country names out, puts them in a list, then returns that list."""
@@ -35,12 +43,12 @@ def get_month_and_year_from_date(date):
     """Takes a date in the HTML datepicker format as param.
     Returns just the month and year from that date as tuple."""
     if not date:
-        return None, 'Error: No date was selected.'
+        return None, None, 'Error: No date was selected.'
     date_list = date.split('/')
     month = date_list[0]
     year = date_list[2]
 
-    return month, year
+    return month, year, None
 
 
 

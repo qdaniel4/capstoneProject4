@@ -2,10 +2,10 @@ import unittest
 from unittest import TestCase
 from unittest.mock import patch
 
-# from flask import Flask, request, render_template, redirect
-
 from ui_support import ui_support
 import app
+
+
 
 
 class TestIndexWithAPIData(TestCase):
@@ -111,7 +111,7 @@ class TestIndexWithNoAPIData(TestCase):
         self.show_categories_patch.stop()
 
 
-class TestResultWithData(TestCase):
+class TestResult(TestCase):
 
     # TODO: this is very messy and it would be nice to clean it up a little
     @patch('weather.weather_api.get_coordinates', side_effect=['30.069128947931752,31.22197273660886'])
@@ -132,6 +132,8 @@ class TestResultWithData(TestCase):
         with app.app.test_client() as client:
             response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
         html = response.data.decode()
+
+        self.assertEqual(response.status_code, 200)
 
         # expected data
         weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
@@ -157,8 +159,7 @@ class TestResultWithData(TestCase):
             self.assertIn(webcam_value, html)
 
 
-class TestResultWithNoneCoordinates(TestCase):
-
+    # error page is displayed if coordinates = None
     @patch('weather.weather_api.get_coordinates', side_effect=[None])
     @patch('scratch_module.get_holiday_data', side_effect=[[{
             'holiday_name': 'Holiday in Egypt',
@@ -172,7 +173,7 @@ class TestResultWithNoneCoordinates(TestCase):
             'low_temp': '45 F'
         }])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[['link-01', 'link02', 'link03']])
-    def test_get_valid_result(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
+    def test_get_result_with_no_coordinates_shows_error_page(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
             response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
@@ -181,6 +182,77 @@ class TestResultWithNoneCoordinates(TestCase):
         
         self.assertIn(expected_error_html, html)
 
+
+    # correct messages displayed to user when optional API data is not found
+    @patch('weather.weather_api.get_coordinates', side_effect=['30.069128947931752,31.22197273660886'])
+    @patch('scratch_module.get_holiday_data', side_effect=[None])
+    @patch('weather.weather_api.get_climate', side_effect=[None])
+    @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
+    def test_result_page_shows_correct_error_messages_when_no_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
+        # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
+        with app.app.test_client() as client:
+            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+        html = response.data.decode()
+        expected_error_html = ['<h3>No weather data found for Egypt during January.</h3>',
+        '<h3>No holidays found for Egypt during January.</h3>',
+        '<h3>No webcams were found for Egypt. Try selecting a different category.</h3>']
         
+        for expected_error in expected_error_html:
+            self.assertIn(expected_error, html)
+
+
+    # empty html not displayed to user when optional API data is not found
+    @patch('weather.weather_api.get_coordinates', side_effect=['30.069128947931752,31.22197273660886'])
+    @patch('scratch_module.get_holiday_data', side_effect=[None])
+    @patch('weather.weather_api.get_climate', side_effect=[None])
+    @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
+    def test_result_page_does_not_show_html_with_blank_entries_when_no_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
+        # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
+        with app.app.test_client() as client:
+            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+        html = response.data.decode()
+
+        weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
+        '<li>Rainfall:',
+        '<li>Daylight Hours:',
+        '<li>High Temp:',
+        '<li>Low Temp:']
+        holiday_value  = '<h3>Holidays in Egypt during January:</h3>'
+        webcam_value = '<img url="" />'
+
+        for weather_value in weather_values:
+            self.assertNotIn(weather_value, html)
+        self.assertNotIn(holiday_value, html)
+        self.assertNotIn(webcam_value, html)
+
+
+    # correct messages displayed to user when some optional API data is not found
+    @patch('weather.weather_api.get_coordinates', side_effect=['30.069128947931752,31.22197273660886'])
+    @patch('scratch_module.get_holiday_data', side_effect=[[{
+            'holiday_name': 'Holiday in Egypt',
+            'description': 'Ed just made this up.',
+            'date': 'Jan 20 2022'
+        }]])
+    @patch('weather.weather_api.get_climate', side_effect=[None])
+    @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
+    def test_result_page_shows_correct_error_messages_when_only_some_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
+        # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
+        with app.app.test_client() as client:
+            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+        html = response.data.decode()
+        expected_error_html = ['<h3>No weather data found for Egypt during January.</h3>',
+        '<h3>No webcams were found for Egypt. Try selecting a different category.</h3>']
+        not_expected_error_html = '<h3>No holidays found for Egypt during January.</h3>'
+        holiday_values  = ['<h3>Holidays in Egypt during January:</h3>', 
+        '<p>Holiday in Egypt</p>', 
+        '<li>Jan 20 2022</li>', 
+        '<li>Ed just made this up.</li>']
+
+        for expected_error in expected_error_html:
+            self.assertIn(expected_error, html)
+        self.assertNotIn(not_expected_error_html, html)
+        for holiday_value in holiday_values:
+            self.assertIn(holiday_value, html)
+
 if __name__ == '__main__':
     unittest.main()

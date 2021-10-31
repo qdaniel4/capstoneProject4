@@ -44,15 +44,18 @@ def get_result():
     date = request.args.get('date')
     category = request.args.get('category')
 
-    # convert some user input into useful API parameters
-    month, year = ui_support.get_month_and_year_from_date(date)
-    coordinates = weather_api.get_coordinates(city, country)
-    if not coordinates:
-        # stop here and show error page if coordinates not returned from the weather API
-        no_coordinates_error = 'Error getting location information from API. Please double check city name and country and try again.'
-        ui_support.add_error_to_error_list(no_coordinates_error, error_list)
+    # get useful API parameters or get error messages
+    month, year, month_year_from_date_error = ui_support.get_month_and_year_from_date(date)
+    month_name, month_name_error = ui_support.get_name_of_month_from_number(month)
+    coordinates_from_API = weather_api.get_coordinates(city, country)
+    coordinates, no_coordinates_error = ui_support.check_if_coordinates(coordinates_from_API)
+
+    # check for errors and display them on error page if present
+    ui_support.add_error_to_error_list(month_year_from_date_error, error_list)
+    ui_support.add_error_to_error_list(month_name_error, error_list)    
+    ui_support.add_error_to_error_list(no_coordinates_error, error_list)
+    if len(error_list):
         return render_template('error.html', error_list=error_list)
-    month_name, error = ui_support.get_name_of_month_from_number(month)
 
     # get a list of holidays from holiday API
     # each holiday is a dictionary that contains name, description and date of holiday
