@@ -31,17 +31,11 @@ def show_categories():
         categories.append(category.get('id'))
     return categories
 
-"""formats parameters/path before getting a response from the api"""
-def format_params(coordinates, radius, category_choice):
-    coordinates = coordinates.replace(' ', '')
-    nearby = f'nearby={coordinates},{radius}'
-    category = f'category={category_choice}'
-    return nearby, category
 
 """gets a list of daylight and current time image links from the api, list depends on the users preferences (location, category, sorted, how many they want to see)"""
 def get_image_list(coordinates, category):
 
-    url = f'https://api.windy.com/api/webcams/v2/list/{coordinates},300/{category}/orderby=distance/limit=5?show=webcams:location,image'
+    url = f'https://api.windy.com/api/webcams/v2/list/nearby={coordinates},300/category={category}/orderby=distance/limit=5?show=webcams:location,image'
     daylight_links = []
     current_links = []
     data = requests.get(url, headers=header).json()
@@ -53,7 +47,7 @@ def get_image_list(coordinates, category):
         for link in webcams:
             daylight_links.append(link.get('image').get('daylight').get('preview'))
             current_links.append(link.get('image').get('current').get('preview'))
-        return daylight_links, current_links
+        return daylight_links
 
 """saves a list of daylight and current time images"""
 def save_images(daylight_links, current_links):
@@ -72,7 +66,7 @@ def save_images(daylight_links, current_links):
     return daylight_images, current_images
 
 def get_video_link(nearby, category):
-    url = f'https://api.windy.com/api/webcams/v2/list/{nearby}/{category}/orderby=distance/limit=1?show=webcams:location,player'
+    url = f'https://api.windy.com/api/webcams/v2/list/nearby={nearby}/category={category}/orderby=distance/limit=1?show=webcams:location,player'
     month_video = []
     live_video = []
     data = requests.get(url, headers=header).json()
@@ -81,7 +75,4 @@ def get_video_link(nearby, category):
     for link in webcams:
         month_video.append(link.get('player').get('month').get('embed'))
         live_video.append(link.get('image').get('current').get('preview'))
-    if len(live_video) == 0:
-        return month_video
-    else:
-        return month_video, live_video
+    return month_video
