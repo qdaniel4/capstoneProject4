@@ -1,4 +1,5 @@
 """ Performs all of the API calls and generates holidays celebrated in a given country,year and month. """
+# NOTE: Ed was running into an import error for this module when running the app as a whole. combined contents of this module into holiday_api.py
 import os
 import requests
 import json
