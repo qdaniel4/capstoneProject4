@@ -4,9 +4,9 @@ import requests
 import os
 from pprint import pprint
 from functools import lru_cache
-from io import BytesIO
-from PIL import Image, ImageShow
-import time
+#from io import BytesIO
+#from PIL import Image, ImageShow
+#import time
 
 key = os.environ.get('WINDY_KEY')
 header = {'x-windy-key': key}
@@ -50,7 +50,7 @@ def get_image_list(coordinates, category):
         return daylight_links
 
 """saves a list of daylight and current time images"""
-def save_images(daylight_links, current_links):
+"""def save_images(daylight_links, current_links):
     daylight_images = []
     current_images = []
 
@@ -63,7 +63,7 @@ def save_images(daylight_links, current_links):
         r = requests.get(current_url)
         image = Image.open(BytesIO(r.content))
         current_images.append(image)
-    return daylight_images, current_images
+    return daylight_images, current_images"""
 
 def get_video_link(nearby, category):
     url = f'https://api.windy.com/api/webcams/v2/list/nearby={nearby}/category={category}/orderby=distance/limit=1?show=webcams:location,player'
