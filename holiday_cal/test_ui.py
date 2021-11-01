@@ -1,39 +1,47 @@
 from unittest import TestCase
-from unittest.mock import patch
-import requests
-from requests.exceptions import HTTPError
-from custom_exceptions import NoStateRegion,ValueTooLarge
+from unittest.mock import patch, Mock
+from requests import Response
+
+import redislite
+from redislite import Redis # self-contained, run separately
+import redislite.patch
 
 import extract_holiday
 
 class TestUI(TestCase):
+    
+    def setUp(self):
+        redislite.patch.patch_redis()
+        self.td = extract_holiday.req_res_country()
+        self.test_list = []
+        for i in self.td:
+            self.test_list.append(i)
+            
+    @patch('requests.Response.json')
+    def test_redis(self,get_mock):
+        self.maxDiff = None
+        redislite.patch.patch_redis()
+        mock_redis = get_mock.StrictRedis.return_value
+        response = extract_holiday.req_res_country()
+        mock_res = self.test_list
+        mock_redis.return_value = mock_res
+        self.assertEqual(response,mock_res)
         
-    #  Test countries endpoint
+        
+    
     def test_country_code_returns_country_list(self):
         """ testing expected dict is returned. """
         with patch('requests.Response.json') as mock_res:
-            sample_response = {'country_name': 'eSwatini', 'iso-3166': 'SZ', 'total_holidays': 17, 'supported_languages': 2, 'uuid': '7dabf5c198b0bab2eaa42bb03a113e55'}
-            mock_res.return_value.json.return_value = sample_response
-            actual = extract_holiday.req_countries()
-        self.assertDictEqual(actual.json(), sample_response)
+            sample_response = self.test_list
+            mock_res.side_effect = sample_response
+            actual = extract_holiday.req_res_country()
+        self.assertListEqual(actual,sample_response)
         
-            
-    def test_req_countries_http_failed_response(self):
-        """ testing an Http error exception is raised. """
-        with patch('requests.Response.json') as mock_get:
-            # MOCK the request.get function to return failed http
-            http_error = requests.exceptions.HTTPError()
-            mock_url = 'http://fakeCalendar.com/api/v2/countries?'
-            mock_get.raise_for_status.side_effect = http_error
-            mock_get.return_value.json.return_value  = mock_url
-            response = extract_holiday.req_countries()
-        self.assertTrue(response,mock_url)
-        self.assertNotEqual(response,mock_url)
-    
-    def test_no_state_region_is_raised(self):
+    #  Test countries endpoint
+    def test_country_code_returned(self):
         pass
 
-
+             
 
 #    holiday endpoint
     def test_holiday_returns_correct_value(self):
@@ -48,12 +56,12 @@ class TestUI(TestCase):
                         'type':'national',
                         'api_key':'api_key'
                         }
-                mock_req_json.return_value = mock_api_response
+                mock_req_json.json.return_value.return_value = mock_api_response
                 
                 holiday = extract_holiday.get_holiday_data(mock_country, mock_year, mock_month)
                 
                 expected = {'country': 'us',
                         'year': '2021', 
                         'month': '1', 'type':'national','api_key':'api_key'}
-                self.assertEqual(expected,holiday)
+                self.assertEqual(mock_api_response,holiday)
                 
