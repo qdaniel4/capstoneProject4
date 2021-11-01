@@ -87,22 +87,38 @@ def create_result_dictionary(city, country, month, month_name, year, webcams, ho
 def create_holidays_list_from_database_favorite(holidays_string):
     """Take the string from the holidays entry in database.
     Turn it into a usable format for result.html"""
-    holidays_string_json_compatible = holidays_string.replace('\'', '\"') # json wants double quotes, not single quotes
-    holidays_json = json.loads(holidays_string_json_compatible)
-    return holidays_json
+    if not holidays_string:
+        return None
+    elif holidays_string == 'None':
+        return None
+    else:
+        holidays_string_json_compatible = holidays_string.replace('\'', '\"') # json wants double quotes, not single quotes
+        holidays_json = json.loads(holidays_string_json_compatible)
+        return holidays_json
+
 
 
 def create_weather_dict_from_database_favorite(weather_string): 
     """Take the string from the weather entry in database.
     Turn it into a usable format for result.html"""
-    weather_string_json_compatible = weather_string.replace('\'', '\"')
-    weather_json = json.loads(weather_string_json_compatible)
-    return weather_json
+    if not weather_string:
+        return None
+    elif weather_string == 'None':
+        return None
+    else:
+        weather_string_json_compatible = weather_string.replace('\'', '\"')
+        weather_json = json.loads(weather_string_json_compatible)
+        return weather_json
 
 
 def create_webcams_list_from_database_favorite(webcams_string):
     """Take the string from the webcam entry in database.
     Turn it into a usable list for result.html"""
-    webcams_string_json_compatible = webcams_string.replace('\'', '\"')
-    webcams_list = json.loads(webcams_string_json_compatible)
-    return webcams_list
+    if not webcams_string:
+        return None
+    elif webcams_string == 'None':
+        return None
+    else:
+        webcams_string_json_compatible = webcams_string.replace('\'', '\"')
+        webcams_list = json.loads(webcams_string_json_compatible)
+        return webcams_list
