@@ -564,7 +564,7 @@ class TestGetFavoriteByIDFromDB(TestCase):
 
     def create_and_save_favorite(self):
         result = self.create_sample_result()
-        favorites_database.favorites_db.add_favorite(result['city'], result['country'], result['month'], result['year'], result['webcams'], result['holidays'], result['weather'])
+        favorites_database.favorites_db.add_favorite(result['city'], result['country'], result['month'], result['year'], result['webcams'], result['weather'], result['holidays'])
 
 
     def test_display_results_for_favorite_from_database(self):
@@ -572,7 +572,32 @@ class TestGetFavoriteByIDFromDB(TestCase):
         with app.app.test_client() as client:
             response = client.get('/favorite/1')
         html = response.data.decode()
-        print(html)
+
+        self.assertEqual(response.status_code, 200)
+
+        weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
+        '<li>Rainfall: 22 inches per month.</li>',
+        '<li>Daylight Hours: 22 hours per day.</li>',
+        '<li>High Temp: 89 F</li>',
+        '<li>Low Temp: 45 F</li>']
+        holiday_values  = ['<h3>Holidays in Egypt during January:</h3>', 
+        '<p>Holiday in Egypt</p>', 
+        '<li>Jan 20 2022</li>', 
+        '<li>Ed just made this up.</li>']
+        webcam_values = ['<img url="http://link.com" />',
+        '<img url="http://link2.com" />',
+        '<img url="http://link3.com" />']
+        result_header = '<h2 id="result-title">Results for Cairo, Egypt in 1/2022.</h2>'
+
+        self.assertIn(result_header, html)
+        for weather_value in weather_values:
+            self.assertIn(weather_value, html)
+        for holiday_value in holiday_values:
+            self.assertIn(holiday_value, html)
+        for webcam_value in webcam_values:
+            self.assertIn(webcam_value, html)
+
+
 
 
 if __name__ == '__main__':

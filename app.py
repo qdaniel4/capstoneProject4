@@ -1,5 +1,4 @@
 from flask import Flask, request, render_template, redirect
-import json 
 
 from ui_support import ui_support
 from favorites_database import favorites_db
@@ -99,17 +98,12 @@ def get_favorite(id):
     # create expected dictionary for result.html template from retrieved favorite object
     month_name, month_error = ui_support.get_name_of_month_from_number(favorite.month)
 
-    # https://www.tutorialspoint.com/How-to-convert-a-string-to-dictionary-in-Python
-    # TODO: '&#39;', renders dictionaries useless. need to fix that for favorite to display properly.
-    # so right now this route does not work
-    holidaystring = favorite.holidays.replace('\'', '\"')
-    weatherstring = favorite.weather.replace('\'', '\"')
-    holidays = json.loads(holidaystring)
-    weather = json.loads(weatherstring)
-
     # turn strings from the database back into useful python objects
-    webcams = ui_support.create_list_from_webcams_string(favorite.webcam)
+    webcams = ui_support.create_webcams_list_from_database_favorite(favorite.webcam)
+    holidays = ui_support.create_holidays_list_from_database_favorite(favorite.holidays)
+    weather = ui_support.create_weather_dict_from_database_favorite(favorite.weather)
 
+    # create expected result dictionary
     result = ui_support.create_result_dictionary(favorite.city, favorite.country, favorite.month, month_name, favorite.year, webcams, holidays, weather)
     
     if len(error_list):

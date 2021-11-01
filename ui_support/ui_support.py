@@ -83,10 +83,24 @@ def create_result_dictionary(city, country, month, month_name, year, webcams, ho
     return result
 
 
+# https://www.tutorialspoint.com/How-to-convert-a-string-to-dictionary-in-Python
+def create_holidays_list_from_database_favorite(holidays_string):
+    """Take the string from the holidays entry in database.
+    Turn it into a usable format for result.html"""
+    holidays_string_json_compatible = holidays_string.replace('\'', '\"') # json wants double quotes, not single quotes
+    holidays_json = json.loads(holidays_string_json_compatible)
+    return holidays_json
 
 
+def create_weather_dict_from_database_favorite(weather_string): 
+    """Take the string from the weather entry in database.
+    Turn it into a usable format for result.html"""
+    weather_string_json_compatible = weather_string.replace('\'', '\"')
+    weather_json = json.loads(weather_string_json_compatible)
+    return weather_json
 
-def create_list_from_webcams_string(webcams_string):
+
+def create_webcams_list_from_database_favorite(webcams_string):
     """Take the string from the webcam entry in database.
     Turn it into a usable list for result.html"""
     webcams_string_json_compatible = webcams_string.replace('\'', '\"')
