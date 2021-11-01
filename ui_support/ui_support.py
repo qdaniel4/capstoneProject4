@@ -1,5 +1,5 @@
 import calendar
-
+import json
 
 def add_error_to_error_list(error, error_list):
     """Takes an error and error_list
@@ -51,7 +51,6 @@ def get_month_and_year_from_date(date):
     return month, year, None
 
 
-
 def get_name_of_month_from_number(month_string):
     """Take number string month as param.
     Return name of month using calendar."""
@@ -69,7 +68,6 @@ def get_name_of_month_from_number(month_string):
     return month_name_to_return, None
 
 
-
 def create_result_dictionary(city, country, month, month_name, year, webcams, holidays, weather):
     """Return a dictionary from params."""
     result = {
@@ -83,3 +81,14 @@ def create_result_dictionary(city, country, month, month_name, year, webcams, ho
         'weather': weather
     }
     return result
+
+
+
+
+
+def create_list_from_webcams_string(webcams_string):
+    """Take the string from the webcam entry in database.
+    Turn it into a usable list for result.html"""
+    webcams_string_json_compatible = webcams_string.replace('\'', '\"')
+    webcams_list = json.loads(webcams_string_json_compatible)
+    return webcams_list

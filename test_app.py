@@ -176,7 +176,7 @@ class TestResultRoute(TestCase):
     def test_get_valid_result(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
-            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+            response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
 
         self.assertEqual(response.status_code, 200)
@@ -211,7 +211,7 @@ class TestResultRoute(TestCase):
     def test_get_result_with_no_coordinates_shows_error_page(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
-            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+            response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
         expected_error_html = '<li>Error getting location information from API. Please double check city name and country and try again.</li>'
         
@@ -225,7 +225,7 @@ class TestResultRoute(TestCase):
     def test_result_page_shows_correct_error_messages_when_no_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
-            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+            response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
         expected_error_html = ['<h3>No weather data found for Egypt during January.</h3>',
         '<h3>No holidays found for Egypt during January.</h3>',
@@ -242,7 +242,7 @@ class TestResultRoute(TestCase):
     def test_result_page_does_not_show_html_with_blank_entries_when_no_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
-            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+            response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
 
         weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
@@ -266,7 +266,7 @@ class TestResultRoute(TestCase):
     def test_result_page_shows_correct_error_messages_when_only_some_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
-            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+            response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
         expected_error_html = ['<h3>No weather data found for Egypt during January.</h3>',
         '<h3>No webcams were found for Egypt. Try selecting a different category.</h3>']
@@ -290,7 +290,7 @@ class TestResultRoute(TestCase):
     def test_result_page_shows_multiple_holidays(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
-            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+            response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
         holiday_values  = ['<h3>Holidays in Egypt during January:</h3>', 
         '<p>Holiday in Egypt</p>', 
@@ -488,7 +488,7 @@ class TestAddFavoriteToDBThroughFavoriteAddRoute(TestCase):
             'country': 'Egypt',
             'month': '01',
             'month_name': 'January',
-            'year': '20222',
+            'year': '2022',
             'webcams': sample_webcam_data,
             'holidays': sample_holiday_data,
             'weather': sample_weather_data
@@ -554,7 +554,7 @@ class TestGetFavoriteByIDFromDB(TestCase):
             'country': 'Egypt',
             'month': '01',
             'month_name': 'January',
-            'year': '20222',
+            'year': '2022',
             'webcams': sample_webcam_data,
             'holidays': sample_holiday_data,
             'weather': sample_weather_data
