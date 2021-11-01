@@ -1,0 +1,2 @@
+  User enters a city, a country and a month for a vacation.
+The api returns all the holidays in that for that country in that month. also the api returns webcam images of the nearby area  and weather data for the area for that month . the api allows user to bookmark favorites for later use
