@@ -4,15 +4,13 @@ import json
 from ui_support import ui_support
 from favorites_database import favorites_db
 
-#TODO: change import statements as merges are made
-# from holiday_cal import holiday as holiday_api
-import scratch_module as holiday_api
-
+from holiday_cal import holiday_api
 from weather import weather_api
 from windy_module import windy_api_manager as webcam_api
 
 app = Flask(__name__)
 
+favorites_db.create_table()
 
 @app.route('/')
 def index():
@@ -87,7 +85,7 @@ def get_favorites():
     # unit test - put data in db, call route handler, examine response, assert example data on page, assert example data on page, etc
 
 
-@app.route('/favorite/<id>')
+@app.route('/favorite/<int:id>')
 def get_favorite(id):
     error_list = []
     # get favorites from the database by id or get None
@@ -100,7 +98,18 @@ def get_favorite(id):
 
     # create expected dictionary for result.html template from retrieved favorite object
     month_name = ui_support.get_name_of_month_from_number(favorite.month)
-    result = ui_support.create_result_dictionary(favorite.city, favorite.country, favorite.month, month_name, favorite.year, favorite.webcam, favorite.holidays, favorite.weather)
+
+    # https://www.tutorialspoint.com/How-to-convert-a-string-to-dictionary-in-Python
+    # TODO: '&#39;', renders dictionaries useless. need to fix that for favorite to display properly.
+    # so right now this route does not work
+    holidaystring = favorite.holidays.replace("'", '"')
+    webcamstring = favorite.webcam.replace("'", '"')
+    weatherstring = favorite.weather.replace("'", '"')
+    holidays = json.loads(holidaystring)
+    webcam = json.loads(webcamstring)
+    weather = json.loads(weatherstring)
+
+    result = ui_support.create_result_dictionary(favorite.city, favorite.country, favorite.month, month_name, favorite.year, webcam, holidays, weather)
     
     if len(error_list):
         # for errors that may occur after attempt to retrieve favorite
@@ -116,11 +125,12 @@ def add_favorite():
     result = result_string.split('\\') # turn into list
     favorites_db.add_favorite(result[0], result[1], result[2], result[3], result[4], result[5], result[6])
     
-    return redirect('favorites.html')
+    return redirect('../favorites')
 
 
 @app.route('/favorite/delete/<id>')
 def delete_favorite(id):
+    # TODO: unit tests, ensure functionality
     error_list = []
     
     #TODO: would be nice to ask the user if they are sure they want to delete the favorite...

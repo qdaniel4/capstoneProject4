@@ -44,18 +44,19 @@ def get_month_and_year_from_date(date):
     Returns just the month and year from that date as tuple."""
     if not date:
         return None, None, 'Error: No date was selected.'
-    date_list = date.split('/')
-    month = date_list[0]
-    year = date_list[2]
+    date_list = date.split('-')
+    month = date_list[1]
+    year = date_list[0]
 
     return month, year, None
 
 
 
-def get_name_of_month_from_number(month):
+def get_name_of_month_from_number(month_string):
     """Take number string month as param.
     Return name of month using calendar."""
     error = (None, 'Error: Month needs to be a whole number 1-12.')
+    month = str(month_string)
     if month.isnumeric() == False:
         return error
 

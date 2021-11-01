@@ -25,7 +25,7 @@ class TestIndexWithAPIData(TestCase):
 
     def setUp(self):
         # https://treyhunner.com/2014/10/the-many-flavors-of-mock-dot-patch/
-        self.list_of_countries_patch = patch('scratch_module.list_of_countries')
+        self.list_of_countries_patch = patch('holiday_cal.holiday_api.list_of_countries')
         self.list_of_countries = self.list_of_countries_patch.start()
         self.list_of_countries.return_value = [{"country_name": "Afghanistan","country_code": "AF"},{"country_name": "Albania","country_code": "AL"}]
 
@@ -80,7 +80,7 @@ class TestIndexWithNoAPIData(TestCase):
 
     def setUp(self):
         # TODO: replace scratch_module with correct modules after merge
-        self.list_of_countries_patch = patch('scratch_module.list_of_countries')
+        self.list_of_countries_patch = patch('holiday_cal.holiday_api.list_of_countries')
         self.list_of_countries = self.list_of_countries_patch.start()
         self.list_of_countries.return_value = None
 
@@ -170,7 +170,7 @@ class TestResultRoute(TestCase):
 
 
     @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
-    @patch('scratch_module.get_holiday_data', side_effect=[create_sample_holiday_data()])
+    @patch('holiday_cal.holiday_api.get_holiday_data', side_effect=[create_sample_holiday_data()])
     @patch('weather.weather_api.get_climate', side_effect=[create_sample_weather_data()])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[create_sample_webcam_data()])
     def test_get_valid_result(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
@@ -205,7 +205,7 @@ class TestResultRoute(TestCase):
 
 
     @patch('weather.weather_api.get_coordinates', side_effect=[None])
-    @patch('scratch_module.get_holiday_data', side_effect=[create_sample_holiday_data()])
+    @patch('holiday_cal.holiday_api.get_holiday_data', side_effect=[create_sample_holiday_data()])
     @patch('weather.weather_api.get_climate', side_effect=[create_sample_weather_data()])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[create_sample_webcam_data()])
     def test_get_result_with_no_coordinates_shows_error_page(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
@@ -219,7 +219,7 @@ class TestResultRoute(TestCase):
 
 
     @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
-    @patch('scratch_module.get_holiday_data', side_effect=[None])
+    @patch('holiday_cal.holiday_api.get_holiday_data', side_effect=[None])
     @patch('weather.weather_api.get_climate', side_effect=[None])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
     def test_result_page_shows_correct_error_messages_when_no_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
@@ -236,7 +236,7 @@ class TestResultRoute(TestCase):
 
 
     @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
-    @patch('scratch_module.get_holiday_data', side_effect=[None])
+    @patch('holiday_cal.holiday_api.get_holiday_data', side_effect=[None])
     @patch('weather.weather_api.get_climate', side_effect=[None])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
     def test_result_page_does_not_show_html_with_blank_entries_when_no_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
@@ -260,7 +260,7 @@ class TestResultRoute(TestCase):
 
 
     @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
-    @patch('scratch_module.get_holiday_data', side_effect=[create_sample_holiday_data()])
+    @patch('holiday_cal.holiday_api.get_holiday_data', side_effect=[create_sample_holiday_data()])
     @patch('weather.weather_api.get_climate', side_effect=[None])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
     def test_result_page_shows_correct_error_messages_when_only_some_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
@@ -284,7 +284,7 @@ class TestResultRoute(TestCase):
 
 
     @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
-    @patch('scratch_module.get_holiday_data', side_effect=[create_sample_multple_holiday_data()])
+    @patch('holiday_cal.holiday_api.get_holiday_data', side_effect=[create_sample_multple_holiday_data()])
     @patch('weather.weather_api.get_climate', side_effect=[None])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
     def test_result_page_shows_multiple_holidays(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
@@ -509,6 +509,70 @@ class TestAddFavoriteToDBThroughFavoriteAddRoute(TestCase):
         self.assertEqual(expected_city, favorite.city)
         self.assertEqual(expected_webcam, favorite.webcam)
         self.assertIsNotNone(favorite)
+
+
+class TestGetFavoriteByIDFromDB(TestCase):
+    test_db_url = 'test_quiz.db'
+
+    """
+    Create expected Favorites table
+    """
+
+    def setUp(self):
+        """Clear and remake favorites table for test database."""
+        self.db = SqliteDatabase(test_db_path)
+        self.db.drop_tables([Favorite])
+        self.db.create_tables([Favorite])
+
+
+    def create_sample_result(self):
+        sample_coordinates = '30.069128947931752,31.22197273660886'
+        sample_holiday_data = [{
+            'holiday_name': 'Holiday in Egypt',
+            'description': 'Ed just made this up.',
+            'date': 'Jan 20 2022'
+        },
+        {
+            'holiday_name': 'Another Holiday',
+            'description': 'Ed made this one up too.',
+            'date': 'Jan 25 2022'
+        },
+        {
+            'holiday_name': 'National Party Day',
+            'description': 'A holiday Ed made up for Egypt, where everyone has a party.',
+            'date': 'Jan 13 2022'
+        }]
+        sample_weather_data = {
+                    'rain': '22 inches',
+                    'sunshine': '22 hours',
+                    'high_temp': '89 F',
+                    'low_temp': '45 F'
+                }
+        sample_webcam_data = ['http://link.com', 'http://link2.com', 'http://link3.com']
+        result = {
+            'city': 'Cairo',
+            'country': 'Egypt',
+            'month': '01',
+            'month_name': 'January',
+            'year': '20222',
+            'webcams': sample_webcam_data,
+            'holidays': sample_holiday_data,
+            'weather': sample_weather_data
+        }
+        return result
+
+
+    def create_and_save_favorite(self):
+        result = self.create_sample_result()
+        favorites_database.favorites_db.add_favorite(result['city'], result['country'], result['month'], result['year'], result['webcams'], result['holidays'], result['weather'])
+
+
+    def test_display_results_for_favorite_from_database(self):
+        self.create_and_save_favorite()
+        with app.app.test_client() as client:
+            response = client.get('/favorite/1')
+        html = response.data.decode()
+        print(html)
 
 
 if __name__ == '__main__':

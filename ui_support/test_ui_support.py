@@ -94,13 +94,13 @@ class TestUI(TestCase):
 
 
     def test_get_month_and_year_from_date(self):
-        date = '12/30/2022'
-        expected_month_and_year = ('12', '2022')
+        date = '12-30-2022'
+        expected_month_and_year = ('12', '2022', None)
         expected_month = '12'
         expected_year = '2022'
 
         returned_month_and_year = ui_support.get_month_and_year_from_date(date)
-        returned_month, returned_year = returned_month_and_year
+        returned_month, returned_year, error = returned_month_and_year
 
         self.assertEqual(expected_month_and_year, returned_month_and_year)
         self.assertEqual(expected_month, returned_month)
