@@ -7,7 +7,7 @@ from datetime import timedelta
 from functools import lru_cache
 
 api_key = os.environ.get('CALENDAR_KEY')
-
+redi = redis.Redis(host='localhost', port=6379, db=0)
 #countries endpoint
 def is_country_supported(country_name):
     """ Verifies country is supported by the api using country code. """
@@ -22,12 +22,18 @@ def is_country_supported(country_name):
         
 def req_res_country():
     """ check for cached entries, if list of countries in cache, if not get from the API. """
-    res = req_countries()
-    if res != None:
-        results = lis_of_countries(res)
-        return results
+    country_res = redi.get('country_test') #stored key=countries, value=[{country_name:'',country_code:''}]
+    
+    if country_res is None:
+        print('Could not find country list in cache, retrieving from the API.')
+        res = req_countries()
+        if res != None:
+            results = lis_of_countries(res)
+            return results
     else:
-        return None
+        print('Found country codes in cache, retrieving from the redis server.')
+        return json.loads(country_res)
+        # return None
         
 
 @lru_cache(maxsize=1)
@@ -55,6 +61,7 @@ def lis_of_countries(countries):
             'country_code':c['iso-3166']
         }
         results.append(name_code)
+        redi.set('country_test',json.dumps(results), timedelta(seconds=360)) #prevent cache staleness
     return results    
         
            
