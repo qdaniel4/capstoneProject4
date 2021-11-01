@@ -80,7 +80,7 @@ def get_result():
 def get_favorites():
     # get all favorites from the DB
     # in template - user will receive a message stating no favorites, if no results retrieved
-    favorites = favorites_db.get_favorites()
+    favorites = favorites_db.get_all_favorites()
 
     return render_template('favorites.html', favorites=favorites)
     # unit test - put data in db, call route handler, examine response, assert example data on page, assert example data on page, etc

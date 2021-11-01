@@ -34,14 +34,14 @@ class FavoritesTest(TestCase):
         favorite_two.save()
 
         empty_list = []
-        list_of_favorites = favorites_db.get_favorites()
+        list_of_favorites = favorites_db.get_all_favorites()
 
         self.assertNotEqual(empty_list, list_of_favorites)
 
 
     def test_get_favorites_returns_empty_list_when_no_records_in_db(self):
         empty_list = []
-        empty_list_of_favorites = favorites_db.get_favorites()
+        empty_list_of_favorites = favorites_db.get_all_favorites()
 
         self.assertEqual(empty_list_of_favorites, empty_list)
 
