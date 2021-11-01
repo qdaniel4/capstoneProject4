@@ -114,20 +114,58 @@ class TestIndexWithNoAPIData(TestCase):
 
 class TestResultRoute(TestCase):
 
-    # TODO: this is very messy and it would be nice to clean it up a little
-    @patch('weather.weather_api.get_coordinates', side_effect=['30.069128947931752,31.22197273660886'])
-    @patch('scratch_module.get_holiday_data', side_effect=[[{
+    def create_sample_coordinates():
+        sample_coordinates = '30.069128947931752,31.22197273660886'
+        return sample_coordinates
+
+
+    def create_sample_holiday_data():
+        sample_holiday_data = [{
             'holiday_name': 'Holiday in Egypt',
             'description': 'Ed just made this up.',
             'date': 'Jan 20 2022'
-        }]])
-    @patch('weather.weather_api.get_climate', side_effect=[{
+        }]
+        return sample_holiday_data
+
+    
+    def create_sample_multple_holiday_data():
+        sample_holiday_data = [{
+            'holiday_name': 'Holiday in Egypt',
+            'description': 'Ed just made this up.',
+            'date': 'Jan 20 2022'
+        },
+        {
+            'holiday_name': 'Another Holiday',
+            'description': 'Ed made this one up too.',
+            'date': 'Jan 25 2022'
+        },
+        {
+            'holiday_name': 'National Party Day',
+            'description': 'A holiday Ed made up for Egypt, where everyone has a party.',
+            'date': 'Jan 13 2022'
+        }]
+        return sample_holiday_data
+
+    
+    def create_sample_weather_data():
+        sample_weather_data = {
             'rain': '22 inches',
             'sunshine': '22 hours',
             'high_temp': '89 F',
             'low_temp': '45 F'
-        }])
-    @patch('windy_module.windy_api_manager.get_image_list', side_effect=[['link-01', 'link02', 'link03']])
+        }
+        return sample_weather_data
+
+    
+    def create_sample_webcam_data():
+        sample_webcam_data = ['link-01', 'link02', 'link03']
+        return sample_webcam_data
+
+
+    @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
+    @patch('scratch_module.get_holiday_data', side_effect=[create_sample_holiday_data()])
+    @patch('weather.weather_api.get_climate', side_effect=[create_sample_weather_data()])
+    @patch('windy_module.windy_api_manager.get_image_list', side_effect=[create_sample_webcam_data()])
     def test_get_valid_result(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
@@ -136,7 +174,6 @@ class TestResultRoute(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        # expected data
         weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
         '<li>Rainfall: 22 inches per month.</li>',
         '<li>Daylight Hours: 22 hours per day.</li>',
@@ -160,20 +197,10 @@ class TestResultRoute(TestCase):
             self.assertIn(webcam_value, html)
 
 
-    # error page is displayed if coordinates = None
     @patch('weather.weather_api.get_coordinates', side_effect=[None])
-    @patch('scratch_module.get_holiday_data', side_effect=[[{
-            'holiday_name': 'Holiday in Egypt',
-            'description': 'Ed just made this up.',
-            'date': 'Jan 20 2022'
-        }]])
-    @patch('weather.weather_api.get_climate', side_effect=[{
-            'rain': '22 inches',
-            'sunshine': '22 hours',
-            'high_temp': '89 F',
-            'low_temp': '45 F'
-        }])
-    @patch('windy_module.windy_api_manager.get_image_list', side_effect=[['link-01', 'link02', 'link03']])
+    @patch('scratch_module.get_holiday_data', side_effect=[create_sample_holiday_data()])
+    @patch('weather.weather_api.get_climate', side_effect=[create_sample_weather_data()])
+    @patch('windy_module.windy_api_manager.get_image_list', side_effect=[create_sample_webcam_data()])
     def test_get_result_with_no_coordinates_shows_error_page(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
@@ -184,8 +211,7 @@ class TestResultRoute(TestCase):
         self.assertIn(expected_error_html, html)
 
 
-    # correct messages displayed to user when optional API data is not found
-    @patch('weather.weather_api.get_coordinates', side_effect=['30.069128947931752,31.22197273660886'])
+    @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
     @patch('scratch_module.get_holiday_data', side_effect=[None])
     @patch('weather.weather_api.get_climate', side_effect=[None])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
@@ -202,8 +228,7 @@ class TestResultRoute(TestCase):
             self.assertIn(expected_error, html)
 
 
-    # empty html not displayed to user when optional API data is not found
-    @patch('weather.weather_api.get_coordinates', side_effect=['30.069128947931752,31.22197273660886'])
+    @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
     @patch('scratch_module.get_holiday_data', side_effect=[None])
     @patch('weather.weather_api.get_climate', side_effect=[None])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
@@ -227,13 +252,8 @@ class TestResultRoute(TestCase):
         self.assertNotIn(webcam_value, html)
 
 
-    # correct messages displayed to user when some optional API data is not found
-    @patch('weather.weather_api.get_coordinates', side_effect=['30.069128947931752,31.22197273660886'])
-    @patch('scratch_module.get_holiday_data', side_effect=[[{
-            'holiday_name': 'Holiday in Egypt',
-            'description': 'Ed just made this up.',
-            'date': 'Jan 20 2022'
-        }]])
+    @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
+    @patch('scratch_module.get_holiday_data', side_effect=[create_sample_holiday_data()])
     @patch('weather.weather_api.get_climate', side_effect=[None])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
     def test_result_page_shows_correct_error_messages_when_only_some_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
@@ -256,8 +276,31 @@ class TestResultRoute(TestCase):
             self.assertIn(holiday_value, html)
 
 
-class TestFavoritesRoute(TestCase):
+    @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
+    @patch('scratch_module.get_holiday_data', side_effect=[create_sample_multple_holiday_data()])
+    @patch('weather.weather_api.get_climate', side_effect=[None])
+    @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
+    def test_result_page_shows_multiple_holidays(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
+        # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
+        with app.app.test_client() as client:
+            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+        html = response.data.decode()
+        holiday_values  = ['<h3>Holidays in Egypt during January:</h3>', 
+        '<p>Holiday in Egypt</p>', 
+        '<li>Jan 20 2022</li>', 
+        '<li>Ed just made this up.</li>',
+        '<p>Another Holiday</p>', 
+        '<li>Jan 25 2022</li>', 
+        '<li>Ed made this one up too.</li>',
+        '<p>National Party Day</p>', 
+        '<li>Jan 13 2022</li>', 
+        '<li>A holiday Ed made up for Egypt, where everyone has a party.</li>']
 
+        for holiday_value in holiday_values:
+            self.assertIn(holiday_value, html)
+
+
+class TestFavoritesRoute(TestCase):
 
     def get_response_favorites(self):
         with app.app.test_client() as client:
@@ -326,5 +369,72 @@ class TestFavoritesRoute(TestCase):
         self.assertIn(expected_no_favorites_message, html)
 
 
+class TestFavoriteByIdResult(TestCase):
+
+    def get_response_favorites(self):
+        with app.app.test_client() as client:
+            response = client.get('/favorites')
+        # get html from the response
+        html = response.data.decode()
+        return html
+
+
+    def create_favorite():
+        favorite = Favorite(id=1, city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
+        favorite_list = [favorite]
+        return favorite_list 
+
+
+    def create_favorites():
+        favorite_one = Favorite(id=1, city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
+        favorite_two = Favorite(id=2, city="City2", country="Country2", month=12, year=2023, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2")
+        favorite_three = Favorite(id=3, city="City3", country="Country3", month=5, year=2021, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2")
+        favorite_four = Favorite(id=4, city="City4", country="Country4", month=3, year=2024, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="name")
+        favorite_list = [favorite_one, favorite_two, favorite_three, favorite_four]
+        return favorite_list
+
+
+    @patch('favorites_database.favorites_db.get_all_favorites', side_effect=[create_favorite()])
+    def test_favorites_page_with_one_favorite(self, mock_get_favorites):
+        html = self.get_response_favorites()
+        expected_in_favorites_table = ['<th>City1, Country1</th>',
+            '<th>1/2020</th>',
+            '<th><a class="show-results" href="/favorite/1">Show Results</a></th>',
+            '<th><a class="delete-favorite" href="/favorite/delete/1">Delete</a></th>']
+        
+        for expected_favorite in expected_in_favorites_table:
+            self.assertIn(expected_favorite, html)
+
+
+    @patch('favorites_database.favorites_db.get_all_favorites', side_effect=[create_favorites()])
+    def test_favorites_page_with_multiple_favorites(self, mock_get_favorites):
+        html = self.get_response_favorites()
+        expected_in_favorites_table = ['<th>City1, Country1</th>',
+            '<th>1/2020</th>',
+            '<th><a class="show-results" href="/favorite/1">Show Results</a></th>',
+            '<th><a class="delete-favorite" href="/favorite/delete/1">Delete</a></th>',
+            '<th>City2, Country2</th>',
+            '<th>12/2023</th>',
+            '<th><a class="show-results" href="/favorite/2">Show Results</a></th>',
+            '<th><a class="delete-favorite" href="/favorite/delete/2">Delete</a></th>',
+            '<th>City3, Country3</th>',
+            '<th>5/2021</th>',
+            '<th><a class="show-results" href="/favorite/3">Show Results</a></th>',
+            '<th><a class="delete-favorite" href="/favorite/delete/3">Delete</a></th>',
+            '<th>City4, Country4</th>',
+            '<th>3/2024</th>',
+            '<th><a class="show-results" href="/favorite/4">Show Results</a></th>',
+            '<th><a class="delete-favorite" href="/favorite/delete/4">Delete</a></th>']
+        
+        for expected_favorite in expected_in_favorites_table:
+            self.assertIn(expected_favorite, html)
+
+
+    @patch('favorites_database.favorites_db.get_all_favorites', side_effect=[[]])
+    def test_favorites_page_with_no_favorites(self, mock_get_favorites):
+        html = self.get_response_favorites()
+        expected_no_favorites_message = '<h3>There are no favorites to display. Try searching for a location and adding it to your favorites!</h3>'
+
+        self.assertIn(expected_no_favorites_message, html)
 if __name__ == '__main__':
     unittest.main()
