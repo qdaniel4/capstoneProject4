@@ -7,7 +7,6 @@ from datetime import timedelta
 from functools import lru_cache
 
 api_key = os.environ.get('CALENDAR_KEY')
-redi = redis.Redis(host='localhost', port=6379, db=0)
 
 #countries endpoint
 def is_country_supported(country_name):
@@ -23,18 +22,13 @@ def is_country_supported(country_name):
         
 def req_res_country():
     """ check for cached entries, if list of countries in cache, if not get from the API. """
-    # country_res = redi.get('countries') #stored key=countries, value=[{country_name:'',country_code:''}]
-    # if country_res == None: 
-        # print('Could not find country list in cache, retrieving from the API.')
     res = req_countries()
     if res != None:
         results = lis_of_countries(res)
         return results
     else:
         return None
-    # else:  # if cache hit
-        # print('Found country codes in cache, retrieving from the redis server.')
-        # return json.loads(country_res)        
+        
 
 @lru_cache(maxsize=1)
 def req_countries():
@@ -61,8 +55,6 @@ def lis_of_countries(countries):
             'country_code':c['iso-3166']
         }
         results.append(name_code)
-    print(results)
-        # redi.set('countries',json.dumps(results), timedelta(seconds=360)) #prevents cache staleness
     return results    
         
            
@@ -76,7 +68,7 @@ def get_holiday_data(country,year,month):
     req = req_holiday(query)
     return req
  
-       
+
 def req_holiday(query):
     """ make a api request with the provided data. """
     url_holiday = 'https://calendarific.com/api/v2/holidays'
@@ -97,7 +89,6 @@ def extract_country_holiday(holiday_data):
     :param: holiday api response
     :returns: dictionary of the holiday data to render to the user.  """
     for hol in holiday_data:
-        print()
         holiday_name = hol['name']
         description = hol['description']
         holiday_date = hol['date']['iso']

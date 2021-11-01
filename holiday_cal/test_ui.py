@@ -5,12 +5,13 @@ from requests import Response
 import redislite
 from redislite import Redis # self-contained, run separately
 import redislite.patch
-
+import redis
 import extract_holiday
 
 class TestUI(TestCase):
     
     def setUp(self):
+        #create fakeredis here
         redislite.patch.patch_redis()
         self.td = extract_holiday.req_res_country()
         self.test_list = []
@@ -63,5 +64,5 @@ class TestUI(TestCase):
                 expected = {'country': 'us',
                         'year': '2021', 
                         'month': '1', 'type':'national','api_key':'api_key'}
-                self.assertEqual(mock_api_response,holiday)
+                self.assertEqual(expected,holiday)
                 

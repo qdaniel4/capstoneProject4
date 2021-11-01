@@ -8,8 +8,6 @@ def list_of_countries():
     country = extract_holiday.req_res_country()
     return None if country == None else country
 
-
-
 def get_holiday(country_name,year,month):
     """ :params: the country_code(upperCase),year and month of travel.
     :returns holday name,description,date """
@@ -46,15 +44,6 @@ def show_holiday(holiday):
         print('No data found')
         return None
 
-list_of_countries()
-# get_holiday('united states','2022','6')
-# list_of_countries()
 
 
 
-
-
-
-#0.002855062484741211 when retrieved from cache
-#0.2691211700439453 when retrieved from api
-# total= 0.0021638870239257812
