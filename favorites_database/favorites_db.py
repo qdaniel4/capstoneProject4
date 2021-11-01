@@ -30,7 +30,7 @@ def create_table():
     db.create_tables([Favorite])
 
 
-def get_favorites():
+def get_all_favorites():
     """Select all favorites from the favorites table.
     Return a list of favorites, or an empty list."""
     # TODO: handle an empty list elsewhere in the program
