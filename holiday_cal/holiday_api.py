@@ -7,8 +7,8 @@ import json
 import redis
 from datetime import timedelta
 from functools import lru_cache
-api_key = '1f43a4cc7185aa44fca429020c4639cc3f05a167'
-# api_key = os.environ.get('CALENDAR_KEY')
+
+api_key = os.environ.get('CALENDAR_KEY')
 
 #countries endpoint
 def is_country_supported(country_name):
