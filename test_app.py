@@ -2,10 +2,17 @@ import unittest
 from unittest import TestCase
 from unittest.mock import patch
 
+
 from ui_support import ui_support
 import app
 
-# to make Favorite objects for testing
+
+from peewee import *
+
+from favorites_database import db_config
+test_db_path = 'test_favorites.db'
+db_config.database_path = test_db_path 
+import favorites_database.favorites_db
 from favorites_database.favorites_db import Favorite
 
 
@@ -436,5 +443,73 @@ class TestFavoriteByIdResult(TestCase):
         expected_no_favorites_message = '<h3>There are no favorites to display. Try searching for a location and adding it to your favorites!</h3>'
 
         self.assertIn(expected_no_favorites_message, html)
+
+
+class TestAddFavoriteToDBThroughFavoriteAddRoute(TestCase):
+    test_db_url = 'test_quiz.db'
+
+    """
+    Create expected Favorites table
+    """
+
+    def setUp(self):
+        """Clear and remake favorites table for test database."""
+        self.db = SqliteDatabase(test_db_path)
+        self.db.drop_tables([Favorite])
+        self.db.create_tables([Favorite])
+
+
+    def create_sample_result(self):
+        sample_coordinates = '30.069128947931752,31.22197273660886'
+        sample_holiday_data = [{
+            'holiday_name': 'Holiday in Egypt',
+            'description': 'Ed just made this up.',
+            'date': 'Jan 20 2022'
+        },
+        {
+            'holiday_name': 'Another Holiday',
+            'description': 'Ed made this one up too.',
+            'date': 'Jan 25 2022'
+        },
+        {
+            'holiday_name': 'National Party Day',
+            'description': 'A holiday Ed made up for Egypt, where everyone has a party.',
+            'date': 'Jan 13 2022'
+        }]
+        sample_weather_data = {
+                    'rain': '22 inches',
+                    'sunshine': '22 hours',
+                    'high_temp': '89 F',
+                    'low_temp': '45 F'
+                }
+        sample_webcam_data = ['http://link.com', 'http://link2.com', 'http://link3.com']
+        result = {
+            'city': 'Cairo',
+            'country': 'Egypt',
+            'month': '01',
+            'month_name': 'January',
+            'year': '20222',
+            'webcams': sample_webcam_data,
+            'holidays': sample_holiday_data,
+            'weather': sample_weather_data
+        }
+        return result
+
+
+    def test_save_favorite_from_result_page(self):
+        result = self.create_sample_result()
+        result_string = f"{result['city']}\{result['country']}\{result['month']}\{result['year']}\{result['webcams']}\{result['weather']}\{result['holidays']}"
+        with app.app.test_client() as client:
+            response = client.post('/favorite/add', data={'result': result_string})
+
+        favorite = Favorite.get_or_none(id=1)
+        expected_city = 'Cairo' 
+        expected_webcam = "['http://link.com', 'http://link2.com', 'http://link3.com']"
+
+        self.assertEqual(expected_city, favorite.city)
+        self.assertEqual(expected_webcam, favorite.webcam)
+        self.assertIsNotNone(favorite)
+
+
 if __name__ == '__main__':
     unittest.main()

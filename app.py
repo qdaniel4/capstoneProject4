@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect
+import json 
 
 from ui_support import ui_support
 from favorites_database import favorites_db
@@ -108,10 +109,12 @@ def get_favorite(id):
     return render_template('result.html', result=result)
 
 
-@app.route('/favorite/add')
-def add_favorite(result): 
+@app.route('/favorite/add', methods = ['POST'])
+def add_favorite(): 
     # take entries from result dictionary passed from result.html to create and save a favorite object
-    favorites_db.add_favorite(result['city'], result['country'], result['month'], result['year'], result['webcams'], result['weather'], result['holidays'])
+    result_string = request.form.get('result') # the response is a string
+    result = result_string.split('\\') # turn into list
+    favorites_db.add_favorite(result[0], result[1], result[2], result[3], result[4], result[5], result[6])
     
     return redirect('favorites.html')
 
