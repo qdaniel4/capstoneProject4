@@ -176,7 +176,7 @@ class TestResultRoute(TestCase):
     def test_get_valid_result(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
-            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+            response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
 
         self.assertEqual(response.status_code, 200)
@@ -190,9 +190,9 @@ class TestResultRoute(TestCase):
         '<p>Holiday in Egypt</p>', 
         '<li>Jan 20 2022</li>', 
         '<li>Ed just made this up.</li>']
-        webcam_values = ['<img url="link-01" />',
-        '<img url="link02" />',
-        '<img url="link03" />']
+        webcam_values = ['<img src="link-01" />',
+        '<img src="link02" />',
+        '<img src="link03" />']
         result_header = '<h2 id="result-title">Results for Cairo, Egypt in 01/2022.</h2>'
 
         self.assertIn(result_header, html)
@@ -211,7 +211,7 @@ class TestResultRoute(TestCase):
     def test_get_result_with_no_coordinates_shows_error_page(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
-            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+            response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
         expected_error_html = '<li>Error getting location information from API. Please double check city name and country and try again.</li>'
         
@@ -225,7 +225,7 @@ class TestResultRoute(TestCase):
     def test_result_page_shows_correct_error_messages_when_no_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
-            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+            response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
         expected_error_html = ['<h3>No weather data found for Egypt during January.</h3>',
         '<h3>No holidays found for Egypt during January.</h3>',
@@ -242,7 +242,7 @@ class TestResultRoute(TestCase):
     def test_result_page_does_not_show_html_with_blank_entries_when_no_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
-            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+            response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
 
         weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
@@ -251,7 +251,7 @@ class TestResultRoute(TestCase):
         '<li>High Temp:',
         '<li>Low Temp:']
         holiday_value  = '<h3>Holidays in Egypt during January:</h3>'
-        webcam_value = '<img url="" />'
+        webcam_value = '<img src="" />'
 
         for weather_value in weather_values:
             self.assertNotIn(weather_value, html)
@@ -266,7 +266,7 @@ class TestResultRoute(TestCase):
     def test_result_page_shows_correct_error_messages_when_only_some_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
-            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+            response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
         expected_error_html = ['<h3>No weather data found for Egypt during January.</h3>',
         '<h3>No webcams were found for Egypt. Try selecting a different category.</h3>']
@@ -290,7 +290,7 @@ class TestResultRoute(TestCase):
     def test_result_page_shows_multiple_holidays(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
         # test for user entry of Cairo, Egypt, on Jan 15 2022, Traffic webcams
         with app.app.test_client() as client:
-            response = client.get('/result?city=Cairo&country=Egypt&date=01/15/2022&category=Traffic')
+            response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
         holiday_values  = ['<h3>Holidays in Egypt during January:</h3>', 
         '<p>Holiday in Egypt</p>', 
@@ -376,76 +376,7 @@ class TestFavoritesRoute(TestCase):
         self.assertIn(expected_no_favorites_message, html)
 
 
-class TestFavoriteByIdResult(TestCase):
-
-    def get_response_favorites(self):
-        with app.app.test_client() as client:
-            response = client.get('/favorites')
-        # get html from the response
-        html = response.data.decode()
-        return html
-
-
-    def create_favorite():
-        favorite = Favorite(id=1, city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
-        favorite_list = [favorite]
-        return favorite_list 
-
-
-    def create_favorites():
-        favorite_one = Favorite(id=1, city="City1", country="Country1", month=1, year=2020, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="nickname")
-        favorite_two = Favorite(id=2, city="City2", country="Country2", month=12, year=2023, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2")
-        favorite_three = Favorite(id=3, city="City3", country="Country3", month=5, year=2021, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2")
-        favorite_four = Favorite(id=4, city="City4", country="Country4", month=3, year=2024, webcam="http://url.com/", weather="weather", holidays="holiday1, holiday2", nickname="name")
-        favorite_list = [favorite_one, favorite_two, favorite_three, favorite_four]
-        return favorite_list
-
-
-    @patch('favorites_database.favorites_db.get_all_favorites', side_effect=[create_favorite()])
-    def test_favorites_page_with_one_favorite(self, mock_get_favorites):
-        html = self.get_response_favorites()
-        expected_in_favorites_table = ['<th>City1, Country1</th>',
-            '<th>1/2020</th>',
-            '<th><a class="show-results" href="/favorite/1">Show Results</a></th>',
-            '<th><a class="delete-favorite" href="/favorite/delete/1">Delete</a></th>']
-        
-        for expected_favorite in expected_in_favorites_table:
-            self.assertIn(expected_favorite, html)
-
-
-    @patch('favorites_database.favorites_db.get_all_favorites', side_effect=[create_favorites()])
-    def test_favorites_page_with_multiple_favorites(self, mock_get_favorites):
-        html = self.get_response_favorites()
-        expected_in_favorites_table = ['<th>City1, Country1</th>',
-            '<th>1/2020</th>',
-            '<th><a class="show-results" href="/favorite/1">Show Results</a></th>',
-            '<th><a class="delete-favorite" href="/favorite/delete/1">Delete</a></th>',
-            '<th>City2, Country2</th>',
-            '<th>12/2023</th>',
-            '<th><a class="show-results" href="/favorite/2">Show Results</a></th>',
-            '<th><a class="delete-favorite" href="/favorite/delete/2">Delete</a></th>',
-            '<th>City3, Country3</th>',
-            '<th>5/2021</th>',
-            '<th><a class="show-results" href="/favorite/3">Show Results</a></th>',
-            '<th><a class="delete-favorite" href="/favorite/delete/3">Delete</a></th>',
-            '<th>City4, Country4</th>',
-            '<th>3/2024</th>',
-            '<th><a class="show-results" href="/favorite/4">Show Results</a></th>',
-            '<th><a class="delete-favorite" href="/favorite/delete/4">Delete</a></th>']
-        
-        for expected_favorite in expected_in_favorites_table:
-            self.assertIn(expected_favorite, html)
-
-
-    @patch('favorites_database.favorites_db.get_all_favorites', side_effect=[[]])
-    def test_favorites_page_with_no_favorites(self, mock_get_favorites):
-        html = self.get_response_favorites()
-        expected_no_favorites_message = '<h3>There are no favorites to display. Try searching for a location and adding it to your favorites!</h3>'
-
-        self.assertIn(expected_no_favorites_message, html)
-
-
-class TestAddFavoriteToDBThroughFavoriteAddRoute(TestCase):
+class TestFavoriteAddRoute(TestCase):
     test_db_url = 'test_quiz.db'
 
     """
@@ -488,7 +419,7 @@ class TestAddFavoriteToDBThroughFavoriteAddRoute(TestCase):
             'country': 'Egypt',
             'month': '01',
             'month_name': 'January',
-            'year': '20222',
+            'year': '2022',
             'webcams': sample_webcam_data,
             'holidays': sample_holiday_data,
             'weather': sample_weather_data
@@ -511,7 +442,7 @@ class TestAddFavoriteToDBThroughFavoriteAddRoute(TestCase):
         self.assertIsNotNone(favorite)
 
 
-class TestGetFavoriteByIDFromDB(TestCase):
+class TestResultFavoritebyIDRoute(TestCase):
     test_db_url = 'test_quiz.db'
 
     """
@@ -554,7 +485,7 @@ class TestGetFavoriteByIDFromDB(TestCase):
             'country': 'Egypt',
             'month': '01',
             'month_name': 'January',
-            'year': '20222',
+            'year': '2022',
             'webcams': sample_webcam_data,
             'holidays': sample_holiday_data,
             'weather': sample_weather_data
@@ -562,17 +493,121 @@ class TestGetFavoriteByIDFromDB(TestCase):
         return result
 
 
-    def create_and_save_favorite(self):
+    def create_and_save_favorites(self):
         result = self.create_sample_result()
-        favorites_database.favorites_db.add_favorite(result['city'], result['country'], result['month'], result['year'], result['webcams'], result['holidays'], result['weather'])
-
+        favorites_database.favorites_db.add_favorite(result['city'], result['country'], result['month'], result['year'], result['webcams'], result['weather'], result['holidays'])
+        favorites_database.favorites_db.add_favorite(result['city'], result['country'], result['month'], result['year'], None, None, None)
+        favorites_database.favorites_db.add_favorite(result['city'], result['country'], result['month'], result['year'], 'None', 'None', 'None')
 
     def test_display_results_for_favorite_from_database(self):
-        self.create_and_save_favorite()
+        self.create_and_save_favorites()
         with app.app.test_client() as client:
             response = client.get('/favorite/1')
         html = response.data.decode()
-        print(html)
+
+        self.assertEqual(response.status_code, 200)
+
+        weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
+        '<li>Rainfall: 22 inches per month.</li>',
+        '<li>Daylight Hours: 22 hours per day.</li>',
+        '<li>High Temp: 89 F</li>',
+        '<li>Low Temp: 45 F</li>']
+        holiday_values  = ['<h3>Holidays in Egypt during January:</h3>', 
+        '<p>Holiday in Egypt</p>', 
+        '<li>Jan 20 2022</li>', 
+        '<li>Ed just made this up.</li>']
+        webcam_values = ['<img src="http://link.com" />',
+        '<img src="http://link2.com" />',
+        '<img src="http://link3.com" />']
+        result_header = '<h2 id="result-title">Results for Cairo, Egypt in 1/2022.</h2>'
+
+        self.assertIn(result_header, html)
+        for weather_value in weather_values:
+            self.assertIn(weather_value, html)
+        for holiday_value in holiday_values:
+            self.assertIn(holiday_value, html)
+        for webcam_value in webcam_values:
+            self.assertIn(webcam_value, html)
+
+
+    def test_result_page_shows_correct_error_messages_when_None_values_from_DB(self):
+        # test for favorite with ID 2 which has 3 None values
+        self.create_and_save_favorites()
+        with app.app.test_client() as client:
+            response = client.get('/favorite/2')
+        html = response.data.decode()
+
+        self.assertEqual(response.status_code, 200)
+
+        expected_error_html = ['<h3>No weather data found for Egypt during January.</h3>',
+        '<h3>No holidays found for Egypt during January.</h3>',
+        '<h3>No webcams were found for Egypt. Try selecting a different category.</h3>']
+        
+        for expected_error in expected_error_html:
+            self.assertIn(expected_error, html)
+
+
+    def test_result_page_does_not_show_html_with_blank_entries_when_None_values_from_DB(self):
+        # test for favorite with ID 2 which has 3 None values
+        self.create_and_save_favorites()
+        with app.app.test_client() as client:
+            response = client.get('/favorite/2')
+        html = response.data.decode()
+
+        self.assertEqual(response.status_code, 200)
+
+        weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
+        '<li>Rainfall:',
+        '<li>Daylight Hours:',
+        '<li>High Temp:',
+        '<li>Low Temp:']
+        holiday_value  = '<h3>Holidays in Egypt during January:</h3>'
+        webcam_value = '<img src="" />'
+
+        for weather_value in weather_values:
+            self.assertNotIn(weather_value, html)
+        self.assertNotIn(holiday_value, html)
+        self.assertNotIn(webcam_value, html)
+
+
+    def test_result_page_shows_correct_error_messages_when_None_strings_from_DB(self):
+        # test for favorite with ID 3 which has 3 'None' strings
+        self.create_and_save_favorites()
+        with app.app.test_client() as client:
+            response = client.get('/favorite/3')
+        html = response.data.decode()
+
+        self.assertEqual(response.status_code, 200)
+
+        expected_error_html = ['<h3>No weather data found for Egypt during January.</h3>',
+        '<h3>No holidays found for Egypt during January.</h3>',
+        '<h3>No webcams were found for Egypt. Try selecting a different category.</h3>']
+        
+        for expected_error in expected_error_html:
+            self.assertIn(expected_error, html)
+
+
+    def test_result_page_does_not_show_html_with_blank_entries_when_None_strings_from_DB(self):
+        # test for favorite with ID 3 which has 3 'None' strings
+        self.create_and_save_favorites()
+        with app.app.test_client() as client:
+            response = client.get('/favorite/3')
+        html = response.data.decode()
+
+        self.assertEqual(response.status_code, 200)
+
+        weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
+        '<li>Rainfall:',
+        '<li>Daylight Hours:',
+        '<li>High Temp:',
+        '<li>Low Temp:']
+        holiday_value  = '<h3>Holidays in Egypt during January:</h3>'
+        webcam_value = '<img src="" />'
+
+        for weather_value in weather_values:
+            self.assertNotIn(weather_value, html)
+        self.assertNotIn(holiday_value, html)
+        self.assertNotIn(webcam_value, html)
 
 
 if __name__ == '__main__':
