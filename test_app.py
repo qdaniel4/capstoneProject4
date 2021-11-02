@@ -376,7 +376,7 @@ class TestFavoritesRoute(TestCase):
         self.assertIn(expected_no_favorites_message, html)
 
 
-class TestAddFavoriteToDBThroughFavoriteAddRoute(TestCase):
+class TestFavoriteAddRoute(TestCase):
     test_db_url = 'test_quiz.db'
 
     """
@@ -442,7 +442,7 @@ class TestAddFavoriteToDBThroughFavoriteAddRoute(TestCase):
         self.assertIsNotNone(favorite)
 
 
-class TestGetFavoriteByIDFromDB(TestCase):
+class TestResultFavoritebyIDRoute(TestCase):
     test_db_url = 'test_quiz.db'
 
     """
