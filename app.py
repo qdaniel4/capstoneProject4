@@ -57,7 +57,7 @@ def get_result():
 
     # get a list of holidays from holiday API
     # each holiday is a dictionary that contains name, description and date of holiday
-    holidays_list = holiday_api.get_holiday_data(country, year, month)
+    holidays_list = holiday_api.get_holiday(country, year, month)
 
     # get a dictionary of climate data for the specified month
     # contains temp high, temp low, rainfall in inches, sunshine hours

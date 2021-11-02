@@ -59,8 +59,8 @@ def lis_of_countries(countries):
         results.append(name_code)
     return results    
         
-           
- #holiday endpoint
+
+#holiday endpoint
 @lru_cache(maxsize=1)          
 def get_holiday_data(country,year,month):
     """ call holiday api with the provided data.
@@ -69,7 +69,7 @@ def get_holiday_data(country,year,month):
     query = {'country': country, 'year': year, 'month': month, 'type':'national','api_key':api_key}
     req = req_holiday(query)
     return req
- 
+
 
 def req_holiday(query):
     """ make a api request with the provided data. """
@@ -77,7 +77,7 @@ def req_holiday(query):
     req = requests.get(url_holiday,params=query).json()
     res = req['response']['holidays']
     return None if res == [] else res 
-  
+
 
 def display_holiday(holiday):
     """ displays all holidays with the provided data.
@@ -90,6 +90,7 @@ def extract_country_holiday(holiday_data):
     """ extract holiday data.
     :param: holiday api response
     :returns: dictionary of the holiday data to render to the user.  """
+    holidays_list = []
     for hol in holiday_data:
         holiday_name = hol['name']
         description = hol['description']
@@ -99,7 +100,8 @@ def extract_country_holiday(holiday_data):
             'description':description,
             'date':holiday_date
         }
-    return holiday_dict
+        holidays_list.append(holiday_dict)
+    return holidays_list
 
 
 # method call for dropdown only 
@@ -107,6 +109,7 @@ def list_of_countries():
     country = req_res_country()
     return None if country == None else country
 
+# method call for holiday data in app.py
 def get_holiday(country_name,year,month):
     """ :params: the country_code(upperCase),year and month of travel.
     :returns holday name,description,date """
@@ -125,7 +128,7 @@ def country_code_handler(country_name):
     country_code = is_country_supported(country_name)
     return country_code
 
-             
+
 def get_travel_data(country,year,month):
     """ request holiday data from calendarificAPI.
     :params: country year and month are data the user provided.
@@ -138,7 +141,7 @@ def show_holiday(holiday):
     """ display the holiday data. """
     if holiday != None:
         hol = display_holiday(holiday)
-        print(hol)
+        return hol
     else:
         print('No data found')
         return None
