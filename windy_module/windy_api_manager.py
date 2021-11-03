@@ -2,7 +2,7 @@
 
 import requests
 import os
-from pprint import pprint
+#from pprint import pprint
 from functools import lru_cache
 #from io import BytesIO
 #from PIL import Image, ImageShow
@@ -64,6 +64,12 @@ def get_image_list(coordinates, category):
         image = Image.open(BytesIO(r.content))
         current_images.append(image)
     return daylight_images, current_images"""
+
+
+def get_windy_response():
+    url = f'https://api.windy.com/api/webcams/v2/list/nearby=44.953744,-93.293146,300/category=traffic/orderby=distance/limit=1?show=webcams:location,image'
+    data = requests.get(url, headers=header)
+    return data
 
 def get_video_link(nearby, category):
     url = f'https://api.windy.com/api/webcams/v2/list/nearby={nearby}/category={category}/orderby=distance/limit=1?show=webcams:location,player'
