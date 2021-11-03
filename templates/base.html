@@ -12,7 +12,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     />
     <link rel="stylesheet" href="/static/style.css" />
-    <title>Travel Planning Catalogue</title>
+    <title>Info Travel: Travel Planning Catalogue</title>
   </head>
 
   <body>
@@ -57,43 +57,7 @@
       </div>
       <!-- end-header -->
 
-      <!-- hero -->
-      <section class="hero text-dark py text-center text-sm-start pt-5 py">
-        <div class="container">
-          <div class="d-flex align-items-center justify-content-between">
-            <div class="me-4">
-              <h1 class="pb-4">Discover New Destination.</h1>
-              <p
-                class="subtitle my-5 tracking-in-expand-fwd animate__animated animate__fadeInLeftBig"
-              >
-                Plan you Trip with Info Travel.
-              </p>
-            </div>
-            <img
-              src="{{url_for('static', filename='pana.png')}}"
-              width="100"
-              class="pt-5 img-fluid w-50"
-            />
-          </div>
-        </div>
-      </section>
-      <div class="text-center pt-5">
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="{2}"
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </div>
-      <!-- end-hero -->
+
 
       <div id="content">{% block content %} {% endblock %}</div>
 
@@ -115,6 +79,10 @@
                 Webcam images:
                 <a href="https://api.windy.com/">Windy</a>
               </li>
+              <lis class="list-group-item fs-5 pb-3">
+                Header image from:
+                <a href="https://storyset.com/illustration/trip/pana">StorySet</a>
+              </lis>
             </ul>
           </div>
         </div>

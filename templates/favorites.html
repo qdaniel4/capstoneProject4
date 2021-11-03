@@ -18,8 +18,8 @@
         <tr>
             <th>{{ favorite.city }}, {{ favorite.country }}</th>
             <th>{{ favorite.month }}/{{ favorite.year }}</th>
-            <th><a class="show-results" href="{{ url_for( 'get_favorite', id=favorite.id ) }}">Show Results</a></th>
-            <th><a class="delete-favorite" href="{{ url_for( 'delete_favorite', id=favorite.id )}}">Delete</a></th>
+            <th><a class="faves-link" href="{{ url_for( 'get_favorite', id=favorite.id ) }}">Show Results</a></th>
+            <th><a class="faves-link" href="{{ url_for( 'delete_favorite', id=favorite.id )}}">Delete</a></th>
         </tr>
     {% endfor %}
     </table>
@@ -28,7 +28,7 @@
 {% else %}
 
 <div class="content-box">
-    <h3>There are no favorites to display. Try searching for a location and adding it to your favorites!</h3>
+    <h3 class="error-msg">There are no favorites to display. Try searching for a location and adding it to your favorites!</h3>
 </div>
 
 {% endif %}

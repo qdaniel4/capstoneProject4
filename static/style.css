@@ -68,3 +68,30 @@ label {
 th {
   background-color: #7e57c2;
 }
+
+table {
+  padding: 10px;
+  margin: 10px;
+  padding-left: 30px;
+}
+td, th {
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border: 2px solid white;
+  font-size: 15px;
+  width: max-content;
+}
+
+.faves-link {
+  color: white;
+  text-decoration: underline;
+}
+
+.faves-link:hover {
+  color: lavender;
+}
+
+.error-msg {
+  color: black;
+}

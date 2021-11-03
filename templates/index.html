@@ -1,5 +1,44 @@
 
 {% extends "base.html" %} {% block content %}
+
+      <!-- hero -->
+      <section class="hero text-dark py text-center text-sm-start pt-5 py">
+        <div class="container">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="me-4">
+              <h1 class="pb-4">Discover New Destinations.</h1>
+              <p
+                class="subtitle my-5 tracking-in-expand-fwd animate__animated animate__fadeInLeftBig"
+              >
+                Plan Your Trip With Info Travel.
+              </p>
+            </div>
+            <img
+              src="{{url_for('static', filename='pana.png')}}"
+              width="100"
+              class="pt-5 img-fluid w-50"
+            />
+          </div>
+        </div>
+      </section>
+      <div class="text-center pt-5">
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="{2}"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </div>
+      <!-- end-hero -->
+
 <section id="instructions" class="content-box bg-dark pt-5 text-light">
     <div class="container pt-5">
         <!-- ask team for an app name. -->
