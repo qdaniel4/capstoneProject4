@@ -41,7 +41,6 @@
             
             {% endif %}
           </div>
-          <img  src="{{url_for('static', filename='Weather.png')}}" alt="" class="pt-5 img-fluid result-png">
         
 
 
@@ -71,7 +70,6 @@
         
             {% endif %}
         </div>
-        <img src="{{url_for('static', filename='holiday.png')}}"  alt="" class="pt-5 img-fluid result-png">
 
       </div>
       </div>
@@ -86,8 +84,8 @@
             {% if result['webcams'] %}
                 <!-- Display webcam images using webcam image urls. -->
                 {% for webcam_url in result['webcams'] %}
-                <div class="card" style="width: 18rem;">
-                  <img src="{{ webcam_url }}" class="card-img-top img-fluid w-50" alt="...">
+                <div class="card">
+                  <img src="{{ webcam_url }}" class="card-img-top img-fluid" alt="...">
                   <div class="card-body">
                   <span class="card-text" id="windy-credits">Webcams provided by <a href="https://www.windy.com/" target="_blank">windy.com</a> &mdash; <a href="https://www.windy.com/webcams/add" target="_blank">add a webcam</a></span>
                   </div>
