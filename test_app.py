@@ -2,6 +2,8 @@ import unittest
 from unittest import TestCase
 from unittest.mock import patch
 
+from peewee import database_required
+
 
 from ui_support import ui_support
 import app
@@ -499,6 +501,7 @@ class TestResultFavoritebyIDRoute(TestCase):
         favorites_database.favorites_db.add_favorite(result['city'], result['country'], result['month'], result['year'], None, None, None)
         favorites_database.favorites_db.add_favorite(result['city'], result['country'], result['month'], result['year'], 'None', 'None', 'None')
 
+
     def test_display_results_for_favorite_from_database(self):
         self.create_and_save_favorites()
         with app.app.test_client() as client:
@@ -608,6 +611,130 @@ class TestResultFavoritebyIDRoute(TestCase):
             self.assertNotIn(weather_value, html)
         self.assertNotIn(holiday_value, html)
         self.assertNotIn(webcam_value, html)
+
+
+class TestFavoriteDeleteRoute(TestCase):
+    test_db_url = 'test_quiz.db'
+
+    """
+    Create expected Favorites table
+    """
+
+    def setUp(self):
+        """Clear and remake favorites table for test database."""
+        self.db = SqliteDatabase(test_db_path)
+        self.db.drop_tables([Favorite])
+        self.db.create_tables([Favorite])
+
+
+    def create_sample_result(self):
+        sample_coordinates = '30.069128947931752,31.22197273660886'
+        sample_holiday_data = [{
+            'holiday_name': 'Holiday in Egypt',
+            'description': 'Ed just made this up.',
+            'date': 'Jan 20 2022'
+        },
+        {
+            'holiday_name': 'Another Holiday',
+            'description': 'Ed made this one up too.',
+            'date': 'Jan 25 2022'
+        },
+        {
+            'holiday_name': 'National Party Day',
+            'description': 'A holiday Ed made up for Egypt, where everyone has a party.',
+            'date': 'Jan 13 2022'
+        }]
+        sample_weather_data = {
+                    'rain': '22 inches',
+                    'sunshine': '22 hours',
+                    'high_temp': '89 F',
+                    'low_temp': '45 F'
+                }
+        sample_webcam_data = ['http://link.com', 'http://link2.com', 'http://link3.com']
+        result = {
+            'city': 'Cairo',
+            'country': 'Egypt',
+            'month': '01',
+            'month_name': 'January',
+            'year': '2022',
+            'webcams': sample_webcam_data,
+            'holidays': sample_holiday_data,
+            'weather': sample_weather_data
+        }
+        return result
+
+
+    def create_and_save_favorites(self):
+        result = self.create_sample_result()
+        favorites_database.favorites_db.add_favorite(result['city'], result['country'], result['month'], result['year'], result['webcams'], result['weather'], result['holidays'])
+        favorites_database.favorites_db.add_favorite(result['city'], result['country'], result['month'], result['year'], None, None, None)
+        favorites_database.favorites_db.add_favorite(result['city'], result['country'], result['month'], result['year'], 'None', 'None', 'None')
+
+
+    def test_delete_favorite_from_database(self):
+        self.create_and_save_favorites()
+        with app.app.test_client() as client:
+            response = client.get('/favorite/delete/1')
+        html = response.data.decode()
+
+        favorite_was_deleted = Favorite.get_or_none(id=1)
+        # check to see favorites page is displayed with some info that was not deleted from db
+        expected_favorites_page_html = ['<table id="favorites-table">',
+        '<th>Cairo, Egypt</th>',
+        '<th><a class="show-results" href="/favorite/3">Show Results</a></th>',
+        '<th><a class="delete-favorite" href="/favorite/delete/3">Delete</a></th>'
+        ]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(favorite_was_deleted)
+        for expected_favorite_html in expected_favorites_page_html:
+            self.assertIn(expected_favorite_html, html)
+
+
+    def test_delete_favorite_not_in_database_shows_error(self):
+        self.create_and_save_favorites()
+        with app.app.test_client() as client:
+            response = client.get('/favorite/delete/8')
+        html = response.data.decode()
+
+        expected_error_message = '<li>Favorite with ID: 8 not found in database.</li>'
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(expected_error_message, html)
+
+
+    def test_delete_favorite_from_database_with_delete_not_get(self):
+        # was originally testing with delete method
+        # but the program when running actually uses get for this
+        self.create_and_save_favorites()
+        with app.app.test_client() as client:
+            response = client.delete('/favorite/delete/1')
+        html = response.data.decode()
+
+        favorite_was_deleted = Favorite.get_or_none(id=1)
+        # check to see favorites page is displayed with some info that was not deleted from db
+        expected_favorites_page_html = ['<table id="favorites-table">',
+        '<th>Cairo, Egypt</th>',
+        '<th><a class="show-results" href="/favorite/3">Show Results</a></th>',
+        '<th><a class="delete-favorite" href="/favorite/delete/3">Delete</a></th>'
+        ]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(favorite_was_deleted)
+        for expected_favorite_html in expected_favorites_page_html:
+            self.assertIn(expected_favorite_html, html)
+
+
+    def test_delete_favorite_not_in_database_shows_error_with_delete_not_get(self):
+        self.create_and_save_favorites()
+        with app.app.test_client() as client:
+            response = client.delete('/favorite/delete/8')
+        html = response.data.decode()
+
+        expected_error_message = '<li>Favorite with ID: 8 not found in database.</li>'
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(expected_error_message, html)
 
 
 if __name__ == '__main__':

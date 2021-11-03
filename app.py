@@ -26,8 +26,6 @@ def index():
     ui_support.add_error_to_error_list(country_api_error, error_list)
     ui_support.add_error_to_error_list(webcam_api_error, error_list)
     if len(error_list):
-        # TODO: discuss this with team. this essentially renders the app unusable
-        # if we can't reach the APIs that fill in the country and category select elements
         return render_template('error.html', error_list=error_list)
 
     return render_template('index.html', all_countries=all_countries, webcam_api_categories=webcam_api_categories)
@@ -123,20 +121,25 @@ def add_favorite():
     return redirect('../favorites')
 
 
-@app.route('/favorite/delete/<id>')
+@app.route('/favorite/delete/<int:id>', methods = ['GET', 'DELETE'])
 def delete_favorite(id):
-    # TODO: unit tests, ensure functionality
     error_list = []
-    
+
     #TODO: would be nice to ask the user if they are sure they want to delete the favorite...
     was_favorite_deleted = favorites_db.delete_favorite_by_id(id)
 
     if was_favorite_deleted == False:
         # show error message on error page if favorite not deleted
-        error_message = f'Unable to delete favorite. Please check if ID: {id} is a valid favorite.'
+        error_message = f'Favorite with ID: {id} not found in database.'
         ui_support.add_error_to_error_list(error_message, error_list)
-    
+
     if len(error_list):
-        return render_template('error.html', error_list=error_list)
+        return render_template('error.html', error_list=error_list), 200
+        # not sure if it matters or not but had to manually ask it to return 200 status code OK
     
-    return redirect('favorites.html')
+    # It was not automatically redirecting, which I didn't like...
+    # so am just getting all favorites again and rendering favorites.html
+    # TODO: could show a 'favorite was deleted' message
+    favorites = favorites_db.get_all_favorites()
+    return render_template('favorites.html', favorites=favorites)
+
