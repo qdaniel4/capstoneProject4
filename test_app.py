@@ -109,8 +109,8 @@ class TestIndexWithNoAPIData(TestCase):
     def test_error_messages_present(self):
         response, html = self.get_response_index()
 
-        expected_error_message_countries = '<li>No response from Calendarific API for country names.</li>'
-        expected_error_message_categories = '<li>No response from Windy API for webcam categories.</li>'
+        expected_error_message_countries = 'No response from Calendarific API for country names.'
+        expected_error_message_categories = 'No response from Windy API for webcam categories.'
 
         self.assertIn(expected_error_message_countries, html)
         self.assertIn(expected_error_message_categories, html)
@@ -183,19 +183,19 @@ class TestResultRoute(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
-        '<li>Rainfall: 22 inches per month.</li>',
-        '<li>Daylight Hours: 22 hours per day.</li>',
-        '<li>High Temp: 89 F</li>',
-        '<li>Low Temp: 45 F</li>']
-        holiday_values  = ['<h3>Holidays in Egypt during January:</h3>', 
-        '<p>Holiday in Egypt</p>', 
-        '<li>Jan 20 2022</li>', 
-        '<li>Ed just made this up.</li>']
-        webcam_values = ['<img src="link-01" />',
-        '<img src="link02" />',
-        '<img src="link03" />']
-        result_header = '<h2 id="result-title">Results for Cairo, Egypt in 01/2022.</h2>'
+        weather_values = ['Based on historic climate data in January from previous years.',
+        'Rainfall: 22 inches per month.',
+        'Daylight Hours: 22 hours per day.',
+        'High Temp: 89 F',
+        'Low Temp: 45 F']
+        holiday_values  = ['Holidays in Egypt during January:', 
+        'Holiday in Egypt', 
+        'Jan 20 2022', 
+        'Ed just made this up.']
+        webcam_values = ['img src="link-01"',
+        'img src="link02"',
+        'img src="link03"']
+        result_header = 'Results for Cairo, Egypt in 01/2022.'
 
         self.assertIn(result_header, html)
         for weather_value in weather_values:
@@ -215,7 +215,7 @@ class TestResultRoute(TestCase):
         with app.app.test_client() as client:
             response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
-        expected_error_html = '<li>Error getting location information from API. Please double check city name and country and try again.</li>'
+        expected_error_html = 'Error getting location information from API. Please double check city name and country and try again.'
         
         self.assertIn(expected_error_html, html)
 
@@ -229,9 +229,9 @@ class TestResultRoute(TestCase):
         with app.app.test_client() as client:
             response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
-        expected_error_html = ['<h3>No weather data found for Egypt during January.</h3>',
-        '<h3>No holidays found for Egypt during January.</h3>',
-        '<h3>No webcams were found for Egypt. Try selecting a different category.</h3>']
+        expected_error_html = ['No weather data found for Egypt during January.',
+        'No holidays found for Egypt during January.',
+        'No webcams were found for Egypt. Try selecting a different category.']
         
         for expected_error in expected_error_html:
             self.assertIn(expected_error, html)
@@ -247,12 +247,12 @@ class TestResultRoute(TestCase):
             response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
 
-        weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
-        '<li>Rainfall:',
-        '<li>Daylight Hours:',
-        '<li>High Temp:',
-        '<li>Low Temp:']
-        holiday_value  = '<h3>Holidays in Egypt during January:</h3>'
+        weather_values = ['Based on historic climate data in January from previous years.',
+        'Rainfall:',
+        'Daylight Hours:',
+        'High Temp:',
+        'Low Temp:']
+        holiday_value  = 'Holidays in Egypt during January:'
         webcam_value = '<img src="" />'
 
         for weather_value in weather_values:
@@ -270,13 +270,13 @@ class TestResultRoute(TestCase):
         with app.app.test_client() as client:
             response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
-        expected_error_html = ['<h3>No weather data found for Egypt during January.</h3>',
-        '<h3>No webcams were found for Egypt. Try selecting a different category.</h3>']
-        not_expected_error_html = '<h3>No holidays found for Egypt during January.</h3>'
-        holiday_values  = ['<h3>Holidays in Egypt during January:</h3>', 
-        '<p>Holiday in Egypt</p>', 
-        '<li>Jan 20 2022</li>', 
-        '<li>Ed just made this up.</li>']
+        expected_error_html = ['No weather data found for Egypt during January.',
+        'No webcams were found for Egypt. Try selecting a different category.']
+        not_expected_error_html = 'No holidays found for Egypt during January.'
+        holiday_values  = ['Holidays in Egypt during January:', 
+        'Holiday in Egypt', 
+        'Jan 20 2022', 
+        'Ed just made this up.']
 
         for expected_error in expected_error_html:
             self.assertIn(expected_error, html)
@@ -294,16 +294,16 @@ class TestResultRoute(TestCase):
         with app.app.test_client() as client:
             response = client.get('/result?city=Cairo&country=Egypt&date=2022-01-15&category=Traffic')
         html = response.data.decode()
-        holiday_values  = ['<h3>Holidays in Egypt during January:</h3>', 
-        '<p>Holiday in Egypt</p>', 
-        '<li>Jan 20 2022</li>', 
-        '<li>Ed just made this up.</li>',
-        '<p>Another Holiday</p>', 
-        '<li>Jan 25 2022</li>', 
-        '<li>Ed made this one up too.</li>',
-        '<p>National Party Day</p>', 
-        '<li>Jan 13 2022</li>', 
-        '<li>A holiday Ed made up for Egypt, where everyone has a party.</li>']
+        holiday_values  = ['Holidays in Egypt during January:', 
+        'Holiday in Egypt', 
+        'Jan 20 2022', 
+        'Ed just made this up.',
+        'Another Holiday', 
+        'Jan 25 2022', 
+        'Ed made this one up too.',
+        'National Party Day', 
+        'Jan 13 2022', 
+        'A holiday Ed made up for Egypt, where everyone has a party.']
 
         for holiday_value in holiday_values:
             self.assertIn(holiday_value, html)
@@ -337,10 +337,10 @@ class TestFavoritesRoute(TestCase):
     @patch('favorites_database.favorites_db.get_all_favorites', side_effect=[create_favorite()])
     def test_favorites_page_with_one_favorite(self, mock_get_favorites):
         html = self.get_response_favorites()
-        expected_in_favorites_table = ['<th>City1, Country1</th>',
-            '<th>1/2020</th>',
-            '<th><a class="show-results" href="/favorite/1">Show Results</a></th>',
-            '<th><a class="delete-favorite" href="/favorite/delete/1">Delete</a></th>']
+        expected_in_favorites_table = ['City1, Country1',
+            '1/2020',
+            'href="/favorite/1">Show Results</a>',
+            'href="/favorite/delete/1">Delete</a>']
         
         for expected_favorite in expected_in_favorites_table:
             self.assertIn(expected_favorite, html)
@@ -349,22 +349,20 @@ class TestFavoritesRoute(TestCase):
     @patch('favorites_database.favorites_db.get_all_favorites', side_effect=[create_favorites()])
     def test_favorites_page_with_multiple_favorites(self, mock_get_favorites):
         html = self.get_response_favorites()
-        expected_in_favorites_table = ['<th>City1, Country1</th>',
-            '<th>1/2020</th>',
-            '<th><a class="show-results" href="/favorite/1">Show Results</a></th>',
-            '<th><a class="delete-favorite" href="/favorite/delete/1">Delete</a></th>',
-            '<th>City2, Country2</th>',
-            '<th>12/2023</th>',
-            '<th><a class="show-results" href="/favorite/2">Show Results</a></th>',
-            '<th><a class="delete-favorite" href="/favorite/delete/2">Delete</a></th>',
-            '<th>City3, Country3</th>',
-            '<th>5/2021</th>',
-            '<th><a class="show-results" href="/favorite/3">Show Results</a></th>',
-            '<th><a class="delete-favorite" href="/favorite/delete/3">Delete</a></th>',
-            '<th>City4, Country4</th>',
-            '<th>3/2024</th>',
-            '<th><a class="show-results" href="/favorite/4">Show Results</a></th>',
-            '<th><a class="delete-favorite" href="/favorite/delete/4">Delete</a></th>']
+        expected_in_favorites_table = ['City1, Country1',
+            '1/2020',
+            'City2, Country2',
+            '12/2023',
+            'href="/favorite/2">Show Results</a>',
+            'href="/favorite/delete/2">Delete</a>',
+            'City3, Country3',
+            '5/2021',
+            'href="/favorite/3">Show Results</a>',
+            'href="/favorite/delete/3">Delete</a>',
+            'City4, Country4',
+            '3/2024',
+            'href="/favorite/4">Show Results</a>',
+            'href="/favorite/delete/4">Delete</a>']
         
         for expected_favorite in expected_in_favorites_table:
             self.assertIn(expected_favorite, html)
@@ -373,7 +371,7 @@ class TestFavoritesRoute(TestCase):
     @patch('favorites_database.favorites_db.get_all_favorites', side_effect=[[]])
     def test_favorites_page_with_no_favorites(self, mock_get_favorites):
         html = self.get_response_favorites()
-        expected_no_favorites_message = '<h3>There are no favorites to display. Try searching for a location and adding it to your favorites!</h3>'
+        expected_no_favorites_message = 'There are no favorites to display. Try searching for a location and adding it to your favorites!'
 
         self.assertIn(expected_no_favorites_message, html)
 
@@ -510,19 +508,19 @@ class TestResultFavoritebyIDRoute(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
-        '<li>Rainfall: 22 inches per month.</li>',
-        '<li>Daylight Hours: 22 hours per day.</li>',
-        '<li>High Temp: 89 F</li>',
-        '<li>Low Temp: 45 F</li>']
-        holiday_values  = ['<h3>Holidays in Egypt during January:</h3>', 
-        '<p>Holiday in Egypt</p>', 
-        '<li>Jan 20 2022</li>', 
-        '<li>Ed just made this up.</li>']
-        webcam_values = ['<img src="http://link.com" />',
-        '<img src="http://link2.com" />',
-        '<img src="http://link3.com" />']
-        result_header = '<h2 id="result-title">Results for Cairo, Egypt in 1/2022.</h2>'
+        weather_values = ['Based on historic climate data in January from previous years.',
+        'Rainfall: 22 inches per month.',
+        'Daylight Hours: 22 hours per day.',
+        'High Temp: 89 F',
+        'Low Temp: 45 F']
+        holiday_values  = ['Holidays in Egypt during January:', 
+        'Holiday in Egypt', 
+        'Jan 20 2022', 
+        'Ed just made this up.']
+        webcam_values = ['"http://link.com"',
+        '"http://link2.com"',
+        '"http://link3.com"']
+        result_header = 'Results for Cairo, Egypt in 1/2022.'
 
         self.assertIn(result_header, html)
         for weather_value in weather_values:
@@ -542,9 +540,9 @@ class TestResultFavoritebyIDRoute(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        expected_error_html = ['<h3>No weather data found for Egypt during January.</h3>',
-        '<h3>No holidays found for Egypt during January.</h3>',
-        '<h3>No webcams were found for Egypt. Try selecting a different category.</h3>']
+        expected_error_html = ['No weather data found for Egypt during January.',
+        'No holidays found for Egypt during January.',
+        'No webcams were found for Egypt. Try selecting a different category.']
         
         for expected_error in expected_error_html:
             self.assertIn(expected_error, html)
@@ -559,13 +557,13 @@ class TestResultFavoritebyIDRoute(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
-        '<li>Rainfall:',
-        '<li>Daylight Hours:',
-        '<li>High Temp:',
-        '<li>Low Temp:']
-        holiday_value  = '<h3>Holidays in Egypt during January:</h3>'
-        webcam_value = '<img src="" />'
+        weather_values = ['Based on historic climate data in January from previous years.',
+        'Rainfall:',
+        'Daylight Hours:',
+        'High Temp:',
+        'Low Temp:']
+        holiday_value  = 'Holidays in Egypt during January:'
+        webcam_value = 'src="" />'
 
         for weather_value in weather_values:
             self.assertNotIn(weather_value, html)
@@ -582,9 +580,9 @@ class TestResultFavoritebyIDRoute(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        expected_error_html = ['<h3>No weather data found for Egypt during January.</h3>',
-        '<h3>No holidays found for Egypt during January.</h3>',
-        '<h3>No webcams were found for Egypt. Try selecting a different category.</h3>']
+        expected_error_html = ['No weather data found for Egypt during January.',
+        'No holidays found for Egypt during January.',
+        'No webcams were found for Egypt. Try selecting a different category.']
         
         for expected_error in expected_error_html:
             self.assertIn(expected_error, html)
@@ -599,13 +597,13 @@ class TestResultFavoritebyIDRoute(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        weather_values = ['<p><i>Based on historic climate data in January from previous years.</i></p>',
-        '<li>Rainfall:',
-        '<li>Daylight Hours:',
-        '<li>High Temp:',
-        '<li>Low Temp:']
-        holiday_value  = '<h3>Holidays in Egypt during January:</h3>'
-        webcam_value = '<img src="" />'
+        weather_values = ['Based on historic climate data in January from previous years.',
+        'Rainfall:',
+        'Daylight Hours:',
+        'High Temp:',
+        'Low Temp:']
+        holiday_value  = 'Holidays in Egypt during January:'
+        webcam_value = 'src=""'
 
         for weather_value in weather_values:
             self.assertNotIn(weather_value, html)
@@ -679,10 +677,10 @@ class TestFavoriteDeleteRoute(TestCase):
 
         favorite_was_deleted = Favorite.get_or_none(id=1)
         # check to see favorites page is displayed with some info that was not deleted from db
-        expected_favorites_page_html = ['<table id="favorites-table">',
-        '<th>Cairo, Egypt</th>',
-        '<th><a class="show-results" href="/favorite/3">Show Results</a></th>',
-        '<th><a class="delete-favorite" href="/favorite/delete/3">Delete</a></th>'
+        expected_favorites_page_html = [
+        'Cairo, Egypt',
+        'href="/favorite/3">Show Results</a>',
+        'href="/favorite/delete/3">Delete</a>'
         ]
 
         self.assertEqual(response.status_code, 200)
@@ -697,7 +695,7 @@ class TestFavoriteDeleteRoute(TestCase):
             response = client.get('/favorite/delete/8')
         html = response.data.decode()
 
-        expected_error_message = '<li>Favorite with ID: 8 not found in database.</li>'
+        expected_error_message = 'Favorite with ID: 8 not found in database.'
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(expected_error_message, html)
@@ -713,10 +711,10 @@ class TestFavoriteDeleteRoute(TestCase):
 
         favorite_was_deleted = Favorite.get_or_none(id=1)
         # check to see favorites page is displayed with some info that was not deleted from db
-        expected_favorites_page_html = ['<table id="favorites-table">',
-        '<th>Cairo, Egypt</th>',
-        '<th><a class="show-results" href="/favorite/3">Show Results</a></th>',
-        '<th><a class="delete-favorite" href="/favorite/delete/3">Delete</a></th>'
+        expected_favorites_page_html = [
+        'Cairo, Egypt',
+        'href="/favorite/3">Show Results</a>',
+        'href="/favorite/delete/3">Delete</a>'
         ]
 
         self.assertEqual(response.status_code, 200)
@@ -731,7 +729,7 @@ class TestFavoriteDeleteRoute(TestCase):
             response = client.delete('/favorite/delete/8')
         html = response.data.decode()
 
-        expected_error_message = '<li>Favorite with ID: 8 not found in database.</li>'
+        expected_error_message = 'Favorite with ID: 8 not found in database.'
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(expected_error_message, html)
