@@ -2,11 +2,19 @@
 
 import requests
 import os
+
 #from pprint import pprint
 from functools import lru_cache
 #from io import BytesIO
 #from PIL import Image, ImageShow
 #import time
+
+# from pprint import pprint
+from functools import lru_cache
+# from io import BytesIO
+# from PIL import Image, ImageShow
+# import time
+
 
 key = os.environ.get('WINDY_KEY')
 header = {'x-windy-key': key}
@@ -48,6 +56,7 @@ def get_image_list(coordinates, category):
             daylight_links.append(link.get('image').get('daylight').get('preview'))
             current_links.append(link.get('image').get('current').get('preview'))
         return daylight_links
+
 
 """saves a list of daylight and current time images"""
 """def save_images(daylight_links, current_links):
