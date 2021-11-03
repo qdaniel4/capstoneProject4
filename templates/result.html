@@ -168,7 +168,9 @@
             
             {% endif %}
           </div>
-          <img src="./Weather.png" alt="" class="pt-5 img-fluid result-png">
+          <img  src="{{url_for('static', filename='Weather.pngg')}}" alt="" class="pt-5 img-fluid result-png">
+        
+
 
         </div>
 
@@ -196,7 +198,8 @@
         
             {% endif %}
         </div>
-        <img src="./holiday.png" alt="" class="pt-5 img-fluid result-png">
+        <img src="{{url_for('static', filename='holiday.png')}}"  alt="" class="pt-5 img-fluid result-png">
+
       </div>
       </div>
 
@@ -226,7 +229,6 @@
         </div>
       </div>
         
-
         <div class="add-to-faves pt-5 container">
           <div class="col">
             <form action="favorite/add" method="POST">
@@ -238,9 +240,6 @@
 
         </div>
       </section>  <!-- Results page -->
-
-
-
 
 
       <!-- API credit -->
