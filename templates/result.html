@@ -86,7 +86,7 @@
                 {% for webcam_url in result['webcams'] %}
                 <div class="card">
                   <!-- <img src="{{ webcam_url }}" class="card-img-top img-fluid" alt="..."> -->
-                  <video src="{{ webcam_url }}">
+                  <iframe width="420" height="315" src="{{ webcam_url }}"></iframe>
                   <div class="card-body">
                   <span class="card-text" id="windy-credits">Webcams provided by <a href="https://www.windy.com/" target="_blank">windy.com</a> &mdash; <a href="https://www.windy.com/webcams/add" target="_blank">add a webcam</a></span>
                   </div>
