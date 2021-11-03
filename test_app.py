@@ -170,7 +170,7 @@ class TestResultRoute(TestCase):
 
 
     @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
-    @patch('holiday_cal.holiday_api.get_holiday_data', side_effect=[create_sample_holiday_data()])
+    @patch('holiday_cal.holiday_api.get_holiday', side_effect=[create_sample_holiday_data()])
     @patch('weather.weather_api.get_climate', side_effect=[create_sample_weather_data()])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[create_sample_webcam_data()])
     def test_get_valid_result(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
@@ -205,7 +205,7 @@ class TestResultRoute(TestCase):
 
 
     @patch('weather.weather_api.get_coordinates', side_effect=[None])
-    @patch('holiday_cal.holiday_api.get_holiday_data', side_effect=[create_sample_holiday_data()])
+    @patch('holiday_cal.holiday_api.get_holiday', side_effect=[create_sample_holiday_data()])
     @patch('weather.weather_api.get_climate', side_effect=[create_sample_weather_data()])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[create_sample_webcam_data()])
     def test_get_result_with_no_coordinates_shows_error_page(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
@@ -219,7 +219,7 @@ class TestResultRoute(TestCase):
 
 
     @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
-    @patch('holiday_cal.holiday_api.get_holiday_data', side_effect=[None])
+    @patch('holiday_cal.holiday_api.get_holiday', side_effect=[None])
     @patch('weather.weather_api.get_climate', side_effect=[None])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
     def test_result_page_shows_correct_error_messages_when_no_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
@@ -236,7 +236,7 @@ class TestResultRoute(TestCase):
 
 
     @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
-    @patch('holiday_cal.holiday_api.get_holiday_data', side_effect=[None])
+    @patch('holiday_cal.holiday_api.get_holiday', side_effect=[None])
     @patch('weather.weather_api.get_climate', side_effect=[None])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
     def test_result_page_does_not_show_html_with_blank_entries_when_no_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
@@ -260,7 +260,7 @@ class TestResultRoute(TestCase):
 
 
     @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
-    @patch('holiday_cal.holiday_api.get_holiday_data', side_effect=[create_sample_holiday_data()])
+    @patch('holiday_cal.holiday_api.get_holiday', side_effect=[create_sample_holiday_data()])
     @patch('weather.weather_api.get_climate', side_effect=[None])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
     def test_result_page_shows_correct_error_messages_when_only_some_optional_data_from_APIs(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
@@ -284,7 +284,7 @@ class TestResultRoute(TestCase):
 
 
     @patch('weather.weather_api.get_coordinates', side_effect=[create_sample_coordinates()])
-    @patch('holiday_cal.holiday_api.get_holiday_data', side_effect=[create_sample_multple_holiday_data()])
+    @patch('holiday_cal.holiday_api.get_holiday', side_effect=[create_sample_multple_holiday_data()])
     @patch('weather.weather_api.get_climate', side_effect=[None])
     @patch('windy_module.windy_api_manager.get_image_list', side_effect=[None])
     def test_result_page_shows_multiple_holidays(self, mock_get_coords, mock_get_holiday, mock_get_climate, mock_get_webcams):
