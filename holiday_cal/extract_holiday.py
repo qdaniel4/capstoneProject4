@@ -8,6 +8,7 @@ from functools import lru_cache
 
 api_key = os.environ.get('CALENDAR_KEY')
 redi = redis.Redis(host='localhost', port=6379, db=0)
+
 #countries endpoint
 def is_country_supported(country_name):
     """ Verifies country is supported by the api using country code. """
@@ -22,21 +23,18 @@ def is_country_supported(country_name):
         
 def req_res_country():
     """ check for cached entries, if list of countries in cache, if not get from the API. """
-    country_res = redi.get('country_test') #stored key=countries, value=[{country_name:'',country_code:''}]
-    
-    if country_res is None:
+    if redi.exists('country_test'):
+        print('Found country codes in cache, retrieving from the redis server.')
+        country_list = redi.get('country_test')
+        return json.loads(country_list)
+    else:
         print('Could not find country list in cache, retrieving from the API.')
         res = req_countries()
         if res != None:
             results = lis_of_countries(res)
             return results
-    else:
-        print('Found country codes in cache, retrieving from the redis server.')
-        return json.loads(country_res)
-        # return None
+      
         
-
-@lru_cache(maxsize=1)
 def req_countries():
     """ Call countries API """
     url_countries = 'https://calendarific.com/api/v2/countries'
@@ -53,7 +51,6 @@ def req_countries():
 #USE FOR DROP DOWN
 def lis_of_countries(countries):
     """ returns all of the countries and countr code (ISO) supported by api """
-    # country_res = redi.get('countries') #stored key=countries, value=[{country_name:'',country_code:''}]
     results = []
     for c in countries:
         name_code = {
@@ -61,7 +58,8 @@ def lis_of_countries(countries):
             'country_code':c['iso-3166']
         }
         results.append(name_code)
-        redi.set('country_test',json.dumps(results), timedelta(seconds=360)) #prevent cache staleness
+        redi.set('country_test',json.dumps(results)) 
+        # timedelta(seconds=360) #prevent cache staleness
     return results    
         
            
@@ -86,7 +84,7 @@ def req_holiday(query):
 
 def display_holiday(holiday):
     """ displays all holidays with the provided data.
-    :returns: holiday_data dictionary to display in the template.  """
+    :returns: holiday_data dictionary to display in the template. """
     holiday_data = extract_country_holiday(holiday)
     return holiday_data
 
