@@ -64,7 +64,7 @@ def get_result():
     # Get two lists of webcam urls based on the user's selected category
     # and the coordinates of the city from troposphere
     # we are just using webcam_urls_daylight for now, but could use current in extended functionality
-    webcam_urls = webcam_api.get_image_list(coordinates, category)
+    webcam_urls = webcam_api.get_video_link(coordinates, category)
 
     # create a dictionary to pass to template - to make creation of favorite easier later on
     result = ui_support.create_result_dictionary(city, country, month, month_name, year, webcam_urls, holidays_list, weather_data)
