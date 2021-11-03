@@ -1,0 +1,63 @@
+{% extends "base.html" %} {% block content %}
+<section id="instructions" class="content-box bg-dark pt-5 text-light">
+    <div class="container pt-5">
+        <!-- ask team for an app name. -->
+      <h2 class="py-2">info Travel</h2>
+        <hr class="text-light">
+        <div class="col-md p5">
+          <p class="fs-5"> Enter the city and country you would like to travel to, and an estimated
+            date for your vacation.</p>
+          <p class="fs-5">You will see an interesting webcam from the location based on the category
+            you select, local holidays, and what the weather might be like during your
+            trip. </p>
+      </div>
+
+      <!-- content-box -->
+        <div class="content-box row align-items-center gx-6 justify-content-between mt-5 pb-5">
+            <div class="col-md ">
+              <!-- form -->
+            <div class="form-container text-lg-left">
+              <form class="row gy-5 gx-5 align-items-center" id="search-for-vacation" action="/result" method="GET">
+                <div class="col-sm-6">
+                  <label class="pb-3 col-form-label-lg" for="city">City</label>
+                  <input class="form-control" type='text' placeholder="City" name="city" id="city" required />
+                </div>
+            
+                <div class="col-sm-6">
+                  <label class="pb-3 col-form-label-lg" for="country">Country</label>
+                  <select class="form-select" name="country" id="country" required>
+                    {% for country in all_countries %}
+                    <option value="{{ country }}">{{ country }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+            
+                <div class="col-sm-6">
+                  <label class="pb-3 col-form-label-lg" for="date">Estimated date of trip:</label></br>
+                  <input class="form-control" type="date" name="date" required />
+                </div>
+                
+                <div class="col-sm-6">
+                  <label class="pb-3 col-form-label-lg"  for="category">Webcam category:</label>
+                <select class="form-select" name="category" id="category" required>
+                  {% for category in webcam_api_categories %}
+                  <option value="{{ category }}">{{ category }}</option>
+                  {% endfor %}
+                </select>
+                </div>
+      
+                <div class="col-md">
+                  <input class="btn px-3  text-light" type="submit" value="Search" />
+                </div>
+              </form>
+           
+            </div>
+            
+        </div>
+            <!-- end form -->
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}

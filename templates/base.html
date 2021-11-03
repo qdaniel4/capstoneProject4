@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link rel="stylesheet" href="/static/style.css" />
+    <title>Travel Planning Catalogue</title>
+  </head>
+
+  <body>
+    <main class="container">
+      <!-- Header -->
+      <div id="header">
+        <nav
+          id="navigation"
+          class="navbar navbar-expand-lg bg-light navbar-light mb-4"
+        >
+          <div class="container">
+            <a href="#" class="navbar-brand">
+              <img
+                src="{{url_for('static', filename='infoTravel.png')}}"
+                width="100"
+                class="img-fluid"
+              />
+            </a>
+            <button
+              class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navmenu"
+            >
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navmenu">
+              <ul class="navbar-nav ms-auto">
+                <li class="nav-item px-2">
+                  <a class="nav-link fs-5" href="{{ url_for('index') }}"
+                    >Search For Destination</a
+                  >
+                </li>
+                <li class="nav-item px-2">
+                  <a class="nav-link fs-5" href="{{ url_for('get_favorites') }}"
+                    >View Saved Destinations</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <!-- end-header -->
+
+      <!-- hero -->
+      <section class="hero text-dark py text-center text-sm-start pt-5 py">
+        <div class="container">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="me-4">
+              <h1 class="pb-4">Discover New Destination.</h1>
+              <p
+                class="subtitle my-5 tracking-in-expand-fwd animate__animated animate__fadeInLeftBig"
+              >
+                Plan you Trip with Info Travel.
+              </p>
+            </div>
+            <img
+              src="{{url_for('static', filename='pana.png')}}"
+              width="100"
+              class="pt-5 img-fluid w-50"
+            />
+          </div>
+        </div>
+      </section>
+      <div class="text-center pt-5">
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="{2}"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </div>
+      <!-- end-hero -->
+
+      <div id="content">{% block content %} {% endblock %}</div>
+
+      <section class="pt-5 py mb-5">
+        <div id="footer" class="text-center text-dark pt-5">
+          <div id="credits">
+            <!--API credits-->
+            <ul class="list-group list-group-flush">
+              <h4 class="fs-2 pb-3">Data provided from the following APIs:</h4>
+              <li class="list-group-item fs-5 pb-3">
+                Country names, country holiday data:
+                <a href="https://calendarific.com/">Calendarific</a>
+              </li>
+              <li class="list-group-item fs-5 pb-3">
+                Climate data, location coordinates:
+                <a href="https://www.troposphere.io/developer">Troposphere</a>
+              </li>
+              <li class="list-group-item fs-5 pb-3">
+                Webcam images:
+                <a href="https://api.windy.com/">Windy</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
