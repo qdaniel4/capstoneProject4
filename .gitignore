@@ -2,19 +2,23 @@
 
 
 #DLL files
-__pycache__/
+__pycache__
 *.py[cod]
 *$py.class
-
+*.pyc
 
 .DS_Store
 
+.vscode
+.idea
 
 # Environments
 .env
 .venv
+env
 env/
 venv/
+venv
 ENV/
 env.bak/
 venv.bak/
@@ -70,6 +74,4 @@ instance/
 
 # mkdocs documentation
 /site
-
-
 
