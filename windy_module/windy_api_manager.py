@@ -2,27 +2,12 @@
 
 import requests
 import os
-
-#from pprint import pprint
 from functools import lru_cache
-#from io import BytesIO
-#from PIL import Image, ImageShow
-#import time
 
-# from pprint import pprint
-from functools import lru_cache
-# from io import BytesIO
-# from PIL import Image, ImageShow
-# import time
 
 
 key = os.environ.get('WINDY_KEY')
 header = {'x-windy-key': key}
-
-"""examples so I can remember paths"""
-#url = 'https://api.windy.com/api/webcams/v2/list/country=IT/category=beach/orderby=popularity/limit=20?show=webcams:location,image,player'
-#url = 'https://api.windy.com/api/webcams/v2/list/nearby=38.732534,0.217634,100/category=beach/orderby=distance/limit=1?show=webcams:location,image'
-#url = 'https://api.windy.com/api/webcams/v2/list?show=categories'
 
 """caches category list"""
 @lru_cache(maxsize=1)
@@ -40,13 +25,14 @@ def show_categories():
     return categories
 
 
-"""gets a list of daylight and current time image links from the api, list depends on the users preferences (location, category, sorted, how many they want to see)"""
+"""gets a list of daylight and current time image links from the api, 
+list depends on the users preferences (location, category, sorted, how many they want to see)"""
 def get_image_list(coordinates, category):
 
-    url = f'https://api.windy.com/api/webcams/v2/list/nearby={coordinates},300/category={category}/orderby=distance/limit=5?show=webcams:location,image'
     daylight_links = []
     current_links = []
-    data = requests.get(url, headers=header).json()
+    limit = '5'
+    data = get_windy_response(coordinates, category, limit)
 
     if len(data.get('result').get('webcams')) == 0:
         return None
@@ -58,34 +44,19 @@ def get_image_list(coordinates, category):
         return daylight_links
 
 
-"""saves a list of daylight and current time images"""
-"""def save_images(daylight_links, current_links):
-    daylight_images = []
-    current_images = []
-
-    for day_url in daylight_links:
-        r = requests.get(day_url)
-        image = Image.open(BytesIO(r.content))
-        daylight_images.append(image)
-
-    for current_url in current_links:
-        r = requests.get(current_url)
-        image = Image.open(BytesIO(r.content))
-        current_images.append(image)
-    return daylight_images, current_images"""
-
-
-def get_windy_response():
-    url = f'https://api.windy.com/api/webcams/v2/list/nearby=44.953744,-93.293146,300/category=traffic/orderby=distance/limit=1?show=webcams:location,image'
-    data = requests.get(url, headers=header)
+def get_windy_response(coordinates, category, limit): #function to be mocked
+    key = os.environ.get('WINDY_KEY')
+    header = {'x-windy-key': key}
+    url = f'https://api.windy.com/api/webcams/v2/list/nearby={coordinates},300/category={category}/orderby=distance/limit={limit}?show=webcams:location,image'
+    data = requests.get(url, headers=header).json()
     return data
 
+
 def get_video_link(nearby, category):
-    url = f'https://api.windy.com/api/webcams/v2/list/nearby={nearby}/category={category}/orderby=distance/limit=1?show=webcams:location,player'
+    limit = '5'
+    data = get_windy_response(nearby, category, limit)
     month_video = []
     live_video = []
-    data = requests.get(url, headers=header).json()
-
     webcams = data.get('result').get('webcams')
     for link in webcams:
         month_video.append(link.get('player').get('month').get('embed'))
