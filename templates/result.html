@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block content %}
@@ -16,74 +17,99 @@
         }
 -->
 
-<h2 id="result-title">Results for {{ result['city'] }}, {{ result['country'] }} in {{ result['month'] }}/{{ result['year'] }}.</h2>
+      <!-- Results page -->
+      <section class="pt-5 text-dark p-5">
+        <div class="container">
+          
+          <h2 id="result-title" class="pt-5 pb-4">Results for {{ result['city'] }}, {{ result['country'] }} in {{ result['month'] }}/{{ result['year'] }}.</h2>
+          <div id="weather" class="content-box mb-4 col d-flex align-items-center justify-content-between">
+            <div class="row">
+            <span class="section-title fw-bold lh-lg">Weather</span>
+            {% if result['weather'] %}
+                <h3 class="pt-5">Weather for Sweden during December:</h3>
+                <p><i>Based on historic climate data in {{ result['month_name'] }} from previous years.</i></p>
+                    <ul class="list-group list-group-flush fs-5 w-75 pb-5">
+                        <li class="list-group-item ">Rainfall: {{ result['weather']['rain'] }} per month.</li>
+                        <li class="list-group-item">Daylight Hours: {{ result['weather']['sunshine'] }} per day.</li>
+                        <li class="list-group-item">High Temp: {{ result['weather']['high_temp'] }}</li>
+                        <li class="list-group-item">Low Temp: {{ result['weather']['low_temp'] }}</li>
+                    </ul>
+        
+            {% else %}
+                <!-- Display a message indicating no climate data was found from the API -->
+                <h3 class="text-danger">No weather data found for {{ result['country'] }} during {{ result['month_name'] }}.</h3>
+            
+            {% endif %}
+          </div>
+        
 
-<div class="add-to-faves">
-    <form action="favorite/add" method="POST">
-        <button type="submit" name="result" value="{{result['city']}}\{{result['country']}}\{{result['month']}}\{{result['year']}}\{{result['webcams']}}\{{result['weather']}}\{{result['holidays']}}">Add to Favorites</button>
-    </form>   
-</div>
 
-<div id="weather" class="content-box">
+        </div>
 
-    <span class="section-title">Weather</span>
-    {% if result['weather'] %}
-        <h3>Weather for {{ result['country'] }} during {{ result['month_name'] }}:</h3>
-        <p><i>Based on historic climate data in {{ result['month_name'] }} from previous years.</i></p>
 
-            <ul>
-                <li>Rainfall: {{ result['weather']['rain'] }} per month.</li>
-                <li>Daylight Hours: {{ result['weather']['sunshine'] }} per day.</li>
-                <li>High Temp: {{ result['weather']['high_temp'] }}</li>
-                <li>Low Temp: {{ result['weather']['low_temp'] }}</li>
-            </ul>
+         <!-- holiday -->
+         <div class="container pt-3">
+          <div id="holidays" class="content-box mb-4 col d-flex align-items-center justify-content-between">
+            <div class="row">
+            <span class="section-title fw-bold lh-lg">Holidays</span>
+            {% if result['holidays'] %}
+                <!-- Display a list of holiday names, date of holiday, holiday descriptions. -->
+                <h3 class="pt-3">Holidays in {{ result['country'] }} during {{ result['month_name'] }}:</h3>
+                {% for holiday in result['holidays'] %}
+                <p class="">{{ holiday['holiday_name'] }}</p>
+                <ul class="list-group list-group-flush fs-5 w-75 pb-5">
+                    <li class="list-group-item ">{{ holiday['date'] }}</li>
+                    <li class="list-group-item ">{{ holiday['description'] }}</li>
+                </ul>
+                <br>
+                {% endfor %}
+        
+            {% else %}
+                <!-- Display a message indicating no holidays were found from the API -->
+                <h3 class="text-danger">No holidays found for {{ result['country'] }} during {{ result['month_name'] }}.</h3>
+        
+            {% endif %}
+        </div>
 
-    {% else %}
-        <!-- Display a message indicating no climate data was found from the API -->
-        <h3>No weather data found for {{ result['country'] }} during {{ result['month_name'] }}.</h3>
-    
-    {% endif %}
+      </div>
+      </div>
 
-</div>
- 
-<div id="holidays" class="content-box">
 
-    <span class="section-title">Holidays</span>
-    {% if result['holidays'] %}
-        <!-- Display a list of holiday names, date of holiday, holiday descriptions. -->
-        <h3>Holidays in {{ result['country'] }} during {{ result['month_name'] }}:</h3>
-        {% for holiday in result['holidays'] %}
-        <p>{{ holiday['holiday_name'] }}</p>
-        <ul>
-            <li>{{ holiday['date'] }}</li>
-            <li>{{ holiday['description'] }}</li>
-        </ul>
-        <br>
-        {% endfor %}
 
-    {% else %}
-        <!-- Display a message indicating no holidays were found from the API -->
-        <h3>No holidays found for {{ result['country'] }} during {{ result['month_name'] }}.</h3>
+        <!-- webcam -->
+        <div class="container pt-3 ">
+        <div id="webcam" class="content-box">
+        
+            <span class="section-title">Images</span>
+            {% if result['webcams'] %}
+                <!-- Display webcam images using webcam image urls. -->
+                {% for webcam_url in result['webcams'] %}
+                <div class="card">
+                  <img src="{{ webcam_url }}" class="card-img-top img-fluid" alt="...">
+                  <div class="card-body">
+                  <span class="card-text" id="windy-credits">Webcams provided by <a href="https://www.windy.com/" target="_blank">windy.com</a> &mdash; <a href="https://www.windy.com/webcams/add" target="_blank">add a webcam</a></span>
+                  </div>
+                </div>
+                <br>
+                {% endfor %}
+        
+            {% else %}
+                <!-- Display a message indicating no webcams were found from the API -->
+                <h3 class="text-danger">No webcams were found for {{ result['country'] }}. Try selecting a different category.</h3>
+            {% endif %}
+        </div>
+      </div>
+        
+        <div class="add-to-faves pt-5 container">
+          <div class="col">
+            <form action="favorite/add" method="POST">
+              <button class="btn btn-success" type="submit" name="result" value="{{result['city']}}\{{result['country']}}\{{result['month']}}\{{result['year']}}\{{result['webcams']}}\{{result['weather']}}\{{result['holidays']}}">Add to Favorites</button>
+            </form>  
+          </div>
+       
+        </div>
 
-    {% endif %}
+        </div>
+      </section>  <!-- Results page -->
 
-</div>
-
-<div id="webcam" class="content-box">
-
-    <span class="section-title">Images</span>
-    {% if result['webcams'] %}
-        <!-- Display webcam images using webcam image urls. -->
-        {% for webcam_url in result['webcams'] %}
-        <img src="{{ webcam_url }}" />
-        <span id="windy-credits">Webcams provided by <a href="https://www.windy.com/" target="_blank">windy.com</a> &mdash; <a href="https://www.windy.com/webcams/add" target="_blank">add a webcam</a></span>
-        <br>
-        {% endfor %}
-
-    {% else %}
-        <!-- Display a message indicating no webcams were found from the API -->
-        <h3>No webcams were found for {{ result['country'] }}. Try selecting a different category.</h3>
-    {% endif %}
-</div>
-
-{% endblock %}
+      {% endblock %}

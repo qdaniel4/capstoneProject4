@@ -4,10 +4,10 @@
 
 <div class="content-box">
     <!--general template for errors the user can potentially recover from-->
-    <h3>The following errors occurred:</h3>
+    <h3 class="error-msg">The following errors occurred:</h3>
     <ul>
         {% for error in error_list %}
-        <li>{{ error }}</li>
+        <li class="error-msg">{{ error }}</li>
         {% endfor %}
     </ul>
     <a class="nav-link" href="{{ url_for('get_favorites') }}">Return to Favorites</a>
