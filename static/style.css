@@ -17,7 +17,10 @@ body {
   font-family: poppins;
   background: rgb(233, 233, 233);
 }
-
+.logo {
+  height: 100%;
+  padding-top: 2rem;
+}
 .subtitle {
   color: #7e57c2;
   font-size: 1.9rem;
@@ -61,6 +64,7 @@ label {
   color: #7e57c2;
 }
 
-.btn {
+.btn,
+th {
   background-color: #7e57c2;
 }
