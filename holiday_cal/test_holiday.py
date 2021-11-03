@@ -1,11 +1,10 @@
 from unittest import TestCase
 from unittest.mock import patch, Mock
-from requests import Response
 
 import redislite
 from redislite import Redis # self-contained, run separately
 import redislite.patch
-import redis
+
 import extract_holiday
 from extract_holiday import redi
 
@@ -45,7 +44,6 @@ class TestUI(TestCase):
         self.assertIsNotNone(actual,expected)
         
         
-        
     def test_country_returns_none_if_no_countries_returned(self):
         with patch('requests.Response.json') as mock_get:
             expected = []
@@ -54,8 +52,6 @@ class TestUI(TestCase):
         self.assertIsNone(actual,expected)
         self.assertFalse(actual,expected)
      
-                      
-# #    holiday endpoint
     def test_holiday_returns_correct_dictionary(self):
         with patch('requests.Response.json') as mock_get:
             expected_response = {'holiday_name': 'Independence Day', 'description': 'On Independence Day, Americans celebrate the anniversary of publication of the Declaration of Independence from Great Britain in 1776.', 'date': '2022-07-04'}
