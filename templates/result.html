@@ -26,7 +26,7 @@
             <div class="row">
             <span class="section-title fw-bold lh-lg">Weather</span>
             {% if result['weather'] %}
-                <h3 class="pt-5">Weather for result['country'] during December:</h3>
+                <h3 class="pt-5">Weather for {{result['country']}} during December:</h3>
                 <p><i>Based on historic climate data in {{ result['month_name'] }} from previous years.</i></p>
                     <ul class="list-group list-group-flush fs-5 w-75 pb-5">
                         <li class="list-group-item ">Rainfall: {{ result['weather']['rain'] }} per month.</li>
